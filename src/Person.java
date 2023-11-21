@@ -11,8 +11,12 @@ public class Person implements Actor {
     public void act(World world) {
         Set<Location> neighbours = world.getEmptySurroundingTiles();
         List<Location> list = new ArrayList<>(neighbours);
-        Location l = list.get(0); // Linje 2 og 3 kan erstattes af neighbours.toArray()[0]
-        world.move(this, l);
+        if (!list.isEmpty()) {
+            Location l = list.get(0);
+            world.move(this, l);
+        } else {
+            world.step();
+        }
     }
 
 }
