@@ -25,6 +25,9 @@ public class Main {
 
         p.show(); // viser selve simulationen
         boolean isNight = true; // Declare and initialize the isNight variable
+        if (isNight) {
+            world.delete(person);
+        }
         for (int i = 0; i < 200; i++) {
             p.simulate();
         } // kører 10 runder, altså kaldes 'act' 200 gange for alle placerede aktører
