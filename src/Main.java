@@ -29,7 +29,7 @@ public class Main {
             int y = r.nextInt(size); // Create a random y coordinate
             Location place = new Location(x, y); // Create a new location
             while (!world.isTileEmpty(place)) { // While the tile is not empty
-                x = r.nextInt(size); // Create a random x coordinate
+                x = r.nextInt(size);
                 y = r.nextInt(size);
                 place = new Location(x, y);
             }
@@ -37,12 +37,13 @@ public class Main {
         }
 
         boolean isNight = true; // Declare and initialize the isNight variable
-        if (isNight) {
-            world.delete(person);
-        }
         // Runs 50 loops of the simulation
         for (int i = 0; i < 50; i++) {
             p.simulate();
+            if (isNight) {
+                world.delete(person);
+                world.step();
+            }
         }
     }
 }
