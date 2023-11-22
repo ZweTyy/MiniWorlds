@@ -5,8 +5,9 @@ import java.util.List;
 import itumulator.world.Location;
 import itumulator.world.NonBlocking;
 import itumulator.world.World;
+import itumulator.simulator.Actor;
 
-public class Grass implements NonBlocking {
+public class Grass implements Actor, NonBlocking {
     private boolean alive;
     private Location place;
     Random r = new Random();
@@ -14,6 +15,11 @@ public class Grass implements NonBlocking {
     public Grass(World world, int size) {
         initializeGrass(world, size);
         this.alive = true;
+    }
+
+    @Override
+    public void act(World world) {
+        decay(world);
     }
 
     public void initializeGrass(World world, int size) {
@@ -27,21 +33,26 @@ public class Grass implements NonBlocking {
         }
     }
 
-    // Method to simulate grass decay
-    public void decay() {
-        // Grass has a chance to die
-        if (r.nextDouble() < 0.1) { // 10% chance to decay
+    public void decay(World world) {
+        // Græs har en chance for at dø tilfældigt
+        if (r.nextDouble() < 0.1) { // 10% chance for at dø
             this.alive = false;
+        }
+        if (!this.alive) {
+            world.delete(this);
         }
     }
 
-    // Method to simulate grass spreading
     public void spread(World world) {
         // Spread to a random neighbouring empty tile
         if (this.alive && r.nextDouble() < 0.2) { // 20% chance to spread
             Set<Location> neighbours = world.getEmptySurroundingTiles();
             List<Location> list = new ArrayList<>(neighbours);
-            Location newLocation = list.get(0); // Determine a new location to spread
+            Location newLocation = list.get(0);
+            if (!list.isEmpty()) {
+                Location l = list.get(0);
+                world.move(this, l);
+            }
             world.setTile(newLocation, newLocation);
         }
     }
