@@ -11,8 +11,7 @@ public class Grass implements NonBlocking {
     private Location location;
     Random rand = new Random();
 
-    public Grass(Location location) {
-        this.location = location;
+    public Grass(World world) {
         this.alive = true;
     }
 
