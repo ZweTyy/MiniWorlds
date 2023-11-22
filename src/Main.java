@@ -1,12 +1,17 @@
+import itumulator.display.utility.ImageResourceCache;
 import itumulator.executable.DisplayInformation;
 import itumulator.executable.Program;
 import itumulator.world.World;
 import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.util.Random;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.InputStream;
 import java.util.Map;
 import java.util.LinkedHashMap;
+import itumulator.world.Location;
+import java.net.URL;
 
 public class Main {
 
@@ -40,15 +45,18 @@ public class Main {
         } catch (Exception e) {
             System.out.println("An error occurred: " + e.getMessage());
         }
-
         int delay = 1000; // Forsinkelsen mellem hver skridt af simulationen (i ms)
         int display_size = 800; // Skærm opløsningen (i px)
         Program p = new Program(size, display_size, delay); // Opret et nyt program
         World world = p.getWorld(); // Hiv verdenen ud, som er der hvor vi skal tilføje ting!
 
-        DisplayInformation di = new DisplayInformation(Color.red);
-        p.setDisplayInformation(Rabbit.class, di);
-        p.setDisplayInformation(Grass.class, di);
+        DisplayInformation grass = new DisplayInformation(Color.green, "grass");
+        DisplayInformation rabbit = new DisplayInformation(Color.white, "rabbit-small");
+        DisplayInformation Location = new DisplayInformation(Color.black);
+        p.setDisplayInformation(Grass.class, grass);
+        p.setDisplayInformation(Rabbit.class, rabbit);
+        p.setDisplayInformation(Location.class, Location);
+
         p.show(); // Viser selve simulationen
 
         // Vi iterer igennem alle elementer der skal tilføjes
