@@ -1,6 +1,5 @@
 import itumulator.executable.DisplayInformation;
 import itumulator.executable.Program;
-import itumulator.world.Location;
 import itumulator.world.World;
 import java.awt.Color;
 import java.util.Random;
@@ -13,14 +12,13 @@ public class Main {
 
     public static void main(String[] args) {
 
-        int objects = 10; // Nummer af objekter der skal genereres
-        Random r = new Random(); // Laver en ny random generator
+        final Random r = new Random();
         int size = 0; // Størrelsen af verdenen (i tiles) (dette er kvadratisk)
         Map<String, Integer[]> elementsToAdd = new LinkedHashMap<>(); // Vi bruger linkedhashmap for at holde
                                                                       // rækkefølgen af elementer
 
         try {
-            BufferedReader br = new BufferedReader(new FileReader("./data/input-filer/t1-2a.txt")); // Læser input filen
+            BufferedReader br = new BufferedReader(new FileReader("./data/input-filer/t1-1c.txt")); // Læser input filen
             String line = br.readLine();
             if (line != null) { // Sætter værdien af size til det første tal i filen
                 size = Integer.parseInt(line.trim());
@@ -50,6 +48,7 @@ public class Main {
 
         DisplayInformation di = new DisplayInformation(Color.red);
         p.setDisplayInformation(Rabbit.class, di);
+        p.setDisplayInformation(Grass.class, di);
         p.show(); // Viser selve simulationen
 
         // Vi iterer igennem alle elementer der skal tilføjes
@@ -63,7 +62,9 @@ public class Main {
                     case ("rabbit"):
                         createRabbit(world, size);
                         break;
-
+                    case ("grass"):
+                        createGrass(world, size);
+                        break;
                     default:
                         break;
                 }
@@ -86,5 +87,10 @@ public class Main {
     public static void createRabbit(World world, int size) {
         Rabbit rabbit = new Rabbit(world, size); // Lav en ny kanin
         world.setTile(rabbit.getPlace(), rabbit); // Placerer kaninen på det tilfældige lokation
+    }
+
+    public static void createGrass(World world, int size) {
+        Grass grass = new Grass(world, size); // Lav en nyt græs
+        world.setTile(grass.getPlace(), grass); // Placerer græsset på det tilfældige lokation
     }
 }

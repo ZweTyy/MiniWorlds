@@ -9,8 +9,8 @@ import itumulator.world.Location;
 import itumulator.world.World;
 
 public class Rabbit implements Actor {
-    Location place;
-    Random r = new Random(); // Laver en ny random generator
+    private Location place;
+    private Random r = new Random(); // Laver en ny random generator
 
     public Rabbit(World world, int size) {
         initializeRabbit(world, size);
