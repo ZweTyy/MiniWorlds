@@ -1,17 +1,13 @@
-import itumulator.display.utility.ImageResourceCache;
 import itumulator.executable.DisplayInformation;
 import itumulator.executable.Program;
 import itumulator.world.World;
 import java.awt.Color;
-import java.awt.image.BufferedImage;
 import java.util.Random;
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.InputStream;
 import java.util.Map;
 import java.util.LinkedHashMap;
 import itumulator.world.Location;
-import java.net.URL;
 
 public class Main {
 
@@ -23,14 +19,16 @@ public class Main {
                                                                       // rækkefølgen af elementer
 
         try {
-            BufferedReader br = new BufferedReader(new FileReader("./data/input-filer/t1-1c.txt")); // Læser input filen
+            BufferedReader br = new BufferedReader(new FileReader("./data/input-filer/t1-1d.txt")); // Læser input
+                                                                                                    // filen
             String line = br.readLine();
             if (line != null) { // Sætter værdien af size til det første tal i filen
                 size = Integer.parseInt(line.trim());
             }
-            while ((line = br.readLine()) != null) { // Derefter læser den resten af filen
+            while ((line = br.readLine()) != null && !line.isEmpty()) { // Derefter læser den resten af filen
                 String[] parts = line.split(" ");
                 String[] ranges = parts[1].split("-");
+
                 if (ranges.length == 1) {
                     elementsToAdd.put(parts[0],
                             new Integer[] { Integer.parseInt(ranges[0]), Integer.parseInt(ranges[0]) });
@@ -98,7 +96,9 @@ public class Main {
     }
 
     public static void createGrass(World world, int size) {
-        Grass grass = new Grass(world, size); // Lav en nyt græs
-        world.setTile(grass.getPlace(), grass); // Placerer græsset på det tilfældige lokation
+        Grass grass = new Grass(world, size); // Create new grass
+        if (world.isTileEmpty(grass.getPlace())) { // Check if the tile is empty
+            world.setTile(grass.getPlace(), grass); // Place the grass at the random location
+        }
     }
 }
