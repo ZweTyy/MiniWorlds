@@ -21,8 +21,9 @@ public class Rabbit implements Actor {
         Set<Location> neighbours = world.getEmptySurroundingTiles();
         List<Location> validLocations = new ArrayList<>(neighbours);
         if (!validLocations.isEmpty()) {
-            Location l = validLocations.get(0);
-            world.move(this, l);
+            int randomIndex = r.nextInt(validLocations.size());
+            Location newLocation = validLocations.get(randomIndex);
+            world.move(this, newLocation);
         } else {
             world.step();
         }

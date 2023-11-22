@@ -45,25 +45,22 @@ public class Grass implements Actor, NonBlocking {
     }
 
     public void spread(World world, int size) {
-        // Spread to a random neighbouring empty tile that doesn't contain grass
-        if (this.alive && r.nextDouble() < 0.1) { // 10% chance to spread
-            Set<Location> neighbours = world.getEmptySurroundingTiles(place); // Get surrounding tiles of this grass
-                                                                              // object
+        if (this.alive && r.nextDouble() < 0.1) { // 5% chance for at sprede sig
+            Set<Location> neighbours = world.getEmptySurroundingTiles(place);
             List<Location> validLocations = new ArrayList<>();
 
-            // Filter valid locations where grass is not already present
+            // Her tilføjer vi valide lokationer til listen
             for (Location loc : neighbours) {
                 if (world.isTileEmpty(loc) && !world.containsNonBlocking(loc)) {
                     validLocations.add(loc);
                 }
             }
-
-            // If there are valid locations, choose one at random to spread the grass
+            // Hvis der er valid locations, så vælg en tilfældigt og lav nyt græs
             if (!validLocations.isEmpty()) {
                 int randomIndex = r.nextInt(validLocations.size());
                 Location newLocation = validLocations.get(randomIndex);
 
-                // Create a new Grass object only if the tile is still empty
+                // Tjek igen hvis der er græs på lokationen og sæt græs hvis der ikke er
                 if (world.isTileEmpty(newLocation) && !world.containsNonBlocking(newLocation)) {
                     Grass newGrass = new Grass(world, size);
                     world.setTile(newLocation, newGrass);
