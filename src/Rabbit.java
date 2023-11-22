@@ -6,7 +6,7 @@ import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
 
-public class Person implements Actor {
+public class Rabbit implements Actor {
     @Override
     public void act(World world) {
         Set<Location> neighbours = world.getEmptySurroundingTiles();

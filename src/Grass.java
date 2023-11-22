@@ -18,8 +18,7 @@ public class Grass implements NonBlocking {
 
     // Method to simulate grass decay
     public void decay() {
-        // Implement logic for decaying
-        // For example, grass might have a chance to die
+        // Grass has a chance to die
         if (rand.nextDouble() < 0.1) { // 10% chance to decay
             this.alive = false;
         }
@@ -27,8 +26,7 @@ public class Grass implements NonBlocking {
 
     // Method to simulate grass spreading
     public void spread(World world) {
-        // Implement logic for spreading
-        // For example, spread to a random adjacent location
+        // Spread to a random neighbouring empty tile
         if (this.alive && rand.nextDouble() < 0.2) { // 20% chance to spread
             Set<Location> neighbours = world.getEmptySurroundingTiles();
             List<Location> list = new ArrayList<>(neighbours);
