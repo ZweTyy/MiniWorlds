@@ -19,9 +19,9 @@ public class Rabbit implements Actor {
     @Override
     public void act(World world) {
         Set<Location> neighbours = world.getEmptySurroundingTiles();
-        List<Location> list = new ArrayList<>(neighbours);
-        if (!list.isEmpty()) {
-            Location l = list.get(0);
+        List<Location> validLocations = new ArrayList<>(neighbours);
+        if (!validLocations.isEmpty()) {
+            Location l = validLocations.get(0);
             world.move(this, l);
         } else {
             world.step();

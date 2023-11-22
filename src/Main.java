@@ -62,7 +62,6 @@ public class Main {
             String type = entry.getKey();
             Integer[] quantityRange = entry.getValue();
             int quantity = quantityRange[1];
-
             for (int i = 0; i < quantity; i++) {
                 switch (type) {
                     case ("rabbit"):
@@ -92,13 +91,19 @@ public class Main {
 
     public static void createRabbit(World world, int size) {
         Rabbit rabbit = new Rabbit(world, size); // Lav en ny kanin
-        world.setTile(rabbit.getPlace(), rabbit); // Placerer kaninen på det tilfældige lokation
+        Location location = rabbit.getPlace(); // Tag kaninens lokation
+
+        world.setTile(location, rabbit); // Placerer kaninen på det tilfældige lokation
     }
 
     public static void createGrass(World world, int size) {
-        Grass grass = new Grass(world, size); // Create new grass
-        if (world.isTileEmpty(grass.getPlace())) { // Check if the tile is empty
-            world.setTile(grass.getPlace(), grass); // Place the grass at the random location
+        Grass grass = new Grass(world, size); // Lav græs
+        Location location = grass.getPlace(); // Tag græssets lokation
+
+        // Vi tjekker både at tile er tom og at der ikke allerede er græs på lokationen
+        if (world.isTileEmpty(location) && !world.containsNonBlocking(location)) {
+            world.setTile(location, grass);
         }
     }
+
 }

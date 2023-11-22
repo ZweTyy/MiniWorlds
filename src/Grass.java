@@ -20,6 +20,7 @@ public class Grass implements Actor, NonBlocking {
     @Override
     public void act(World world) {
         decay(world);
+        spread(world, world.getSize());
     }
 
     public void initializeGrass(World world, int size) {
@@ -35,7 +36,7 @@ public class Grass implements Actor, NonBlocking {
 
     public void decay(World world) {
         // Græs har en chance for at dø tilfældigt
-        if (r.nextDouble() < 0.1) { // 10% chance for at dø
+        if (r.nextDouble() < 0.025) { // 2.5% chance for at dø
             this.alive = false;
         }
         if (!this.alive) {
@@ -43,17 +44,31 @@ public class Grass implements Actor, NonBlocking {
         }
     }
 
-    public void spread(World world) {
-        // Spread to a random neighbouring empty tile
-        if (this.alive && r.nextDouble() < 0.2) { // 20% chance to spread
-            Set<Location> neighbours = world.getEmptySurroundingTiles();
-            List<Location> list = new ArrayList<>(neighbours);
-            Location newLocation = list.get(0);
-            if (!list.isEmpty()) {
-                Location l = list.get(0);
-                world.move(this, l);
+    public void spread(World world, int size) {
+        // Spread to a random neighbouring empty tile that doesn't contain grass
+        if (this.alive && r.nextDouble() < 0.1) { // 10% chance to spread
+            Set<Location> neighbours = world.getEmptySurroundingTiles(place); // Get surrounding tiles of this grass
+                                                                              // object
+            List<Location> validLocations = new ArrayList<>();
+
+            // Filter valid locations where grass is not already present
+            for (Location loc : neighbours) {
+                if (world.isTileEmpty(loc) && !world.containsNonBlocking(loc)) {
+                    validLocations.add(loc);
+                }
             }
-            world.setTile(newLocation, newLocation);
+
+            // If there are valid locations, choose one at random to spread the grass
+            if (!validLocations.isEmpty()) {
+                int randomIndex = r.nextInt(validLocations.size());
+                Location newLocation = validLocations.get(randomIndex);
+
+                // Create a new Grass object only if the tile is still empty
+                if (world.isTileEmpty(newLocation) && !world.containsNonBlocking(newLocation)) {
+                    Grass newGrass = new Grass(world, size);
+                    world.setTile(newLocation, newGrass);
+                }
+            }
         }
     }
 
