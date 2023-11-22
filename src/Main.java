@@ -1,48 +1,96 @@
 import itumulator.executable.DisplayInformation;
 import itumulator.executable.Program;
-import itumulator.world.Location;
 import itumulator.world.World;
 import java.awt.Color;
 import java.util.Random;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.util.Map;
+import java.util.LinkedHashMap;
 
 public class Main {
 
     public static void main(String[] args) {
-        int persons = 10; // The number of persons to simulate
-        Random r = new Random(); // Create a new random generator
-        int size = 5; // The size of the world (in tiles) (size x size)
-        int delay = 1000; // The delay between each simulation step (in ms)
-        int display_size = 800; // skærm opløsningen (i px)
-        Program p = new Program(size, display_size, delay); // Create a new program
-        World world = p.getWorld(); // Get the world from the program
+
+        final Random r = new Random();
+        int size = 0; // Størrelsen af verdenen (i tiles) (dette er kvadratisk)
+        Map<String, Integer[]> elementsToAdd = new LinkedHashMap<>(); // Vi bruger linkedhashmap for at holde
+                                                                      // rækkefølgen af elementer
+
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("./data/input-filer/t1-1c.txt")); // Læser input filen
+            String line = br.readLine();
+            if (line != null) { // Sætter værdien af size til det første tal i filen
+                size = Integer.parseInt(line.trim());
+            }
+            while ((line = br.readLine()) != null) { // Derefter læser den resten af filen
+                String[] parts = line.split(" ");
+                String[] ranges = parts[1].split("-");
+                if (ranges.length == 1) {
+                    elementsToAdd.put(parts[0],
+                            new Integer[] { Integer.parseInt(ranges[0]), Integer.parseInt(ranges[0]) });
+                }
+                if (ranges.length == 2) {
+                    int min = Integer.parseInt(ranges[0]);
+                    int max = Integer.parseInt(ranges[1]);
+                    elementsToAdd.put(parts[0], new Integer[] { min, r.nextInt(max - min + 1) + min });
+                }
+            }
+            br.close();
+        } catch (Exception e) {
+            System.out.println("An error occurred: " + e.getMessage());
+        }
+
+        int delay = 1000; // Forsinkelsen mellem hver skridt af simulationen (i ms)
+        int display_size = 800; // Skærm opløsningen (i px)
+        Program p = new Program(size, display_size, delay); // Opret et nyt program
+        World world = p.getWorld(); // Hiv verdenen ud, som er der hvor vi skal tilføje ting!
 
         DisplayInformation di = new DisplayInformation(Color.red);
-        p.setDisplayInformation(Person.class, di);
-        p.show(); // Show the simulation
+        p.setDisplayInformation(Rabbit.class, di);
+        p.setDisplayInformation(Grass.class, di);
+        p.show(); // Viser selve simulationen
 
-        Person person = null; // Declare the person variable outside the loop
+        // Vi iterer igennem alle elementer der skal tilføjes
+        for (Map.Entry<String, Integer[]> entry : elementsToAdd.entrySet()) {
+            String type = entry.getKey();
+            Integer[] quantityRange = entry.getValue();
+            int quantity = quantityRange[1];
 
-        // Create the persons
-        for (int i = 0; i < persons; i++) {
-            person = new Person(); // Create a new person
-            int x = r.nextInt(size); // Create a random x coordinate
-            int y = r.nextInt(size); // Create a random y coordinate
-            Location place = new Location(x, y); // Create a new location
-            while (!world.isTileEmpty(place)) { // While the tile is not empty
-                x = r.nextInt(size); // Create a random x coordinate
-                y = r.nextInt(size);
-                place = new Location(x, y);
+            for (int i = 0; i < quantity; i++) {
+                switch (type) {
+                    case ("rabbit"):
+                        createRabbit(world, size);
+                        break;
+                    case ("grass"):
+                        createGrass(world, size);
+                        break;
+                    default:
+                        break;
+                }
             }
-            world.setTile(place, person); // Place the person on the location
+
         }
 
-        boolean isNight = true; // Declare and initialize the isNight variable
-        if (isNight) {
-            world.delete(person);
-        }
+        // This needs to be implemented further
+        // boolean isNight = true;
+        // if (isNight) {
+        // world.delete(rabbit);
+        // }
+
         // Runs 50 loops of the simulation
         for (int i = 0; i < 50; i++) {
             p.simulate();
         }
+    }
+
+    public static void createRabbit(World world, int size) {
+        Rabbit rabbit = new Rabbit(world, size); // Lav en ny kanin
+        world.setTile(rabbit.getPlace(), rabbit); // Placerer kaninen på det tilfældige lokation
+    }
+
+    public static void createGrass(World world, int size) {
+        Grass grass = new Grass(world, size); // Lav en nyt græs
+        world.setTile(grass.getPlace(), grass); // Placerer græsset på det tilfældige lokation
     }
 }
