@@ -19,7 +19,7 @@ public class Grass implements Actor, NonBlocking {
 
     @Override
     public void act(World world) {
-        decay(world);
+        // decay(world);
         spread(world, world.getSize());
     }
 
@@ -45,7 +45,7 @@ public class Grass implements Actor, NonBlocking {
     }
 
     public void spread(World world, int size) {
-        if (this.alive && r.nextDouble() < 0.1) { // 5% chance for at sprede sig
+        if (this.alive && r.nextDouble() < 0.05) { // 5% chance for at sprede sig
             Set<Location> neighbours = world.getEmptySurroundingTiles(place);
             List<Location> validLocations = new ArrayList<>();
 

@@ -14,8 +14,8 @@ public class Rabbit implements Actor {
     private boolean alive = true;
     private boolean hasReproducedThisTurn = false;
     private int age = 1;
-    private int hunger = 100;
-    private int energy = 50;
+    private double hunger = 100.0;
+    private double energy = 50.0;
     private int stepsTaken = 0;
     private int health = 100;
     private static int amountOfRabbits = 0;
@@ -30,6 +30,7 @@ public class Rabbit implements Actor {
     public void act(World world) {
         hasReproducedThisTurn = false;
         move(world);
+        eat(world);
         if (!hasReproducedThisTurn) {
             reproduce(world, world.getSize());
         }
@@ -56,14 +57,15 @@ public class Rabbit implements Actor {
                                                        // sig
             int randomIndex = r.nextInt(validLocations.size());
             Location newLocation = validLocations.get(randomIndex);
+            this.place = newLocation;
             world.move(this, newLocation);
-            this.energy -= 0;
-            this.hunger -= 0;
+            this.energy -= 2.5;
+            this.hunger -= 5.0;
             this.stepsTaken++;
         }
         if (stepsTaken == 10) {
             this.age++;
-            this.energy = 100;
+            this.energy += 50;
             this.stepsTaken = 0;
         }
         if (hunger <= 0) {
@@ -86,34 +88,43 @@ public class Rabbit implements Actor {
                 rabbitCount++;
             }
         }
-        // Set the static count to the current count
+        // Sætter den statiske variabel til at være lig med antallet af kaniner
         Rabbit.amountOfRabbits = rabbitCount;
         return rabbitCount;
     }
 
     public void reproduce(World world, int size) {
+        // Vi tjekker om kaninen er 4 år gammel, har nok energi, om der er plads til
+        // flere og om den ikke har reproduceret i denne tur
         if (this.age == 4 && this.energy >= 25 && amountOfRabbits < size * size / 4 && !hasReproducedThisTurn) {
-            List<Location> emptyLocations = new ArrayList<>(world.getEmptySurroundingTiles(place));
-
-            // Find an eligible neighbour
+            // Find alle tomme nabo tiles
+            List<Location> neighbours = new ArrayList<>(world.getEmptySurroundingTiles(place));
+            // Løber igennem alle nabo tiles
             for (Location loc : world.getSurroundingTiles(place)) {
+                // Laver et objekt af det tile vi er på
                 Object object = world.getTile(loc);
+                // Hvis objektet ikke er en kanin så skipper vi
+                if (!(object instanceof Rabbit)) {
+                    break;
+                }
                 if (object instanceof Rabbit) {
+                    // Cast objektet til en kanin
                     Rabbit neighbourRabbit = (Rabbit) object;
                     if (neighbourRabbit.age == 4 && neighbourRabbit.energy >= 25
                             && !neighbourRabbit.hasReproducedThisTurn) {
-                        if (!emptyLocations.isEmpty()) {
-                            Location newLocation = emptyLocations.get(r.nextInt(emptyLocations.size()));
+                        if (!neighbours.isEmpty()) {
+                            Location newLocation = neighbours.get(r.nextInt(neighbours.size()));
                             Rabbit newRabbit = new Rabbit(world, size);
                             world.setTile(newLocation, newRabbit);
 
                             this.energy -= 25;
                             neighbourRabbit.energy -= 25;
 
+                            // Sætter hasReproducedThisTurn til true for begge kaniner
                             this.hasReproducedThisTurn = true;
                             neighbourRabbit.hasReproducedThisTurn = true;
 
-                            break; // Break after successful reproduction
+                            break;
                         }
                     }
                 }
@@ -122,9 +133,18 @@ public class Rabbit implements Actor {
     }
 
     public void eat(World world) {
-        if (world.containsNonBlocking(place)) {
-            this.hunger += 25;
-            this.energy += 25;
+        if (hunger <= 50) {
+            System.out.println("Eating");
+            try {
+                if (world.getNonBlocking(this.getPlace()) instanceof Grass) {
+                    Grass grass = (Grass) world.getNonBlocking(this.getPlace());
+                    grass.die(world);
+                    this.hunger += 50;
+                    this.energy += 25;
+                }
+            } catch (Exception e) {
+                System.out.println("No grass");
+            }
         }
     }
 
