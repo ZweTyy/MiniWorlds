@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import java.util.Random;
@@ -11,22 +12,27 @@ import itumulator.world.World;
 public class Rabbit implements Actor {
     private Location place;
     private boolean alive = true;
+    private boolean hasReproducedThisTurn = false;
     private int age = 1;
     private int hunger = 100;
     private int energy = 50;
     private int stepsTaken = 0;
     private int health = 100;
-    private int amountOfRabbits = 0;
+    private static int amountOfRabbits = 0;
     private Random r = new Random(); // Laver en ny random generator
 
     public Rabbit(World world, int size) {
         initializeRabbit(world, size);
+        Rabbit.amountOfRabbits++;
     }
 
     @Override
     public void act(World world) {
+        hasReproducedThisTurn = false;
         move(world);
-        reproduce(world, age);
+        if (!hasReproducedThisTurn) {
+            reproduce(world, world.getSize());
+        }
     }
 
     public void initializeRabbit(World world, int size) {
@@ -38,7 +44,6 @@ public class Rabbit implements Actor {
             y = r.nextInt(size);
             place = new Location(x, y);
         }
-        amountOfRabbits++;
     }
 
     public void move(World world) {
@@ -52,8 +57,8 @@ public class Rabbit implements Actor {
             int randomIndex = r.nextInt(validLocations.size());
             Location newLocation = validLocations.get(randomIndex);
             world.move(this, newLocation);
-            this.energy -= 5;
-            this.hunger -= 5;
+            this.energy -= 0;
+            this.hunger -= 0;
             this.stepsTaken++;
         }
         if (stepsTaken == 10) {
@@ -70,36 +75,45 @@ public class Rabbit implements Actor {
         if (!alive) {
             world.delete(this);
         }
+        System.out.println(energy + " " + hunger + " " + health + " " + age + " " + amountOfRabbits);
+    }
+
+    public static int countRabbits(World world) {
+        Map<Object, Location> entities = world.getEntities();
+        int rabbitCount = 0;
+        for (Object obj : entities.keySet()) {
+            if (obj instanceof Rabbit) {
+                rabbitCount++;
+            }
+        }
+        // Set the static count to the current count
+        Rabbit.amountOfRabbits = rabbitCount;
+        return rabbitCount;
     }
 
     public void reproduce(World world, int size) {
-        // Reproduction sker kun hvis kaninen er 4 år gammel og har 25 energi og der er
-        // mindre end 1/8 kaniner i forhold til størrelsen af verdenen
-        if (this.age == 4 && this.energy >= 25 && amountOfRabbits < size * size / 8) {
-            // Hent alle nabo tiles
-            Set<Location> neighbours = world.getSurroundingTiles(place);
+        if (this.age == 4 && this.energy >= 25 && amountOfRabbits < size * size / 4 && !hasReproducedThisTurn) {
+            List<Location> emptyLocations = new ArrayList<>(world.getEmptySurroundingTiles(place));
 
-            // Loop igennem alle nabo tiles
-            for (Location loc : neighbours) {
-                // Hent objektet på lokationen
+            // Find an eligible neighbour
+            for (Location loc : world.getSurroundingTiles(place)) {
                 Object object = world.getTile(loc);
-                // Tjek om objektet er en kanin
                 if (object instanceof Rabbit) {
-                    // Cast objektet til en kanin og tjek om den er 4 år gammel og har 25 energi
                     Rabbit neighbourRabbit = (Rabbit) object;
-                    if (neighbourRabbit.age == 4 && neighbourRabbit.energy >= 25) {
-                        // Tjek om der er tomme nabo tiles
-                        List<Location> emptyLocations = new ArrayList<>(world.getEmptySurroundingTiles(place));
+                    if (neighbourRabbit.age == 4 && neighbourRabbit.energy >= 25
+                            && !neighbourRabbit.hasReproducedThisTurn) {
                         if (!emptyLocations.isEmpty()) {
                             Location newLocation = emptyLocations.get(r.nextInt(emptyLocations.size()));
                             Rabbit newRabbit = new Rabbit(world, size);
                             world.setTile(newLocation, newRabbit);
 
-                            // Sæt energi og sult til 25 for begge kaniner og øg antallet af kaniner
                             this.energy -= 25;
                             neighbourRabbit.energy -= 25;
-                            amountOfRabbits++;
-                            break;
+
+                            this.hasReproducedThisTurn = true;
+                            neighbourRabbit.hasReproducedThisTurn = true;
+
+                            break; // Break after successful reproduction
                         }
                     }
                 }
@@ -114,6 +128,20 @@ public class Rabbit implements Actor {
         }
     }
 
+    public static synchronized void resetRabbitCount() {
+        Rabbit.amountOfRabbits = 0;
+    }
+
+    public static void updateRabbitCount(World world) {
+        int count = 0;
+        for (Object obj : world.getEntities().keySet()) {
+            if (obj instanceof Rabbit) {
+                count++;
+            }
+        }
+        amountOfRabbits = count;
+    }
+
     public boolean isAlive() {
         return alive;
     }
@@ -125,4 +153,5 @@ public class Rabbit implements Actor {
     public Location getPlace() {
         return place;
     }
+
 }
