@@ -52,19 +52,20 @@ public class Rabbit implements Actor {
             int randomIndex = r.nextInt(validLocations.size());
             Location newLocation = validLocations.get(randomIndex);
             world.move(this, newLocation);
-            energy -= 5;
-            hunger -= 5;
-            stepsTaken++;
+            this.energy -= 5;
+            this.hunger -= 5;
+            this.stepsTaken++;
         }
-        if (stepsTaken == 5) {
-            age++;
-            stepsTaken = 0;
+        if (stepsTaken == 10) {
+            this.age++;
+            this.energy = 100;
+            this.stepsTaken = 0;
         }
         if (hunger <= 0) {
-            health -= 25;
+            this.health -= 25;
         }
         if (health <= 0 || age >= 9) {
-            alive = false;
+            this.alive = false;
         }
         if (!alive) {
             world.delete(this);
