@@ -11,6 +11,7 @@ import itumulator.world.World;
 
 public class Rabbit implements Actor {
     private Location place;
+    private Burrow burrow;
     private boolean alive = true;
     private boolean hasReproducedThisTurn = false;
     private int age = 1;
@@ -28,6 +29,14 @@ public class Rabbit implements Actor {
 
     @Override
     public void act(World world) {
+        if (world.isNight()) {
+            if (burrow == null) {
+                digBurrow(world);
+            }
+            if (burrow.getCurrentOccupants() < Burrow.MAX_CAPACITY) {
+                enterBurrow();
+            }
+        }
         hasReproducedThisTurn = false;
         move(world);
         eat(world);
@@ -160,6 +169,36 @@ public class Rabbit implements Actor {
             }
         }
         amountOfRabbits = count;
+    }
+
+    private void digBurrow(World world) {
+        // Only dig a new burrow if there's no existing object at the rabbit's location
+        System.out.println("Digging burrow");
+        Set<Location> neighbours = world.getEmptySurroundingTiles();
+        List<Location> validLocations = new ArrayList<>(neighbours);
+        if (validLocations.isEmpty()) {
+            world.step();
+        }
+        if (!validLocations.isEmpty()) {
+            int randomIndex = r.nextInt(validLocations.size());
+            Location newLocation = validLocations.get(randomIndex);
+            this.place = newLocation;
+            this.burrow = new Burrow(world, world.getSize());
+            world.setTile(place, this.burrow);
+        }
+    }
+
+    private void enterBurrow() {
+        if (burrow != null && burrow.addRabbit(this)) {
+            // Rabbit enters the burrow
+        }
+    }
+
+    private void leaveBurrow() {
+        if (burrow != null) {
+            burrow.removeRabbit(this);
+            burrow = null; // The rabbit leaves the burrow and no longer belongs to any burrow
+        }
     }
 
     public boolean isAlive() {
