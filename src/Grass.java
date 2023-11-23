@@ -69,6 +69,11 @@ public class Grass implements Actor, NonBlocking {
         }
     }
 
+    public void die(World world) {
+        this.alive = false;
+        world.delete(this);
+    }
+
     public boolean isAlive() {
         return alive;
     }

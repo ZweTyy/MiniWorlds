@@ -56,7 +56,7 @@ public class Main {
         p.setDisplayInformation(Location.class, Location);
 
         p.show(); // Viser selve simulationen
-
+        Rabbit.resetRabbitCount();
         // Vi iterer igennem alle elementer der skal tilføjes
         for (Map.Entry<String, Integer[]> entry : elementsToAdd.entrySet()) {
             String type = entry.getKey();
@@ -76,16 +76,13 @@ public class Main {
             }
 
         }
+        int initialRabbitCount = countRabbits(world);
+        System.out.println("Initial rabbit count: " + initialRabbitCount);
 
-        // This needs to be implemented further
-        // boolean isNight = true;
-        // if (isNight) {
-        // world.delete(rabbit);
-        // }
-
-        // Runs 50 loops of the simulation
+        // Kører simulationen 100 gange og opdaterer kanin tælleren hver gang
         for (int i = 0; i < 100; i++) {
             p.simulate();
+            Rabbit.updateRabbitCount(world);
         }
     }
 
@@ -104,6 +101,17 @@ public class Main {
         if (world.isTileEmpty(location) && !world.containsNonBlocking(location)) {
             world.setTile(location, grass);
         }
+    }
+
+    public static int countRabbits(World world) {
+        int rabbitCount = 0;
+        Map<Object, Location> entities = world.getEntities();
+        for (Object obj : entities.keySet()) {
+            if (obj instanceof Rabbit) {
+                rabbitCount++;
+            }
+        }
+        return rabbitCount;
     }
 
 }
