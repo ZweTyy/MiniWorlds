@@ -109,8 +109,8 @@ public class Rabbit implements Actor {
 
     public void eat(World world) {
         if (world.containsNonBlocking(place)) {
-            hunger += 25;
-            energy += 50;
+            this.hunger += 25;
+            this.energy += 25;
         }
     }
 
