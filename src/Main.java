@@ -84,7 +84,7 @@ public class Main {
         // }
 
         // Runs 50 loops of the simulation
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 100; i++) {
             p.simulate();
         }
     }
