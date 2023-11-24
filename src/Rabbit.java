@@ -180,6 +180,7 @@ public class Rabbit implements Actor {
         System.out.println("Finding burrow");
         Burrow availableBurrow = null;
 
+        // Vi henter alle objekterne i verdenen og itererer igennem dem
         Map<Object, Location> entities = world.getEntities();
         for (Object object : entities.keySet()) {
             if (object instanceof Burrow) {
@@ -190,6 +191,8 @@ public class Rabbit implements Actor {
                 }
             }
         }
+        // Hvis der er et ledigt hul går kaninen ind i det eller hvis der ikke er et hul
+        // så graver den et nyt
         if (availableBurrow != null) {
             enterBurrow(world, availableBurrow);
         }
@@ -222,34 +225,31 @@ public class Rabbit implements Actor {
         // Vi tjekker om kaninen kan komme ind i hullet
         if (burrow != null && burrow.addRabbit(this)) {
             System.out.println("Rabbit entering burrow at: " + burrow.getPlace());
-            world.remove(this); // Remove the rabbit from the map visually
+            world.remove(this); // Fjerne kaninen fra verdenen
             this.hidden = true;
-            this.myBurrow = burrow; // Assign the burrow to the rabbit
+            this.myBurrow = burrow; // Sætte kaninens hul til at være det hul den har fundet
         }
     }
 
     private void leaveBurrow(World world) {
+        // Vi tjekker om kaninen er i et hul og om den er skjult
         if (this.myBurrow != null && this.hidden) {
             System.out.println("Rabbit leaving burrow at: " + this.myBurrow.getPlace());
-            this.myBurrow.removeRabbit(this); // Remove from burrow list
+            this.myBurrow.removeRabbit(this); // Vi fjerner kaninen fra hullet
 
             Set<Location> emptyTiles = world.getEmptySurroundingTiles(this.myBurrow.getPlace());
             if (!emptyTiles.isEmpty()) {
                 Location newLocation = emptyTiles.iterator().next();
                 System.out.println("Rabbit moving to: " + newLocation);
 
-                // Add the rabbit back to the world at the new location
-                this.place = newLocation; // Update the rabbit's location
-                this.hidden = false; // The rabbit is no longer hidden
+                // Tilføj kaninen til verdenen igen
+                this.place = newLocation; // Opdater kaninens lokation
+                this.hidden = false; // Kaninen er ikke længere skjult
 
-                // Use setTile to place the rabbit directly since it's not on the map
-                world.setTile(newLocation, this); // This should not throw an exception
+                // Vi placerer kaninen på den nye lokation
+                world.setTile(newLocation, this);
                 world.setCurrentLocation(this.place);
                 System.out.println("Successfully left burrow.");
-            } else {
-                // Handle the case where no empty tiles are available
-                System.out.println("No empty tiles available to leave the burrow.");
-                // The rabbit remains hidden and in the burrow for now
             }
         }
     }
