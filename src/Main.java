@@ -17,7 +17,7 @@ public class Main {
         Map<String, Integer[]> elementsToAdd = new LinkedHashMap<>(); // Vi bruger linkedhashmap for at holde
                                                                       // rækkefølgen af elementer
         try {
-            BufferedReader br = new BufferedReader(new FileReader("./data/input-filer/t1-3a.txt")); // Læser input
+            BufferedReader br = new BufferedReader(new FileReader("./data/input-filer/t1-1a.txt")); // Læser input
                                                                                                     // filen
             String line = br.readLine();
             if (line != null) { // Sætter værdien af size til det første tal i filen
@@ -48,7 +48,7 @@ public class Main {
 
         DisplayInformation grass = new DisplayInformation(Color.green, "grass");
         DisplayInformation rabbit = new DisplayInformation(Color.white, "rabbit-small");
-        DisplayInformation burrow = new DisplayInformation(Color.black, "hole-small");
+        DisplayInformation burrow = new DisplayInformation(Color.black, "hole");
         DisplayInformation Location = new DisplayInformation(Color.black);
         p.setDisplayInformation(Grass.class, grass);
         p.setDisplayInformation(Rabbit.class, rabbit);
@@ -107,7 +107,7 @@ public class Main {
     }
 
     public static void createBurrow(World world, int size) {
-        Burrow burrow = new Burrow(world, world.getSize()); // Lav en ny kanin
+        Burrow burrow = new Burrow(world, world.getSize()); // Lav en nyt hul
         Location location = (burrow.getPlace());
 
         if (world.isTileEmpty(location)) {

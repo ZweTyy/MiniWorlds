@@ -11,9 +11,10 @@ import itumulator.world.World;
 
 public class Rabbit implements Actor {
     private Location place;
-    private Burrow burrow;
+    private Burrow myBurrow;
     private boolean alive = true;
     private boolean hasReproducedThisTurn = false;
+    private boolean hidden;
     private int age = 1;
     private double hunger = 100.0;
     private double energy = 50.0;
@@ -29,19 +30,21 @@ public class Rabbit implements Actor {
 
     @Override
     public void act(World world) {
-        if (world.isNight()) {
-            if (burrow == null) {
-                digBurrow(world);
-            }
-            if (burrow.getCurrentOccupants() < Burrow.MAX_CAPACITY) {
-                enterBurrow();
-            }
+        if (world.isDay() && hidden) {
+            leaveBurrow(world);
         }
-        hasReproducedThisTurn = false;
-        move(world);
-        eat(world);
-        if (!hasReproducedThisTurn) {
-            reproduce(world, world.getSize());
+        if (!hidden) {
+            // Hvis det er nat og kaninen ikke er i et hul så leder den efter et hul
+            if (world.isNight() && myBurrow == null) {
+                findAndEnterBurrow(world);
+            } else {
+                hasReproducedThisTurn = false;
+                move(world);
+                eat(world);
+                if (!hasReproducedThisTurn) {
+                    reproduce(world, world.getSize());
+                }
+            }
         }
     }
 
@@ -59,7 +62,8 @@ public class Rabbit implements Actor {
     public void move(World world) {
         Set<Location> neighbours = world.getEmptySurroundingTiles(); // Hent alle tomme nabo tiles
         List<Location> validLocations = new ArrayList<>(neighbours); // Lav en liste med alle tomme nabo tiles
-        if (validLocations.isEmpty() || energy <= 0) { // Hvis der ikke er nogen tomme nabo tiles skipper vi
+        if (validLocations.isEmpty() || energy <= 0) { // Hvis der ikke er nogen tomme nabo tiles skipper vi eller hvis
+                                                       // kaninen ikke har energi
             world.step();
         }
         if (!validLocations.isEmpty() && energy > 0) { // Hvis der er tomme nabo tiles og kaninen har energi bevæger den
@@ -171,33 +175,81 @@ public class Rabbit implements Actor {
         amountOfRabbits = count;
     }
 
+    public void findAndEnterBurrow(World world) {
+        System.out.println("Finding burrow");
+        Burrow availableBurrow = null;
+
+        Map<Object, Location> entities = world.getEntities();
+        for (Object object : entities.keySet()) {
+            if (object instanceof Burrow) {
+                Burrow burrow = (Burrow) object;
+                if (burrow.getCurrentOccupants() < Burrow.MAX_CAPACITY) {
+                    availableBurrow = burrow;
+                    break;
+                }
+            }
+        }
+        if (availableBurrow != null) {
+            enterBurrow(world, availableBurrow);
+        }
+        if (availableBurrow == null) {
+            digBurrow(world);
+        }
+    }
+
     private void digBurrow(World world) {
-        // Only dig a new burrow if there's no existing object at the rabbit's location
         System.out.println("Digging burrow");
+        // Find alle tomme nabo tiles
         Set<Location> neighbours = world.getEmptySurroundingTiles();
         List<Location> validLocations = new ArrayList<>(neighbours);
+        // Hvis der ikke er nogen tomme nabo tiles skipper vi
         if (validLocations.isEmpty()) {
             world.step();
         }
+        // Hvis der er tomme nabo tiles graver kaninen et hul
         if (!validLocations.isEmpty()) {
             int randomIndex = r.nextInt(validLocations.size());
             Location newLocation = validLocations.get(randomIndex);
             this.place = newLocation;
-            this.burrow = new Burrow(world, world.getSize());
-            world.setTile(place, this.burrow);
+            this.myBurrow = new Burrow(world, world.getSize());
+            world.setTile(place, this.myBurrow);
         }
     }
 
-    private void enterBurrow() {
+    private void enterBurrow(World world, Burrow burrow) {
+        System.out.println("Trying to enter burrow");
+        // Vi tjekker om kaninen kan komme ind i hullet
         if (burrow != null && burrow.addRabbit(this)) {
-            // Rabbit enters the burrow
+            System.out.println("Rabbit entering burrow at: " + burrow.getPlace());
+            world.remove(this); // Remove the rabbit from the map visually
+            this.hidden = true;
+            this.myBurrow = burrow; // Assign the burrow to the rabbit
         }
     }
 
-    private void leaveBurrow() {
-        if (burrow != null) {
-            burrow.removeRabbit(this);
-            burrow = null; // The rabbit leaves the burrow and no longer belongs to any burrow
+    private void leaveBurrow(World world) {
+        if (this.myBurrow != null && this.hidden) {
+            System.out.println("Rabbit leaving burrow at: " + this.myBurrow.getPlace());
+            this.myBurrow.removeRabbit(this); // Remove from burrow list
+
+            Set<Location> emptyTiles = world.getEmptySurroundingTiles(this.myBurrow.getPlace());
+            if (!emptyTiles.isEmpty()) {
+                Location newLocation = emptyTiles.iterator().next();
+                System.out.println("Rabbit moving to: " + newLocation);
+
+                // Add the rabbit back to the world at the new location
+                this.place = newLocation; // Update the rabbit's location
+                this.hidden = false; // The rabbit is no longer hidden
+
+                // Use setTile to place the rabbit directly since it's not on the map
+                world.setTile(newLocation, this); // This should not throw an exception
+                world.setCurrentLocation(this.place);
+                System.out.println("Successfully left burrow.");
+            } else {
+                // Handle the case where no empty tiles are available
+                System.out.println("No empty tiles available to leave the burrow.");
+                // The rabbit remains hidden and in the burrow for now
+            }
         }
     }
 
