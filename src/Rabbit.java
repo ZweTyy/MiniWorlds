@@ -33,13 +33,6 @@ public class Rabbit implements Actor {
         // Hvis det er dag og kaninen er i et hul så forlader den hullet
         if (world.isDay() && hidden) {
             leaveBurrow(world);
-            Map<Object, Location> entities = world.getEntities();
-            for (Object obj : entities.keySet()) {
-                if (obj instanceof Rabbit) {
-                    System.out.println("Location of Rabbit: " + world.getLocation(obj));
-                }
-
-            }
         }
         if (!hidden) {
             // Hvis det er nat og kaninen ikke er i et hul så leder den efter et hul
@@ -68,6 +61,7 @@ public class Rabbit implements Actor {
     }
 
     public void move(World world) {
+        System.out.println("Rabbit moving from: " + this.place);
         Set<Location> neighbours = world.getEmptySurroundingTiles(); // Hent alle tomme nabo tiles
         List<Location> validLocations = new ArrayList<>(neighbours); // Lav en liste med alle tomme nabo tiles
         if (validLocations.isEmpty() || energy <= 0) { // Hvis der ikke er nogen tomme nabo tiles skipper vi eller hvis
@@ -83,6 +77,7 @@ public class Rabbit implements Actor {
             this.energy -= 2.5;
             this.hunger -= 5.0;
             this.stepsTaken++;
+            System.out.println("to: " + this.place);
         }
         if (stepsTaken == 10) {
             this.age++;
@@ -98,7 +93,9 @@ public class Rabbit implements Actor {
         if (!alive) {
             world.delete(this);
         }
-        System.out.println(energy + " " + hunger + " " + health + " " + age + " " + amountOfRabbits);
+        System.out.println("Energy: " + energy + " " + "Hunger: " + hunger + " " + "HP: " + health + " " + "Age: " + age
+                + " " + amountOfRabbits);
+        System.out.println("Rabbit's current location: " + this.place);
     }
 
     public static int countRabbits(World world) {
@@ -271,17 +268,16 @@ public class Rabbit implements Actor {
 
             Set<Location> emptyTiles = world.getEmptySurroundingTiles(this.myBurrow.getPlace());
             if (!emptyTiles.isEmpty()) {
-                Location newLocation = emptyTiles.iterator().next();
-                System.out.println("Rabbit moving to: " + newLocation);
-
                 // Tilføj kaninen til verdenen igen
-                this.place = newLocation; // Opdater kaninens lokation
+                this.place = this.myBurrow.getPlace(); // Opdater kaninens lokation
                 this.hidden = false; // Kaninen er ikke længere skjult
 
                 // Vi placerer kaninen på den nye lokation
-                world.setTile(newLocation, this);
                 world.setCurrentLocation(this.place);
+                world.setTile(place, this);
+                System.out.println("Placing rabbit at: " + this.place);
                 System.out.println("Successfully left burrow.");
+                System.out.println("Rabbit's location: " + this.place);
             }
         }
     }
