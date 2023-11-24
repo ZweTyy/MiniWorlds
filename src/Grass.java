@@ -20,7 +20,7 @@ public class Grass implements Actor, NonBlocking {
     @Override
     public void act(World world) {
         // decay(world);
-        spread(world, world.getSize());
+        // spread(world, world.getSize());
     }
 
     public void initializeGrass(World world, int size) {

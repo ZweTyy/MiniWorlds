@@ -21,7 +21,8 @@ import itumulator.world.Location;
 import itumulator.world.World;
 
 /**
- * Provides a canvas painting the various objects within our world. This is not relevant to continue the project.
+ * Provides a canvas painting the various objects within our world. This is not
+ * relevant to continue the project.
  */
 public class Canvas extends JPanel {
     private final static Color COLOR_EMPTY = Color.WHITE;
@@ -36,7 +37,7 @@ public class Canvas extends JPanel {
     private AnimationFactory af;
     private java.util.Map<Class, Color> colorMap;
     private ExecutorService executor;
-    
+
     public Canvas(World world, int size, boolean startIso) {
         super();
         setLayout(new BorderLayout());
@@ -51,7 +52,8 @@ public class Canvas extends JPanel {
         new Random();
         colorMap = new java.util.HashMap<>();
         BufferedImage img = ImageResourceCache.Instance().getImage("base");
-        isoBackgroundImage = ImageUtility.getScaledImage(img, IsomorphicCoordinateFactory.Instance().getDisplaySize(), IsomorphicCoordinateFactory.Instance().getDisplaySize());
+        isoBackgroundImage = ImageUtility.getScaledImage(img, IsomorphicCoordinateFactory.Instance().getDisplaySize(),
+                IsomorphicCoordinateFactory.Instance().getDisplaySize());
         setIsomorphic(startIso);
     }
 
@@ -64,11 +66,12 @@ public class Canvas extends JPanel {
 
     /**
      * Boolean to control whether to render isomorphic or topdown
+     * 
      * @param isomorphic sets the boolean
      */
     public void setIsomorphic(boolean isomorphic) {
         this.isomorphic = isomorphic;
-        if (isomorphic){
+        if (isomorphic) {
             af.requestUpdate();
         }
     }
@@ -79,46 +82,55 @@ public class Canvas extends JPanel {
 
     /**
      * Decide on the graphical representation of objects when shown within the GUI.
-     * @param cl is the class which to associate a given display type with (can be accessed by writing [ClassName].class).
-     * @param di the {@link DisplayInformation} to associate the type of object with.
+     * 
+     * @param cl is the class which to associate a given display type with (can be
+     *           accessed by writing [ClassName].class).
+     * @param di the {@link DisplayInformation} to associate the type of object
+     *           with.
      */
-    public void setDisplayInformation(Class cl, DisplayInformation di){
+    public void setDisplayInformation(Class cl, DisplayInformation di) {
         setColor(cl, di.getColor());
         af.setDisplayInformation(cl, di);
     }
 
-    public void paintImage(){
+    public void paintImage() {
         this.paintImage(0);
     }
 
     public void paintImage(int delay) {
-        if (isomorphic){
+        if (isomorphic) {
             // 1 main thread
             // 1 simulator thread
             // 1 java thread
             // 1 overlay rendering thread
             // 1 buffer for safety
             // rest for rendering
-            executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()-5);
+            executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() - 5);
             try {
-                List<Future<BufferedImage>> queue = executor.invokeAll(af.getImages(delay == 0 ? 1 : delay/MS_PER_FRAME));
-                
+                List<Future<BufferedImage>> queue = executor
+                        .invokeAll(af.getImages(delay == 0 ? 1 : delay / MS_PER_FRAME));
+
                 for (Future<BufferedImage> future : queue) {
                     // Potentially could be moved out
                     // ------
                     img = createImage(size, size);
                     graphics = img.getGraphics();
-                    graphics.drawImage(isoBackgroundImage, 0,IsomorphicCoordinateFactory.Instance().getDisplaySize()/2, null);
+                    graphics.drawImage(isoBackgroundImage, 0,
+                            IsomorphicCoordinateFactory.Instance().getDisplaySize() / 2, null);
                     graphics.setColor(new Color(150, 210, 131));
-                    graphics.fillPolygon(IsomorphicUtility.getIsoPolygon((IsomorphicCoordinateFactory.Instance().getDisplaySize()/2), IsomorphicCoordinateFactory.Instance().getDisplaySize()/2, IsomorphicCoordinateFactory.Instance().getDisplaySize()/2, IsomorphicCoordinateFactory.Instance().getDisplaySize()/4));
+                    graphics.fillPolygon(IsomorphicUtility.getIsoPolygon(
+                            (IsomorphicCoordinateFactory.Instance().getDisplaySize() / 2),
+                            IsomorphicCoordinateFactory.Instance().getDisplaySize() / 2,
+                            IsomorphicCoordinateFactory.Instance().getDisplaySize() / 2,
+                            IsomorphicCoordinateFactory.Instance().getDisplaySize() / 4));
                     // -------
-                    
-                    graphics.drawImage(future.get(), 0, 0,null);
-                    
+
+                    graphics.drawImage(future.get(), 0, 0, null);
+
                     // Currently sleeping delays the rendering a LOT
                     // would need to sleep a "MAXIMUM" amount of time
                     // and make sure to have a catch-up mechanism
-                    //Thread.sleep(MS_PER_FRAME);
+                    // Thread.sleep(MS_PER_FRAME);
                     repaint();
                 }
             } catch (Exception e) {
@@ -131,7 +143,7 @@ public class Canvas extends JPanel {
             graphics.setColor(COLOR_EMPTY);
             graphics.fillRect(0, 0, size, size);
             int tiles = world.getSize();
-            for (int y = tiles-1; y >= 0; y--) {
+            for (int y = tiles - 1; y >= 0; y--) {
                 for (int x = 0; x < tiles; x++) {
                     Location l = new Location(x, y);
                     Object o = world.getTile(l);
@@ -158,25 +170,23 @@ public class Canvas extends JPanel {
         graphics.setColor(new Color(250, 250, 250));
         graphics.fillRect(pixelPoint.getX(), pixelPoint.getY(), pixelSize, pixelSize);
 
-
-        
         if (world.containsNonBlocking(l) && world.getNonBlocking(l) != o)
             drawDebugView(l, world.getNonBlocking(l));
 
         // for (int[] loc : locations) {
-        //     if (loc[0] < 0 || loc[0] >= tiles || loc[1] < 0 || loc[1] >= tiles)
-        //         continue;
-        //     Object on = world.getLowestTile(new Location(loc[0], loc[1]));
-        //     if (on != null && o != null && on.getClass() == o.getClass()) {
-        //         break;
-        //     }
+        // if (loc[0] < 0 || loc[0] >= tiles || loc[1] < 0 || loc[1] >= tiles)
+        // continue;
+        // Object on = world.getLowestTile(new Location(loc[0], loc[1]));
+        // if (on != null && o != null && on.getClass() == o.getClass()) {
+        // break;
+        // }
         // }
 
-        if (o instanceof DynamicDisplayInformationProvider){
-                setDisplayInformation(o.getClass(), ((DynamicDisplayInformationProvider)o).getInformation());
+        if (o instanceof DynamicDisplayInformationProvider) {
+            setDisplayInformation(o.getClass(), ((DynamicDisplayInformationProvider) o).getInformation());
         }
 
-        if (o != null){
+        if (o != null) {
             if (colorMap.containsKey(o.getClass())) {
                 graphics.setColor(colorMap.get(o.getClass()));
             } else {
@@ -193,7 +203,7 @@ public class Canvas extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         if (img != null)
-            g.drawImage(img, (this.getWidth()/2)-(size/2), (this.getHeight()/2)-(size/2), null);
+            g.drawImage(img, (this.getWidth() / 2) - (size / 2), (this.getHeight() / 2) - (size / 2), null);
     }
 
 }

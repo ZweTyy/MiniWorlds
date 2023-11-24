@@ -33,6 +33,13 @@ public class Rabbit implements Actor {
         // Hvis det er dag og kaninen er i et hul så forlader den hullet
         if (world.isDay() && hidden) {
             leaveBurrow(world);
+            Map<Object, Location> entities = world.getEntities();
+            for (Object obj : entities.keySet()) {
+                if (obj instanceof Rabbit) {
+                    System.out.println("Location of Rabbit: " + world.getLocation(obj));
+                }
+
+            }
         }
         if (!hidden) {
             // Hvis det er nat og kaninen ikke er i et hul så leder den efter et hul
@@ -148,16 +155,24 @@ public class Rabbit implements Actor {
 
     public void eat(World world) {
         if (hunger <= 50) {
-            System.out.println("Eating");
+            System.out.println("Attempting to eat");
             try {
-                if (world.getNonBlocking(this.getPlace()) instanceof Grass) {
+                if (!(world.containsNonBlocking(this.getPlace()))) {
+                    world.step();
+                    System.out.println("Nothing to eat");
+                    return;
+                }
+                if ((world.getNonBlocking(this.getPlace()) instanceof Grass)) {
                     Grass grass = (Grass) world.getNonBlocking(this.getPlace());
                     grass.die(world);
                     this.hunger += 50;
                     this.energy += 25;
+                    System.out.println("I sucessfully ate");
                 }
-            } catch (Exception e) {
-                System.out.println("No grass");
+            } catch (IllegalArgumentException iae) {
+                // Vi burde ikke aldrig nå herned da vi håndterer exception tidligere
+                System.out.println("No entity");
+                return;
             }
         }
     }

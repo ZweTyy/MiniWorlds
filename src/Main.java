@@ -41,8 +41,8 @@ public class Main {
         } catch (Exception e) {
             System.out.println("An error occurred: " + e.getMessage());
         }
-        int delay = 1000; // Forsinkelsen mellem hver skridt af simulationen (i ms)
-        int display_size = 800; // Skærm opløsningen (i px)
+        int delay = 500; // Forsinkelsen mellem hver skridt af simulationen (i ms)
+        int display_size = 720; // Skærm opløsningen (i px)
         Program p = new Program(size, display_size, delay); // Opret et nyt program
         World world = p.getWorld(); // Hiv verdenen ud, som er der hvor vi skal tilføje ting!
 
@@ -83,7 +83,7 @@ public class Main {
         System.out.println("Initial rabbit count: " + initialRabbitCount);
 
         // Kører simulationen 100 gange og opdaterer kanin tælleren hver gang
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 150; i++) {
             p.simulate();
             Rabbit.updateRabbitCount(world);
         }
