@@ -202,11 +202,21 @@ public class Rabbit implements Actor {
     }
 
     private void digBurrow(World world) {
+        // Vi sikrer os at kaninens lokation ikke er null
+        if (this.place == null) {
+            return;
+        }
+
         System.out.println("Digging burrow");
         // Find alle tomme nabo tiles
-        Set<Location> neighbours = world.getEmptySurroundingTiles();
+        Set<Location> neighbours = world.getSurroundingTiles(this.place);
         List<Location> validLocations = new ArrayList<>(neighbours);
-        // Hvis der ikke er nogen tomme nabo tiles skipper vi
+        // Her tilføjer vi valide lokationer til listen
+        for (Location loc : neighbours) {
+            if (world.isTileEmpty(loc) || world.getTile(loc) instanceof Grass) {
+                validLocations.add(loc);
+            }
+        }
         if (validLocations.isEmpty()) {
             world.step();
         }
@@ -214,9 +224,16 @@ public class Rabbit implements Actor {
         if (!validLocations.isEmpty()) {
             int randomIndex = r.nextInt(validLocations.size());
             Location newLocation = validLocations.get(randomIndex);
+
+            Object objectAtLocation = world.getTile(newLocation);
+            if (objectAtLocation instanceof Grass) {
+                ((Grass) objectAtLocation).die(world); // Kill the grass
+            }
             this.place = newLocation;
             this.myBurrow = new Burrow(world, world.getSize());
             world.setTile(place, this.myBurrow);
+            enterBurrow(world, myBurrow);
+            this.hidden = true;
         }
     }
 

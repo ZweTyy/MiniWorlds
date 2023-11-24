@@ -3,10 +3,11 @@ import java.util.ArrayList;
 
 import itumulator.world.World;
 import itumulator.world.Location;
+import itumulator.world.NonBlocking;
 
 import java.util.Random;
 
-public class Burrow {
+public class Burrow implements NonBlocking {
     private List<Rabbit> rabbits;
     private Location place;
     protected static final int MAX_CAPACITY = 3;

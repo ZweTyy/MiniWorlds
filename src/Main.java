@@ -110,7 +110,7 @@ public class Main {
         Burrow burrow = new Burrow(world, world.getSize()); // Lav en nyt hul
         Location location = (burrow.getPlace());
 
-        if (world.isTileEmpty(location)) {
+        if (world.isTileEmpty(location) && !world.containsNonBlocking(location)) {
             world.setTile(location, burrow);
         }
     }
