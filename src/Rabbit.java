@@ -30,6 +30,7 @@ public class Rabbit implements Actor {
 
     @Override
     public void act(World world) {
+        // Hvis det er dag og kaninen er i et hul så forlader den hullet
         if (world.isDay() && hidden) {
             leaveBurrow(world);
         }
