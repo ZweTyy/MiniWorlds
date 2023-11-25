@@ -30,7 +30,7 @@ public class Burrow implements NonBlocking {
         }
     }
 
-    public boolean addRabbit(Rabbit rabbit) {
+    public synchronized boolean addRabbit(Rabbit rabbit) {
         if (rabbits.size() < MAX_CAPACITY) {
             rabbits.add(rabbit);
             return true;
@@ -38,7 +38,7 @@ public class Burrow implements NonBlocking {
         return false;
     }
 
-    public void removeRabbit(Rabbit rabbit) {
+    public synchronized void removeRabbit(Rabbit rabbit) {
         rabbits.remove(rabbit);
     }
 

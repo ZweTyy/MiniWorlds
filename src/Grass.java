@@ -36,7 +36,7 @@ public class Grass implements Actor, NonBlocking {
 
     public void decay(World world) {
         // Græs har en chance for at dø tilfældigt
-        if (r.nextDouble() < 0.025) { // 2.5% chance for at dø
+        if (this.alive && r.nextDouble() < 0.025) { // 2.5% chance for at dø
             this.alive = false;
         }
         if (!this.alive) {
