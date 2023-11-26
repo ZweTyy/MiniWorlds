@@ -29,22 +29,38 @@ public class Rabbit implements Actor {
         amountOfRabbits++;
     }
 
+    enum State {
+        DAY_AND_HIDDEN,
+        NIGHT_WITH_NO_BURROW,
+        NIGHT_WITH_BURROW,
+        HIDDEN_AT_NIGHT,
+        OTHERWISE
+    }
+
     @Override
     public synchronized void act(World world) {
-        if (world.isDay() && hidden) {
-            leaveBurrow(world);
-        }
-        if (!hidden) {
-            if (world.isNight() && myBurrow == null) {
+        State state = determineState(world, hidden, myBurrow);
+
+        switch (state) {
+            case HIDDEN_AT_NIGHT:
+                break;
+            case DAY_AND_HIDDEN:
+                leaveBurrow(world);
+                break;
+            case NIGHT_WITH_NO_BURROW:
                 findAndEnterBurrow(world);
-            } else {
+                break;
+            case NIGHT_WITH_BURROW:
+                enterBurrow(world, myBurrow);
+                break;
+            case OTHERWISE:
                 hasReproducedThisTurn = false;
                 move(world);
                 eat(world);
                 if (!hasReproducedThisTurn) {
                     reproduce(world, world.getSize());
                 }
-            }
+                break;
         }
     }
 
@@ -298,6 +314,22 @@ public class Rabbit implements Actor {
         world.delete(this);
         place = null; // Safely update the location to null
         System.out.println("Rabbit " + this + " deleted.");
+    }
+
+    private State determineState(World world, boolean hidden, Burrow myBurrow) {
+        if (!hidden && world.isDay()) {
+            return State.OTHERWISE;
+        }
+        if (hidden && world.isNight()) {
+            return State.HIDDEN_AT_NIGHT;
+        }
+        if (!hidden && world.isNight()) {
+            return myBurrow == null ? State.NIGHT_WITH_NO_BURROW : State.NIGHT_WITH_BURROW;
+        }
+        if (world.isDay()) {
+            return State.DAY_AND_HIDDEN;
+        }
+        return world.isNight() && myBurrow == null ? State.NIGHT_WITH_NO_BURROW : State.NIGHT_WITH_BURROW;
     }
 
     public boolean isAlive() {

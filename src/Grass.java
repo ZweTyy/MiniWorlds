@@ -38,7 +38,6 @@ public class Grass implements Actor, NonBlocking {
         // Græs har en chance for at dø tilfældigt
         if (this.alive && r.nextDouble() < 0.025) { // 2.5% chance for at dø
             die(world);
-        
         }
     }
 
