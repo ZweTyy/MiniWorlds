@@ -91,7 +91,7 @@ public class Main {
 
     public static void createRabbit(World world, int size) {
         Rabbit rabbit = new Rabbit(world, size); // Lav en ny kanin
-        Location location = rabbit.getPlace(); // Tag kaninens lokation
+        Location location = rabbit.getLocation(); // Tag kaninens lokation
 
         world.setTile(location, rabbit); // Placerer kaninen på det tilfældige lokation
     }

@@ -10,7 +10,7 @@ import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
 
-public class Rabbit implements Actor {
+public class Rabbit extends Animal implements Actor {
     private Location place;
     private Burrow myBurrow;
     private volatile boolean alive = true;
@@ -25,7 +25,7 @@ public class Rabbit implements Actor {
     private Random r = new Random();
 
     public Rabbit(World world, int size) {
-        initializeRabbit(world, size);
+        super(world, size);
         amountOfRabbits++;
     }
 
@@ -61,19 +61,6 @@ public class Rabbit implements Actor {
                     reproduce(world, world.getSize());
                 }
                 break;
-        }
-    }
-
-    public void initializeRabbit(World world, int size) {
-        int x = r.nextInt(size); // Lav et tilfældigt x koordinat
-        int y = r.nextInt(size); // Lav et tilfældigt y koordinat
-        place = new Location(x, y); // Lav ny lokation med de tilfældige koordinater
-        System.out.println("Initializing rabbit at " + place);
-        while (!world.isTileEmpty(place)) { // While tile ikke er tom
-            x = r.nextInt(size);
-            y = r.nextInt(size);
-            place = new Location(x, y);
-            System.out.println("Location " + place + " is not empty, finding new location.");
         }
     }
 
@@ -166,13 +153,13 @@ public class Rabbit implements Actor {
         if (hunger <= 50) {
             System.out.println("Attempting to eat");
             try {
-                if (!(world.containsNonBlocking(this.getPlace()))) {
+                if (!(world.containsNonBlocking(this.getLocation()))) {
                     world.step();
                     System.out.println("Nothing to eat");
                     return;
                 }
-                if ((world.getNonBlocking(this.getPlace()) instanceof Grass)) {
-                    Grass grass = (Grass) world.getNonBlocking(this.getPlace());
+                if ((world.getNonBlocking(this.getLocation()) instanceof Grass)) {
+                    Grass grass = (Grass) world.getNonBlocking(this.getLocation());
                     grass.die(world);
                     this.hunger += 50;
                     this.energy += 25;
@@ -339,9 +326,4 @@ public class Rabbit implements Actor {
     public int getAge() {
         return age;
     }
-
-    public Location getPlace() {
-        return place;
-    }
-
 }
