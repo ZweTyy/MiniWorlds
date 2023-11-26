@@ -280,7 +280,19 @@ public class Rabbit extends Animal implements Actor, Herbivore {
         return alive;
     }
 
+    public int setAge(int age) {
+        return this.age = age;
+    }
+
     public int getAge() {
         return age;
+    }
+
+    public double setEnergy(int energy) {
+        return this.energy = energy;
+    }
+
+    public double getEnergy() {
+        return energy;
     }
 }
