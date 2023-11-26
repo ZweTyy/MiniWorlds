@@ -3,7 +3,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.Random;
 
 import itumulator.display.animation.ObjectInformation;
@@ -22,12 +21,12 @@ public class Rabbit implements Actor {
     private double energy = 50.0;
     private int stepsTaken = 0;
     private int health = 100;
-    private static AtomicInteger amountOfRabbits = new AtomicInteger(0);
+    private static int amountOfRabbits = 0;
     private Random r = new Random();
 
     public Rabbit(World world, int size) {
         initializeRabbit(world, size);
-        amountOfRabbits.incrementAndGet();
+        amountOfRabbits++;
     }
 
     @Override
@@ -111,7 +110,7 @@ public class Rabbit implements Actor {
     public void reproduce(World world, int size) {
         // Vi tjekker om kaninen er 4 år gammel, har nok energi, om der er plads til
         // flere og om den ikke har reproduceret i denne tur
-        if (this.age == 4 && this.energy >= 25 && amountOfRabbits.get() < size * size / 4 && !hasReproducedThisTurn) {
+        if (this.age == 4 && this.energy >= 25 && amountOfRabbits < size * size / 4 && !hasReproducedThisTurn) {
             // Find alle tomme nabo tiles
             List<Location> neighbours = new ArrayList<>(world.getEmptySurroundingTiles(place));
             // Løber igennem alle nabo tiles
@@ -179,12 +178,12 @@ public class Rabbit implements Actor {
                 rabbitCount++;
             }
         }
-        amountOfRabbits.set(rabbitCount);
+        Rabbit.amountOfRabbits = rabbitCount;
         return rabbitCount;
     }
 
     public static void resetRabbitCount() {
-        amountOfRabbits.set(0);
+        Rabbit.amountOfRabbits = 0;
     }
 
     public static void updateRabbitCount(World world) {
@@ -194,7 +193,7 @@ public class Rabbit implements Actor {
                 count++;
             }
         }
-        amountOfRabbits.set(count);
+        amountOfRabbits = count;
     }
 
     public synchronized void findAndEnterBurrow(World world) {
