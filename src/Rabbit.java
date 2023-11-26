@@ -40,7 +40,7 @@ public class Rabbit implements Actor {
                 findAndEnterBurrow(world);
             } else {
                 hasReproducedThisTurn = false;
-                // move(world);
+                move(world);
                 eat(world);
                 if (!hasReproducedThisTurn) {
                     reproduce(world, world.getSize());
