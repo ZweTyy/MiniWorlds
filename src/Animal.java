@@ -66,4 +66,24 @@ public abstract class Animal extends Entity {
             world.delete(this);
         }
     }
+
+    public boolean isAlive() {
+        return alive;
+    }
+
+    public double setEnergy(int energy) {
+        return this.energy = energy;
+    }
+
+    public double getEnergy() {
+        return energy;
+    }
+
+    public int setAge(int age) {
+        return this.age = age;
+    }
+
+    public int getAge() {
+        return age;
+    }
 }

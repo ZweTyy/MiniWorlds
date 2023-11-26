@@ -276,23 +276,7 @@ public class Rabbit extends Animal implements Actor, Herbivore {
         return world.isNight() && myBurrow == null ? State.NIGHT_WITH_NO_BURROW : State.NIGHT_WITH_BURROW;
     }
 
-    public boolean isAlive() {
-        return alive;
-    }
-
-    public int setAge(int age) {
-        return this.age = age;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public double setEnergy(int energy) {
-        return this.energy = energy;
-    }
-
-    public double getEnergy() {
-        return energy;
+    public void setHasReproducedThisTurn(boolean hasReproduced) {
+        this.hasReproducedThisTurn = hasReproduced;
     }
 }

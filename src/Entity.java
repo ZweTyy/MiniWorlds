@@ -30,6 +30,10 @@ public abstract class Entity {
         return location;
     }
 
+    public void setLocation(Location location) {
+        this.initialLocation = location;
+    }
+
     public Location getLocation() {
         return initialLocation;
     }
