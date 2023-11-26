@@ -19,7 +19,7 @@ public abstract class Animal extends Entity {
         super(world, size);
     }
 
-    protected void move(World world) {
+    protected synchronized void move(World world) {
         System.out.println(getClass().getSimpleName() + this + " moving from: " + initialLocation);
         if (world.getCurrentLocation() == null || !alive) {
             System.out.println(getClass().getSimpleName() + this + " is dead or has no location.");
