@@ -8,7 +8,7 @@ import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
 
-public class Rabbit extends Animal implements Actor {
+public class Rabbit extends Animal implements Actor, Herbivore {
     private Burrow myBurrow;
     private volatile boolean hasReproducedThisTurn = false;
     private volatile boolean hidden;
@@ -53,7 +53,7 @@ public class Rabbit extends Animal implements Actor {
     private void performDailyActivities(World world) {
         hasReproducedThisTurn = false;
         move(world); // Assuming move is defined in Animal
-        eat(world);
+        eatHerb(world);
         if (!hasReproducedThisTurn) {
             reproduce(world, world.getSize());
         }
@@ -66,46 +66,50 @@ public class Rabbit extends Animal implements Actor {
     }
 
     public void reproduce(World world, int size) {
-        // Vi tjekker om kaninen er 4 år gammel, har nok energi, om der er plads til
-        // flere og om den ikke har reproduceret i denne tur
-        if (this.age == 4 && this.energy >= 25 && amountOfRabbits < size * size / 4 && !hasReproducedThisTurn) {
-            // Find alle tomme nabo tiles
-            List<Location> neighbours = new ArrayList<>(world.getEmptySurroundingTiles(currentLocation));
-            // Løber igennem alle nabo tiles
-            for (Location loc : world.getSurroundingTiles(currentLocation)) {
-                // Laver et objekt af det tile vi er på
-                Object object = world.getTile(loc);
-                // Hvis objektet ikke er en kanin så skipper vi
-                if (!(object instanceof Rabbit)) {
-                    break;
-                }
-                if (object instanceof Rabbit) {
-                    // Cast objektet til en kanin
-                    Rabbit neighbourRabbit = (Rabbit) object;
-                    if (neighbourRabbit.age == 4 && neighbourRabbit.energy >= 25
-                            && !neighbourRabbit.hasReproducedThisTurn) {
-                        if (!neighbours.isEmpty()) {
-                            Location newLocation = neighbours.get(r.nextInt(neighbours.size()));
-                            Rabbit newRabbit = new Rabbit(world, size);
-                            world.setTile(newLocation, newRabbit);
+        if (!isEligibleForReproduction() || this.currentLocation == null) {
+            return;
+        }
+        Rabbit mate = findMate(world, currentLocation);
+        if (mate == null) {
+            return;
+        }
+        Location newLocation = generateRandomLocation(world.getSize());
+        if (newLocation == null) {
+            return;
+        }
+        Rabbit newRabbit = new Rabbit(world, size);
+        world.setCurrentLocation(newLocation);
+        world.setTile(newLocation, newRabbit);
 
-                            this.energy -= 25;
-                            neighbourRabbit.energy -= 25;
+        consumeReproductionEnergy();
+        mate.consumeReproductionEnergy();
+    }
 
-                            // Sætter hasReproducedThisTurn til true for begge kaniner
-                            this.hasReproducedThisTurn = true;
-                            neighbourRabbit.hasReproducedThisTurn = true;
+    private boolean isEligibleForReproduction() {
+        return this.age == 4 && this.energy >= 25 && !hasReproducedThisTurn
+                && Rabbit.amountOfRabbits < world.getSize() * world.getSize() / 4;
+    }
 
-                            break;
-                        }
-                    }
+    private Rabbit findMate(World world, Location location) {
+        for (Location loc : world.getSurroundingTiles(location)) {
+            Object object = world.getTile(loc);
+            if (object instanceof Rabbit) {
+                Rabbit potentialMate = (Rabbit) object;
+                if (potentialMate.isEligibleForReproduction()) {
+                    return potentialMate;
                 }
             }
         }
+        return null;
+    }
+
+    private void consumeReproductionEnergy() {
+        this.energy -= 25;
+        this.hasReproducedThisTurn = true;
     }
 
     @Override
-    public void eat(World world) {
+    public void eatHerb(World world) {
         if (hunger <= 50) {
             System.out.println("Attempting to eat");
             try {
@@ -121,6 +125,7 @@ public class Rabbit extends Animal implements Actor {
                     this.energy += 25;
                     System.out.println("I sucessfully ate");
                 }
+
             } catch (IllegalArgumentException iae) {
                 // Vi burde ikke aldrig nå herned da vi håndterer exception tidligere
                 System.out.println("No entity");
@@ -183,6 +188,7 @@ public class Rabbit extends Animal implements Actor {
 
     private void digBurrow(World world) {
         // Vi sikrer os at kaninens lokation ikke er null
+        this.currentLocation = world.getCurrentLocation();
         if (this.currentLocation == null) {
             return;
         }
@@ -220,30 +226,37 @@ public class Rabbit extends Animal implements Actor {
     private synchronized void enterBurrow(World world, Burrow burrow) {
         System.out.println("Trying to enter burrow");
         // Vi tjekker om kaninen kan komme ind i hullet
-        if (burrow != null && burrow.addRabbit(this)) {
+        if (burrow != null && burrow.addRabbit(this) && energy > 0) {
             System.out.println("Rabbit entering burrow at: " + burrow.getLocation());
             world.remove(this); // Fjerne kaninen fra verdenen
             this.hidden = true;
             this.myBurrow = burrow; // Sætte kaninens hul til at være det hul den har fundet
             System.out.println("Rabbit location er: " + currentLocation);
         }
+        this.health -= 25;
     }
 
     private synchronized void leaveBurrow(World world) {
         if (this.myBurrow != null && this.hidden) {
             System.out.println("Rabbit leaving burrow at: " + this.myBurrow.getLocation());
             this.myBurrow.removeRabbit(this);
+            this.hidden = false;
 
+            // Find an empty neighboring tile to move to
             Set<Location> emptyTiles = world.getEmptySurroundingTiles(this.myBurrow.getLocation());
             if (!emptyTiles.isEmpty()) {
+                // Move to the first available empty tile
+                Location newLocation = emptyTiles.iterator().next();
+                this.currentLocation = newLocation;
+                world.setTile(newLocation, this);
+                System.out.println("Rabbit placed at: " + newLocation);
+            } else {
+                // If no empty tiles are available, stay in the current location
                 this.currentLocation = this.myBurrow.getLocation();
-                this.hidden = false;
-                world.setCurrentLocation(this.currentLocation);
-                world.setTile(currentLocation, this);
-                System.out.println("Placing rabbit at: " + this.currentLocation);
-                System.out.println("Successfully left burrow.");
-                System.out.println("Rabbit's location: " + world.getCurrentLocation());
             }
+            world.setCurrentLocation(this.currentLocation);
+            System.out.println("Successfully left burrow.");
+            System.out.println("Rabbit's location: " + world.getCurrentLocation());
         }
     }
 

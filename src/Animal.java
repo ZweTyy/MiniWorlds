@@ -30,6 +30,7 @@ public abstract class Animal extends Entity {
         if (validLocations.isEmpty() || energy <= 0) { // Hvis der ikke er nogen tomme nabo tiles skipper vi eller hvis
                                                        // kaninen ikke har energi
             System.out.println(getClass().getSimpleName() + this + " has no energy or no empty neighbouring tiles.");
+            this.health -= 10;
             return;
         }
         if (!validLocations.isEmpty() && energy > 0) { // Hvis der er tomme nabo tiles og kaninen har energi bevæger den
@@ -47,6 +48,7 @@ public abstract class Animal extends Entity {
             System.out.println("age " + this.age);
         }
         updateStats();
+        System.out.println("health " + this.health + " energy " + this.energy + " hunger " + this.hunger);
     }
 
     private void updateStats() {
@@ -64,6 +66,4 @@ public abstract class Animal extends Entity {
             world.delete(this);
         }
     }
-
-    protected abstract void eat(World world);
 }
