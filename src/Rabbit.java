@@ -11,7 +11,7 @@ import itumulator.world.Location;
 import itumulator.world.World;
 
 public class Rabbit extends Animal implements Actor {
-    private Location place;
+    private Location currentLocation;
     private Burrow myBurrow;
     private volatile boolean alive = true;
     private volatile boolean hasReproducedThisTurn = false;
@@ -65,12 +65,12 @@ public class Rabbit extends Animal implements Actor {
     }
 
     public synchronized void move(World world) {
-        System.out.println("Rabbit " + this + " moving from: " + place);
+        System.out.println("Rabbit " + this + " moving from: " + currentLocation);
         if (world.getCurrentLocation() == null || !alive) {
             System.out.println("Rabbit " + this + " is dead or has no location.");
             return;
         }
-        System.out.println("Rabbit moving from: " + this.place);
+        System.out.println("Rabbit moving from: " + this.currentLocation);
         Set<Location> neighbours = world.getEmptySurroundingTiles(); // Hent alle tomme nabo tiles
         List<Location> validLocations = new ArrayList<>(neighbours); // Lav en liste med alle tomme nabo tiles
         if (validLocations.isEmpty() || energy <= 0) { // Hvis der ikke er nogen tomme nabo tiles skipper vi eller hvis
@@ -83,14 +83,14 @@ public class Rabbit extends Animal implements Actor {
             int randomIndex = r.nextInt(validLocations.size());
             Location newLocation = validLocations.get(randomIndex);
             System.out.println("Rabbit " + this + " moving to: " + newLocation);
-            this.place = newLocation;
-            world.move(this, place);
-            world.setCurrentLocation(place);
+            this.currentLocation = newLocation;
+            world.move(this, currentLocation);
+            world.setCurrentLocation(currentLocation);
             System.out.println("Rabbit's current location: " + world.getLocation(this));
             this.energy -= 2.5;
             this.hunger -= 5.0;
             this.stepsTaken++;
-            System.out.println("to: " + this.place);
+            System.out.println("to: " + this.currentLocation);
         }
         if (stepsTaken == 10) {
             this.age++;
@@ -115,9 +115,9 @@ public class Rabbit extends Animal implements Actor {
         // flere og om den ikke har reproduceret i denne tur
         if (this.age == 4 && this.energy >= 25 && amountOfRabbits < size * size / 4 && !hasReproducedThisTurn) {
             // Find alle tomme nabo tiles
-            List<Location> neighbours = new ArrayList<>(world.getEmptySurroundingTiles(place));
+            List<Location> neighbours = new ArrayList<>(world.getEmptySurroundingTiles(currentLocation));
             // Løber igennem alle nabo tiles
-            for (Location loc : world.getSurroundingTiles(place)) {
+            for (Location loc : world.getSurroundingTiles(currentLocation)) {
                 // Laver et objekt af det tile vi er på
                 Object object = world.getTile(loc);
                 // Hvis objektet ikke er en kanin så skipper vi
@@ -227,13 +227,13 @@ public class Rabbit extends Animal implements Actor {
 
     private void digBurrow(World world) {
         // Vi sikrer os at kaninens lokation ikke er null
-        if (this.place == null) {
+        if (this.currentLocation == null) {
             return;
         }
 
         System.out.println("Digging burrow");
         // Find alle tomme nabo tiles
-        Set<Location> neighbours = world.getSurroundingTiles(this.place);
+        Set<Location> neighbours = world.getSurroundingTiles(this.currentLocation);
         List<Location> validLocations = new ArrayList<>(neighbours);
         // Her tilføjer vi valide lokationer til listen
         for (Location loc : neighbours) {
@@ -253,9 +253,9 @@ public class Rabbit extends Animal implements Actor {
             if (objectAtLocation instanceof Grass) {
                 ((Grass) objectAtLocation).die(world);
             }
-            this.place = newLocation;
+            this.currentLocation = newLocation;
             this.myBurrow = new Burrow(world, world.getSize());
-            world.setTile(place, this.myBurrow);
+            world.setTile(currentLocation, this.myBurrow);
             enterBurrow(world, myBurrow);
             this.hidden = true;
         }
@@ -265,26 +265,26 @@ public class Rabbit extends Animal implements Actor {
         System.out.println("Trying to enter burrow");
         // Vi tjekker om kaninen kan komme ind i hullet
         if (burrow != null && burrow.addRabbit(this)) {
-            System.out.println("Rabbit entering burrow at: " + burrow.getPlace());
+            System.out.println("Rabbit entering burrow at: " + burrow.getLocation());
             world.remove(this); // Fjerne kaninen fra verdenen
             this.hidden = true;
             this.myBurrow = burrow; // Sætte kaninens hul til at være det hul den har fundet
-            System.out.println("Rabbit location er: " + place);
+            System.out.println("Rabbit location er: " + currentLocation);
         }
     }
 
     private synchronized void leaveBurrow(World world) {
         if (this.myBurrow != null && this.hidden) {
-            System.out.println("Rabbit leaving burrow at: " + this.myBurrow.getPlace());
+            System.out.println("Rabbit leaving burrow at: " + this.myBurrow.getLocation());
             this.myBurrow.removeRabbit(this);
 
-            Set<Location> emptyTiles = world.getEmptySurroundingTiles(this.myBurrow.getPlace());
+            Set<Location> emptyTiles = world.getEmptySurroundingTiles(this.myBurrow.getLocation());
             if (!emptyTiles.isEmpty()) {
-                this.place = this.myBurrow.getPlace();
+                this.currentLocation = this.myBurrow.getLocation();
                 this.hidden = false;
-                world.setCurrentLocation(this.place);
-                world.setTile(place, this);
-                System.out.println("Placing rabbit at: " + this.place);
+                world.setCurrentLocation(this.currentLocation);
+                world.setTile(currentLocation, this);
+                System.out.println("Placing rabbit at: " + this.currentLocation);
                 System.out.println("Successfully left burrow.");
                 System.out.println("Rabbit's location: " + world.getCurrentLocation());
             }
@@ -299,7 +299,7 @@ public class Rabbit extends Animal implements Actor {
         }
         alive = false;
         world.delete(this);
-        place = null; // Safely update the location to null
+        currentLocation = null; // Safely update the location to null
         System.out.println("Rabbit " + this + " deleted.");
     }
 

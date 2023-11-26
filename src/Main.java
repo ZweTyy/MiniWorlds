@@ -98,7 +98,7 @@ public class Main {
 
     public static void createGrass(World world, int size) {
         Grass grass = new Grass(world, size); // Lav græs
-        Location location = grass.getPlace(); // Tag græssets lokation
+        Location location = grass.getLocation(); // Tag græssets lokation
 
         // Vi tjekker både at tile er tom og at der ikke allerede er græs på lokationen
         if (world.isTileEmpty(location) && !world.containsNonBlocking(location)) {
@@ -108,7 +108,7 @@ public class Main {
 
     public static void createBurrow(World world, int size) {
         Burrow burrow = new Burrow(world, world.getSize()); // Lav en nyt hul
-        Location location = (burrow.getPlace());
+        Location location = (burrow.getLocation());
 
         if (world.isTileEmpty(location) && !world.containsNonBlocking(location)) {
             world.setTile(location, burrow);

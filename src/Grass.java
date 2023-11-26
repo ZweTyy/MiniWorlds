@@ -7,13 +7,12 @@ import itumulator.world.NonBlocking;
 import itumulator.world.World;
 import itumulator.simulator.Actor;
 
-public class Grass implements Actor, NonBlocking {
+public class Grass extends Entity implements Actor, NonBlocking {
     private boolean alive;
-    private Location place;
     Random r = new Random();
 
     public Grass(World world, int size) {
-        initializeGrass(world, size);
+        super(world, size);
         this.alive = true;
     }
 
@@ -21,17 +20,6 @@ public class Grass implements Actor, NonBlocking {
     public void act(World world) {
         decay(world);
         spread(world, world.getSize());
-    }
-
-    public void initializeGrass(World world, int size) {
-        int x = r.nextInt(size); // Lav et tilfældigt x koordinat
-        int y = r.nextInt(size); // Lav et tilfældigt y koordinat
-        place = new Location(x, y); // Lav ny lokation med de tilfældige koordinater
-        while (!world.isTileEmpty(place)) { // While tile ikke er tom
-            x = r.nextInt(size);
-            y = r.nextInt(size);
-            place = new Location(x, y);
-        }
     }
 
     public void decay(World world) {
@@ -43,7 +31,7 @@ public class Grass implements Actor, NonBlocking {
 
     public void spread(World world, int size) {
         if (this.alive && r.nextDouble() < 0.1) { // 10% chance for at sprede sig
-            Set<Location> neighbours = world.getEmptySurroundingTiles(place);
+            Set<Location> neighbours = world.getEmptySurroundingTiles(super.getLocation());
             List<Location> validLocations = new ArrayList<>();
 
             // Her tilføjer vi valide lokationer til listen
@@ -73,9 +61,5 @@ public class Grass implements Actor, NonBlocking {
 
     public boolean isAlive() {
         return alive;
-    }
-
-    public Location getPlace() {
-        return place;
     }
 }
