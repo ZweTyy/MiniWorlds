@@ -3,6 +3,7 @@ import itumulator.world.World;
 
 import java.util.Random;
 
+// Klassen bruges til at initialisere en entity
 public abstract class Entity {
     protected Location initialLocation;
     protected World world;

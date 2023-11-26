@@ -3,29 +3,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.Random;
 
-import itumulator.display.animation.ObjectInformation;
 import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
 
 public class Rabbit extends Animal implements Actor {
-    private Location currentLocation;
     private Burrow myBurrow;
-    private volatile boolean alive = true;
     private volatile boolean hasReproducedThisTurn = false;
     private volatile boolean hidden;
-    private int age = 1;
-    private double hunger = 100.0;
-    private double energy = 50.0;
-    private int stepsTaken = 0;
-    private int health = 100;
     private static int amountOfRabbits = 0;
-    private Random r = new Random();
 
     public Rabbit(World world, int size) {
         super(world, size);
+        this.MAX_AGE = 9;
         amountOfRabbits++;
     }
 
@@ -54,60 +45,24 @@ public class Rabbit extends Animal implements Actor {
                 enterBurrow(world, myBurrow);
                 break;
             case OTHERWISE:
-                hasReproducedThisTurn = false;
-                move(world);
-                eat(world);
-                if (!hasReproducedThisTurn) {
-                    reproduce(world, world.getSize());
-                }
+                performDailyActivities(world);
                 break;
         }
     }
 
-    public synchronized void move(World world) {
-        System.out.println("Rabbit " + this + " moving from: " + currentLocation);
-        if (world.getCurrentLocation() == null || !alive) {
-            System.out.println("Rabbit " + this + " is dead or has no location.");
-            return;
+    private void performDailyActivities(World world) {
+        hasReproducedThisTurn = false;
+        move(world); // Assuming move is defined in Animal
+        eat(world);
+        if (!hasReproducedThisTurn) {
+            reproduce(world, world.getSize());
         }
-        System.out.println("Rabbit moving from: " + this.currentLocation);
-        Set<Location> neighbours = world.getEmptySurroundingTiles(); // Hent alle tomme nabo tiles
-        List<Location> validLocations = new ArrayList<>(neighbours); // Lav en liste med alle tomme nabo tiles
-        if (validLocations.isEmpty() || energy <= 0) { // Hvis der ikke er nogen tomme nabo tiles skipper vi eller hvis
-                                                       // kaninen ikke har energi
-            System.out.println("Rabbit " + this + " has no energy or no empty neighbouring tiles.");
-            return;
-        }
-        if (!validLocations.isEmpty() && energy > 0) { // Hvis der er tomme nabo tiles og kaninen har energi bevæger den
-                                                       // sig
-            int randomIndex = r.nextInt(validLocations.size());
-            Location newLocation = validLocations.get(randomIndex);
-            System.out.println("Rabbit " + this + " moving to: " + newLocation);
-            this.currentLocation = newLocation;
-            world.move(this, currentLocation);
-            world.setCurrentLocation(currentLocation);
-            System.out.println("Rabbit's current location: " + world.getLocation(this));
-            this.energy -= 2.5;
-            this.hunger -= 5.0;
-            this.stepsTaken++;
-            System.out.println("to: " + this.currentLocation);
-        }
-        if (stepsTaken == 10) {
-            this.age++;
-            this.energy += 50;
-            this.stepsTaken = 0;
-        }
-        if (hunger <= 0) {
-            this.health -= 25;
-        }
-        if (health <= 0 || age >= 9) {
-            this.alive = false;
-        }
-        if (!alive) {
-            world.delete(this);
-        }
-        System.out.println("Energy: " + energy + " " + "Hunger: " + hunger + " " + "HP: " + health + " " + "Age: " + age
-                + " " + amountOfRabbits);
+    }
+
+    @Override
+    protected void move(World world) {
+        // We need to implement flee logic here
+        super.move(world);
     }
 
     public void reproduce(World world, int size) {
@@ -149,6 +104,7 @@ public class Rabbit extends Animal implements Actor {
         }
     }
 
+    @Override
     public void eat(World world) {
         if (hunger <= 50) {
             System.out.println("Attempting to eat");
@@ -289,18 +245,6 @@ public class Rabbit extends Animal implements Actor {
                 System.out.println("Rabbit's location: " + world.getCurrentLocation());
             }
         }
-    }
-
-    public void delete(World world) {
-        System.out.println("Deleting rabbit " + this);
-        if (!alive) {
-            System.out.println("Rabbit " + this + " already deleted.");
-            return;
-        }
-        alive = false;
-        world.delete(this);
-        currentLocation = null; // Safely update the location to null
-        System.out.println("Rabbit " + this + " deleted.");
     }
 
     private State determineState(World world, boolean hidden, Burrow myBurrow) {
