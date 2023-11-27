@@ -17,8 +17,8 @@ public class Main {
         Map<String, Integer[]> elementsToAdd = new LinkedHashMap<>(); // Vi bruger linkedhashmap for at holde
                                                                       // rækkefølgen af elementer
         try {
-            BufferedReader br = new BufferedReader(new FileReader("./data/input-filer/t1-1a.txt")); // Læser input
-                                                                                                    // filen
+            BufferedReader br = new BufferedReader(new FileReader("./data/input-filer/t1-2cde.txt")); // Læser input
+                                                                                                      // filen
             String line = br.readLine();
             if (line != null) { // Sætter værdien af size til det første tal i filen
                 size = Integer.parseInt(line.trim());
