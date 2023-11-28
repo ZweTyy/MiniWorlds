@@ -102,7 +102,10 @@ public class Main {
                     case ("bear"):
                         Integer x = quantityRange.length > 2 ? quantityRange[1] : null;
                         Integer y = quantityRange.length > 2 ? quantityRange[2] : null;
-                        System.out.println("Attempting to create bear with x=" + x + ", y=" + y);
+                        if (x == null || y == null) {
+                            createBear(world, size);
+                            break;
+                        }
                         createBear(world, size, x, y);
                         break;
                     default:
@@ -150,8 +153,18 @@ public class Main {
         if (x != null && y != null && x <= size && y <= size) {
             Location location = new Location(x, y);
             Bear bear = new Bear(world, size, x, y);
+
+            System.out.println("Creating bear at: " + x + ", " + y);
             world.setTile(location, bear); // Placerer bjørnen på det angivne lokation
         }
+    }
+
+    public static void createBear(World world, int size) {
+        Bear bear = new Bear(world, size);
+        Location location = bear.getLocation();
+
+        System.out.println("Creating bear at: " + location);
+        world.setTile(location, bear);
     }
 
     public static int countRabbits(World world) {
