@@ -47,17 +47,12 @@ public class Main {
                     coordinates = coordinatePart.split(","); // Splitter koordinaterne op
                     int x = Integer.parseInt(coordinates[0]);
                     int y = Integer.parseInt(coordinates[1]);
-                    System.out.println("Parsed bear coordinates: " + x + ", " + y);
                     int quantity = Integer.parseInt(parts[1]);
                     quantityRange = new Integer[] { quantity, x, y };
                 }
                 elementsToAdd.put(parts[0], quantityRange);
             }
             br.close();
-            System.out.println("Parsed elements to add:");
-            for (Map.Entry<String, Integer[]> entry : elementsToAdd.entrySet()) {
-                System.out.println(entry.getKey() + " => " + Arrays.toString(entry.getValue()));
-            }
         } catch (Exception e) {
             System.out.println("An error occurred: " + e.getMessage());
         }
@@ -70,11 +65,13 @@ public class Main {
         DisplayInformation rabbit = new DisplayInformation(Color.white, "rabbit-small");
         DisplayInformation burrow = new DisplayInformation(Color.black, "hole");
         DisplayInformation bear = new DisplayInformation(Color.black, "bear");
+        DisplayInformation berry = new DisplayInformation(Color.black, "bush-berries");
         DisplayInformation Location = new DisplayInformation(Color.black);
         p.setDisplayInformation(Grass.class, grass);
         p.setDisplayInformation(Rabbit.class, rabbit);
         p.setDisplayInformation(Burrow.class, burrow);
         p.setDisplayInformation(Bear.class, bear);
+        p.setDisplayInformation(Berry.class, berry);
         p.setDisplayInformation(Location.class, Location);
 
         p.show();
@@ -85,7 +82,6 @@ public class Main {
             String type = entry.getKey();
             Integer[] quantityRange = entry.getValue();
             int quantity = quantityRange[0];
-            System.out.println("Creating " + quantity + " of " + type);
             for (int i = 0; i < quantity; i++) {
                 switch (type) {
                     case ("rabbit"):
@@ -108,6 +104,9 @@ public class Main {
                         }
                         createBear(world, size, x, y);
                         break;
+                    case ("berry"):
+                        createBerry(world, size);
+                        break;
                     default:
                         break;
                 }
@@ -127,7 +126,9 @@ public class Main {
         Rabbit rabbit = new Rabbit(world, size); // Lav en ny kanin
         Location location = rabbit.getLocation(); // Tag kaninens lokation
 
-        world.setTile(location, rabbit); // Placerer kaninen på det tilfældige lokation
+        if (world.isTileEmpty(location)) { // Tjek om lokationen er tom
+            world.setTile(location, rabbit); // Placerer kaninen på lokationen
+        }
     }
 
     public static void createGrass(World world, int size) {
@@ -154,8 +155,9 @@ public class Main {
             Location location = new Location(x, y);
             Bear bear = new Bear(world, size, x, y);
 
-            System.out.println("Creating bear at: " + x + ", " + y);
-            world.setTile(location, bear); // Placerer bjørnen på det angivne lokation
+            if (world.isTileEmpty(location)) {
+                world.setTile(location, bear);
+            }
         }
     }
 
@@ -163,8 +165,16 @@ public class Main {
         Bear bear = new Bear(world, size);
         Location location = bear.getLocation();
 
-        System.out.println("Creating bear at: " + location);
         world.setTile(location, bear);
+    }
+
+    public static void createBerry(World world, int size) {
+        Berry berry = new Berry(world, size);
+        Location location = berry.getLocation();
+
+        if (world.isTileEmpty(location)) {
+            world.setTile(location, berry);
+        }
     }
 
     public static int countRabbits(World world) {

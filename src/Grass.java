@@ -7,7 +7,7 @@ import itumulator.world.NonBlocking;
 import itumulator.world.World;
 import itumulator.simulator.Actor;
 
-public class Grass extends Entity implements Actor, NonBlocking {
+public class Grass extends Nature implements Actor, NonBlocking {
     private boolean alive;
     Random r = new Random();
 
