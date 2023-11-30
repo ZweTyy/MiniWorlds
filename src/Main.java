@@ -22,7 +22,7 @@ public class Main {
         Map<String, Integer[]> elementsToAdd = new LinkedHashMap<>(); // Vi bruger linkedhashmap for at holde
                                                                       // rækkefølgen af elementer
         try {
-            BufferedReader br = new BufferedReader(new FileReader("./data/input-filer/t2-5a.txt")); // Læser input
+            BufferedReader br = new BufferedReader(new FileReader("./data/input-filer/t2-1c.txt")); // Læser input
                                                                                                     // filen
             String line = br.readLine();
             if (line != null) { // Sætter værdien af size til det første tal i filen
@@ -64,12 +64,14 @@ public class Main {
         DisplayInformation grass = new DisplayInformation(Color.green, "grass");
         DisplayInformation rabbit = new DisplayInformation(Color.white, "rabbit-small");
         DisplayInformation burrow = new DisplayInformation(Color.black, "hole");
+        DisplayInformation wolf = new DisplayInformation(Color.black, "wolf");
         DisplayInformation bear = new DisplayInformation(Color.black, "bear");
         DisplayInformation berry = new DisplayInformation(Color.black, "bush-berries");
         DisplayInformation Location = new DisplayInformation(Color.black);
         p.setDisplayInformation(Grass.class, grass);
         p.setDisplayInformation(Rabbit.class, rabbit);
         p.setDisplayInformation(Burrow.class, burrow);
+        p.setDisplayInformation(Wolf.class, wolf);
         p.setDisplayInformation(Bear.class, bear);
         p.setDisplayInformation(Berry.class, berry);
         p.setDisplayInformation(Location.class, Location);
@@ -94,6 +96,7 @@ public class Main {
                         createBurrow(world, size);
                         break;
                     case ("wolf"):
+                        createWolf(world, size);
                         break;
                     case ("bear"):
                         Integer x = quantityRange.length > 2 ? quantityRange[1] : null;
@@ -147,6 +150,15 @@ public class Main {
 
         if (world.isTileEmpty(location) && !world.containsNonBlocking(location)) {
             world.setTile(location, burrow);
+        }
+    }
+
+    public static void createWolf(World world, int size) {
+        Wolf wolf = new Wolf(world, size);
+        Location location = wolf.getLocation();
+
+        if (world.isTileEmpty(location)) {
+            world.setTile(location, wolf);
         }
     }
 

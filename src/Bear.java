@@ -6,8 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.apiguardian.api.API;
+
 public class Bear extends Animal implements Actor, Herbivore, Carnivore {
     private Location initialTerritoryLocation;
+    private boolean isHungry = false;
     private final int TERRITORY_RADIUS = 3;
 
     public Bear(World world, int size, int x, int y) {
@@ -40,7 +43,7 @@ public class Bear extends Animal implements Actor, Herbivore, Carnivore {
             }
         }
 
-        if (!validLocations.isEmpty() && energy > 0) { // Hvis der er tomme nabo tiles og kaninen har energi bevæger den
+        if (!validLocations.isEmpty() && energy > 0) { // Hvis der er tomme nabo tiles og bjørnen har energi bevæger den
                                                        // sig
             int randomIndex = r.nextInt(validLocations.size());
             Location newLocation = validLocations.get(randomIndex);
@@ -89,5 +92,10 @@ public class Bear extends Animal implements Actor, Herbivore, Carnivore {
                 return;
             }
         }
+    }
+
+    @Override
+    public void eatMeat(World world) {
+
     }
 }

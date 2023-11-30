@@ -51,6 +51,12 @@ public abstract class Animal extends Entity {
         System.out.println("health " + this.health + " energy " + this.energy + " hunger " + this.hunger);
     }
 
+    public void sleep() {
+        this.energy += 10;
+        this.hunger -= 1;
+        this.stepsTaken++;
+    }
+
     public void updateStats() {
         if (this.stepsTaken % 5 == 0) {
             this.age++;
@@ -67,8 +73,12 @@ public abstract class Animal extends Entity {
         }
     }
 
+    public boolean setAlive(boolean alive) {
+        return this.alive = false;
+    }
+
     public boolean isAlive() {
-        return alive;
+        return this.alive;
     }
 
     public double setEnergy(int energy) {
@@ -76,7 +86,7 @@ public abstract class Animal extends Entity {
     }
 
     public double getEnergy() {
-        return energy;
+        return this.energy;
     }
 
     public int setAge(int age) {
@@ -84,6 +94,6 @@ public abstract class Animal extends Entity {
     }
 
     public int getAge() {
-        return age;
+        return this.age;
     }
 }
