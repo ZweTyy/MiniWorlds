@@ -2,8 +2,13 @@ import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 public class Bear extends Animal implements Actor, Herbivore, Carnivore {
-    Location initialTerritoryLocation;
+    private Location initialTerritoryLocation;
+    private final int TERRITORY_RADIUS = 3;
 
     public Bear(World world, int size, int x, int y) {
         super(world, size);
@@ -22,6 +27,41 @@ public class Bear extends Animal implements Actor, Herbivore, Carnivore {
     public void act(World world) {
         move(world);
         eatHerb(world);
+    }
+
+    @Override
+    public void move(World world) {
+        Set<Location> neighbours = world.getEmptySurroundingTiles(initialLocation);
+        List<Location> validLocations = new ArrayList<>();
+
+        for (Location loc : neighbours) {
+            if (isWithinTerritory(loc)) {
+                validLocations.add(loc);
+            }
+        }
+
+        if (!validLocations.isEmpty() && energy > 0) { // Hvis der er tomme nabo tiles og kaninen har energi bevæger den
+                                                       // sig
+            int randomIndex = r.nextInt(validLocations.size());
+            Location newLocation = validLocations.get(randomIndex);
+            this.initialLocation = newLocation;
+            world.move(this, initialLocation);
+            world.setCurrentLocation(initialLocation);
+            System.out.println(getClass().getSimpleName() + this + " moving to: " + newLocation);
+
+            this.energy -= 2.5;
+            this.hunger -= 5.0;
+            this.stepsTaken++;
+            System.out.println("age " + this.age);
+        }
+        super.updateStats();
+        System.out.println("health " + this.health + " energy " + this.energy + " hunger " + this.hunger);
+    }
+
+    private boolean isWithinTerritory(Location loc) {
+        int dx = Math.abs(loc.getX() - initialTerritoryLocation.getX());
+        int dy = Math.abs(loc.getY() - initialTerritoryLocation.getY());
+        return dx <= TERRITORY_RADIUS && dy <= TERRITORY_RADIUS;
     }
 
     @Override

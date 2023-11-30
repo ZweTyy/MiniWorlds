@@ -56,7 +56,7 @@ public class Main {
         } catch (Exception e) {
             System.out.println("An error occurred: " + e.getMessage());
         }
-        int delay = 500; // Forsinkelsen mellem hver skridt af simulationen (i ms)
+        int delay = 1000; // Forsinkelsen mellem hver skridt af simulationen (i ms)
         int display_size = 720; // Skærm opløsningen (i px)
         Program p = new Program(size, display_size, delay); // Opret et nyt program
         World world = p.getWorld(); // Hiv verdenen ud, som er der hvor vi skal tilføje ting!

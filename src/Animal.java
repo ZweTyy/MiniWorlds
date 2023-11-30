@@ -51,7 +51,7 @@ public abstract class Animal extends Entity {
         System.out.println("health " + this.health + " energy " + this.energy + " hunger " + this.hunger);
     }
 
-    private void updateStats() {
+    public void updateStats() {
         if (this.stepsTaken % 5 == 0) {
             this.age++;
         }
