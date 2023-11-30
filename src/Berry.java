@@ -28,14 +28,6 @@ public class Berry extends Nature implements Actor {
         }
     }
 
-    public void updateDisplay(Program program) {
-        if (hasBerries) {
-            program.setDisplayInformation(this.getClass());
-        } else {
-            program.setDisplayInformation(this.getClass(), /* Display info for berry without berries */);
-        }
-    }
-
     public boolean hasBerries() {
         return hasBerries;
     }
