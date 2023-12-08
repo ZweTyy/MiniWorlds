@@ -16,4 +16,10 @@ public class Wolf extends Animal implements Actor, Carnivore {
             move(world);
         }
     }
+
+    @Override
+    public void eatMeat(World world) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'eatMeat'");
+    }
 }

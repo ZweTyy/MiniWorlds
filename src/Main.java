@@ -66,14 +66,14 @@ public class Main {
         DisplayInformation burrow = new DisplayInformation(Color.black, "hole");
         DisplayInformation wolf = new DisplayInformation(Color.black, "wolf");
         DisplayInformation bear = new DisplayInformation(Color.black, "bear");
-        DisplayInformation berry = new DisplayInformation(Color.black, "bush-berries");
+        DisplayInformation bush = new DisplayInformation(Color.black, "bush-berries");
         DisplayInformation Location = new DisplayInformation(Color.black);
         p.setDisplayInformation(Grass.class, grass);
         p.setDisplayInformation(Rabbit.class, rabbit);
         p.setDisplayInformation(Burrow.class, burrow);
         p.setDisplayInformation(Wolf.class, wolf);
         p.setDisplayInformation(Bear.class, bear);
-        p.setDisplayInformation(Berry.class, berry);
+        p.setDisplayInformation(Bush.class, bush);
         p.setDisplayInformation(Location.class, Location);
 
         p.show();
@@ -107,8 +107,8 @@ public class Main {
                         }
                         createBear(world, size, x, y);
                         break;
-                    case ("berry"):
-                        createBerry(world, size);
+                    case ("bush"):
+                        createBush(world, size);
                         break;
                     default:
                         break;
@@ -180,12 +180,12 @@ public class Main {
         world.setTile(location, bear);
     }
 
-    public static void createBerry(World world, int size) {
-        Berry berry = new Berry(world, size);
-        Location location = berry.getLocation();
+    public static void createBush(World world, int size) {
+        Bush bush = new Bush(world, size);
+        Location location = bush.getLocation();
 
         if (world.isTileEmpty(location)) {
-            world.setTile(location, berry);
+            world.setTile(location, bush);
         }
     }
 

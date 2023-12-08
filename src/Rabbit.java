@@ -279,4 +279,6 @@ public class Rabbit extends Animal implements Actor, Herbivore {
     public void setHasReproducedThisTurn(boolean hasReproduced) {
         this.hasReproducedThisTurn = hasReproduced;
     }
+
+    
 }
