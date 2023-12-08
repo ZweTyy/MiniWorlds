@@ -1,3 +1,4 @@
 10
 grass 2-7
 bear 1 (3,5)
+rabbit 1
