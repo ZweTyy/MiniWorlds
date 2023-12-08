@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.apiguardian.api.API;
-
 public class Bear extends Animal implements Actor, Herbivore, Carnivore {
     private Location initialTerritoryLocation;
     private boolean isHungry = false;
@@ -94,8 +92,8 @@ public class Bear extends Animal implements Actor, Herbivore, Carnivore {
         }
     }
 
-    @Override
-    public void eatMeat(World world) {
+    // @Override
+    // public void eatMeat(World world) {
 
-    }
+    // }
 }

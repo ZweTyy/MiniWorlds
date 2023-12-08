@@ -3,11 +3,11 @@ import itumulator.simulator.Actor;
 import itumulator.world.NonBlocking;
 import itumulator.world.World;
 
-public class Berry extends Nature implements Actor {
+public class Bush extends Nature implements Actor {
     private boolean hasBerries = true;
     private int lastEatenDay = -1;
 
-    public Berry(World world, int size) {
+    public Bush(World world, int size) {
         super(world, size);
     }
 
@@ -32,4 +32,11 @@ public class Berry extends Nature implements Actor {
         return hasBerries;
     }
 
+    public void grow(World world, int size) {
+        // Berries skal gro tilbage
+    }
+
+    public void decay(World world) {
+        // Buske skal dø
+    }
 }
