@@ -56,17 +56,17 @@ public class Main {
                         placeEntity(world, rabbit, size);
                         break;
                     case ("grass"):
-                        Grass grass = new Grass(world, size); // Lav græs
+                        Grass grass = GrassFactory.createGrass(world, size);
                         location = grass.getLocation();
                         placeEntity(world, grass, size);
                         break;
                     case ("burrow"):
-                        Burrow burrow = new Burrow(world, size); // Lav en nyt hul
+                        Burrow burrow = BurrowFactory.createBurrow(world, size);
                         location = burrow.getLocation();
                         placeEntity(world, burrow, size);
                         break;
                     case ("wolf"):
-                        Wolf wolf = new Wolf(world, size);
+                        Wolf wolf = WolfFactory.createWolf(world, size);
                         location = wolf.getLocation();
                         placeEntity(world, wolf, size);
                         break;
@@ -84,7 +84,7 @@ public class Main {
                         break;
 
                     case ("berry"):
-                        Berry berry = new Berry(world, size);
+                        Berry berry = BerryFactory.createBerry(world, size);
                         location = berry.getLocation();
                         placeEntity(world, berry, size);
                         break;
