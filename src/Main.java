@@ -53,30 +53,22 @@ public class Main {
                     case ("rabbit"):
                         Rabbit rabbit = RabbitFactory.createRabbit(world, size);
                         location = rabbit.getLocation();
-                        if (world.isTileEmpty(location)) {
-                            world.setTile(location, rabbit);
-                        }
+                        placeEntity(world, rabbit, size);
                         break;
                     case ("grass"):
                         Grass grass = new Grass(world, size); // Lav græs
                         location = grass.getLocation();
-                        if (world.isTileEmpty(location) && !world.containsNonBlocking(location)) {
-                            world.setTile(location, grass);
-                        }
+                        placeEntity(world, grass, size);
                         break;
                     case ("burrow"):
                         Burrow burrow = new Burrow(world, size); // Lav en nyt hul
                         location = burrow.getLocation();
-                        if (world.isTileEmpty(location) && !world.containsNonBlocking(location)) {
-                            world.setTile(location, burrow);
-                        }
+                        placeEntity(world, burrow, size);
                         break;
                     case ("wolf"):
                         Wolf wolf = new Wolf(world, size);
                         location = wolf.getLocation();
-                        if (world.isTileEmpty(location)) {
-                            world.setTile(location, wolf);
-                        }
+                        placeEntity(world, wolf, size);
                         break;
                     case ("bear"):
                         Integer x = quantityRange.length > 2 ? quantityRange[1] : null;
@@ -88,17 +80,13 @@ public class Main {
                             bear = BearFactory.createBear(world, size);
                         }
                         location = bear.getLocation();
-                        if (world.isTileEmpty(location)) {
-                            world.setTile(location, bear);
-                        }
+                        placeEntity(world, bear, size);
                         break;
 
                     case ("berry"):
                         Berry berry = new Berry(world, size);
                         location = berry.getLocation();
-                        if (world.isTileEmpty(location)) {
-                            world.setTile(location, berry);
-                        }
+                        placeEntity(world, berry, size);
                         break;
                     default:
                         break;
@@ -126,4 +114,10 @@ public class Main {
         return rabbitCount;
     }
 
+    public static void placeEntity(World world, Entity entity, int size) {
+        Location location = entity.getLocation();
+        if (world.isTileEmpty(location)) {
+            world.setTile(location, entity);
+        }
+    }
 }
