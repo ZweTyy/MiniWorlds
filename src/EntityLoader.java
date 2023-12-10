@@ -32,7 +32,7 @@ public class EntityLoader {
             case "bear":
                 return createBear(world, size, details);
             case "berry":
-                return BerryFactory.createBerry(world, size);
+                return BushFactory.createBush(world, size);
             default:
                 System.out.println("Unknown entity type: " + entityType);
                 return null;

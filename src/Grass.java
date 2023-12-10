@@ -19,7 +19,7 @@ public class Grass extends Nature implements Actor, NonBlocking {
     @Override
     public void act(World world) {
         decay(world);
-        spread(world, world.getSize());
+        grow(world, world.getSize());
     }
 
     public void decay(World world) {
@@ -29,7 +29,7 @@ public class Grass extends Nature implements Actor, NonBlocking {
         }
     }
 
-    public void spread(World world, int size) {
+    public void grow(World world, int size) {
         if (this.alive && r.nextDouble() < 0.1) { // 10% chance for at sprede sig
             Set<Location> neighbours = world.getEmptySurroundingTiles(super.getLocation());
             List<Location> validLocations = new ArrayList<>();

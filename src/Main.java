@@ -2,14 +2,20 @@ import itumulator.executable.DisplayInformation;
 import itumulator.executable.Program;
 import itumulator.world.World;
 import java.awt.Color;
+import java.awt.geom.QuadCurve2D;
+import java.util.Random;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.Map;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
 import itumulator.world.Location;
 
 public class Main {
 
     public static void main(String[] args) {
-        InputParser parser = new InputParser("./data/input-filer/t2-1c.txt"); // Opret en ny parser
+        InputParser parser = new InputParser("./data/input-filer/t2-2a.txt"); // Opret en ny parser
         Map<String, Integer[]> elementsToAdd = parser.parseInput(); // Kør parseren og få en map med elementer der skal
                                                                     // tilføjes
         int size = parser.getSize(); // Hiv størrelsen på verdenen ud
@@ -23,21 +29,19 @@ public class Main {
         DisplayInformation burrowDisplayInfo = new DisplayInformation(Color.black, "hole");
         DisplayInformation wolfDisplayInfo = new DisplayInformation(Color.black, "wolf");
         DisplayInformation bearDisplayInfo = new DisplayInformation(Color.black, "bear");
-        DisplayInformation berryDisplayInfo = new DisplayInformation(Color.black, "bush-berries");
+        DisplayInformation bushDisplayInfo = new DisplayInformation(Color.black, "bush-berries");
         DisplayInformation LocationDisplayInfo = new DisplayInformation(Color.black);
         p.setDisplayInformation(Grass.class, grassDisplayInfo);
         p.setDisplayInformation(Rabbit.class, rabbitDisplayInfo);
         p.setDisplayInformation(Burrow.class, burrowDisplayInfo);
         p.setDisplayInformation(Wolf.class, wolfDisplayInfo);
         p.setDisplayInformation(Bear.class, bearDisplayInfo);
-        p.setDisplayInformation(Berry.class, berryDisplayInfo);
+        p.setDisplayInformation(Bush.class, bushDisplayInfo);
         p.setDisplayInformation(Location.class, LocationDisplayInfo);
 
         p.show();
         Rabbit.resetRabbitCount();
-
-        EntityLoader.loadEntities(world, elementsToAdd, size); // Tilføj alle elementer til verdenen
-
+        EntityLoader.loadEntities(world, elementsToAdd, size);
         int initialRabbitCount = countRabbits(world);
         System.out.println("Initial rabbit count: " + initialRabbitCount);
 
@@ -57,5 +61,12 @@ public class Main {
             }
         }
         return rabbitCount;
+    }
+
+    public static void placeEntity(World world, Entity entity, int size) {
+        Location location = entity.getLocation();
+        if (world.isTileEmpty(location)) {
+            world.setTile(location, entity);
+        }
     }
 }

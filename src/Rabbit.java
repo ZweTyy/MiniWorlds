@@ -8,9 +8,8 @@ import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
 
-public class Rabbit extends Animal implements Actor, Herbivore {
+public class Rabbit extends Animal implements Actor {
     private Burrow myBurrow;
-    private volatile boolean hasReproducedThisTurn = false;
     private volatile boolean hidden;
     private static int amountOfRabbits = 0;
 
@@ -53,7 +52,7 @@ public class Rabbit extends Animal implements Actor, Herbivore {
     private void performDailyActivities(World world) {
         hasReproducedThisTurn = false;
         move(world); // Assuming move is defined in Animal
-        eatHerb(world);
+        eat(world);
         if (!hasReproducedThisTurn) {
             reproduce(world, world.getSize());
         }
@@ -86,7 +85,7 @@ public class Rabbit extends Animal implements Actor, Herbivore {
     }
 
     private boolean isEligibleForReproduction() {
-        return this.age == 4 && this.energy >= 25 && !hasReproducedThisTurn
+        return this.age == 4 && this.health >= 25 && !hasReproducedThisTurn
                 && Rabbit.amountOfRabbits < world.getSize() * world.getSize() / 4;
     }
 
@@ -104,15 +103,14 @@ public class Rabbit extends Animal implements Actor, Herbivore {
     }
 
     private void consumeReproductionEnergy() {
-        this.energy -= 25;
+        this.health -= 10;
         this.hasReproducedThisTurn = true;
     }
 
     @Override
-    public void eatHerb(World world) {
-        if (hunger <= 50) {
+    public void eat(World world) {
+        if (health <= 50) {
             System.out.println("Attempting to eat");
-            try {
                 if (!(world.containsNonBlocking(this.getLocation()))) {
                     world.step();
                     System.out.println("Nothing to eat");
@@ -121,16 +119,9 @@ public class Rabbit extends Animal implements Actor, Herbivore {
                 if ((world.getNonBlocking(this.getLocation()) instanceof Grass)) {
                     Grass grass = (Grass) world.getNonBlocking(this.getLocation());
                     grass.die(world);
-                    this.hunger += 50;
-                    this.energy += 25;
+                    this.health += 50;
                     System.out.println("I sucessfully ate");
-                }
-
-            } catch (IllegalArgumentException iae) {
-                // Vi burde ikke aldrig nå herned da vi håndterer exception tidligere
-                System.out.println("No entity");
-                return;
-            }
+            }   
         }
     }
 
@@ -226,7 +217,7 @@ public class Rabbit extends Animal implements Actor, Herbivore {
     private synchronized void enterBurrow(World world, Burrow burrow) {
         System.out.println("Trying to enter burrow");
         // Vi tjekker om kaninen kan komme ind i hullet
-        if (burrow != null && burrow.addRabbit(this) && energy > 0) {
+        if (burrow != null && burrow.addRabbit(this) && health > 0) {
             System.out.println("Rabbit entering burrow at: " + burrow.getLocation());
             world.remove(this); // Fjerne kaninen fra verdenen
             this.hidden = true;
@@ -280,5 +271,8 @@ public class Rabbit extends Animal implements Actor, Herbivore {
         this.hasReproducedThisTurn = hasReproduced;
     }
 
-    
+    @Override
+    public void reproduce() {
+        // Lav om på reproduce metode
+    }
 }

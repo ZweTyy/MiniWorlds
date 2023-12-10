@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class Bear extends Animal implements Actor, Herbivore, Carnivore {
+import org.apiguardian.api.API;
+
+public class Bear extends Animal implements Actor {
     private Location initialTerritoryLocation;
     private boolean isHungry = false;
     private final int TERRITORY_RADIUS = 3;
@@ -27,7 +29,7 @@ public class Bear extends Animal implements Actor, Herbivore, Carnivore {
     @Override
     public void act(World world) {
         move(world);
-        eatHerb(world);
+        eat(world);
     }
 
     @Override
@@ -41,7 +43,7 @@ public class Bear extends Animal implements Actor, Herbivore, Carnivore {
             }
         }
 
-        if (!validLocations.isEmpty() && energy > 0) { // Hvis der er tomme nabo tiles og bjørnen har energi bevæger den
+        if (!validLocations.isEmpty() && health > 0) { // Hvis der er tomme nabo tiles og bjørnen har energi bevæger den
                                                        // sig
             int randomIndex = r.nextInt(validLocations.size());
             Location newLocation = validLocations.get(randomIndex);
@@ -50,13 +52,12 @@ public class Bear extends Animal implements Actor, Herbivore, Carnivore {
             world.setCurrentLocation(initialLocation);
             System.out.println(getClass().getSimpleName() + this + " moving to: " + newLocation);
 
-            this.energy -= 2.5;
-            this.hunger -= 5.0;
+            this.health -= 5;
             this.stepsTaken++;
             System.out.println("age " + this.age);
         }
         super.updateStats();
-        System.out.println("health " + this.health + " energy " + this.energy + " hunger " + this.hunger);
+        System.out.println("health " + this.health );
     }
 
     private boolean isWithinTerritory(Location loc) {
@@ -66,17 +67,16 @@ public class Bear extends Animal implements Actor, Herbivore, Carnivore {
     }
 
     @Override
-    public void eatHerb(World world) {
-        if (hunger <= 75) {
+    public void eat(World world) {
+        if (health <= 60) {
             System.out.println("Attempting to eat berries");
             try {
                 for (Location loc : world.getSurroundingTiles(initialLocation)) {
                     Object object = world.getTile(loc);
-                    if (object instanceof Berry) {
-                        Berry berry = (Berry) object;
-                        berry.eaten();
-                        this.hunger += 50;
-                        this.energy += 25;
+                    if (object instanceof Bush) {
+                        Bush bush = (Bush) object;
+                        bush.eaten();
+                        this.health += 40;
                         System.out.println("I sucessfully ate");
                     }
                     world.step();
@@ -92,8 +92,8 @@ public class Bear extends Animal implements Actor, Herbivore, Carnivore {
         }
     }
 
-    // @Override
-    // public void eatMeat(World world) {
-
-    // }
+    @Override
+    public void reproduce() {
+        // Lav om på reproduce metode
+    }
 }
