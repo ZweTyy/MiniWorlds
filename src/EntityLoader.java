@@ -51,7 +51,7 @@ public class EntityLoader {
 
     private static void placeEntity(World world, Entity entity) {
         Location location = entity.getLocation();
-        if (world.isTileEmpty(location)) {
+        if (world.isTileEmpty(location) && !world.containsNonBlocking(location)) {
             world.setTile(location, entity);
         }
     }
