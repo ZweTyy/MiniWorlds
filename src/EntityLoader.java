@@ -28,7 +28,7 @@ public class EntityLoader {
             case "burrow":
                 return BurrowFactory.createBurrow(world, size);
             case "wolf":
-                return WolfFactory.createWolf(world, size);
+                return WolfFactory.createWolf(world, size, details);
             case "bear":
                 return createBear(world, size, details);
             case "berry":
