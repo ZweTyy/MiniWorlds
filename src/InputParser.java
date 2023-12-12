@@ -42,6 +42,10 @@ public class InputParser {
                     int quantity = Integer.parseInt(parts[1]);
                     quantityRange = new Integer[] { quantity, x, y };
                 }
+                if (parts[0].equals("wolf") && parts.length > 1) {
+                    int quantity = Integer.parseInt(parts[1]);
+                    quantityRange = new Integer[] { quantity };
+                }
                 elementsToAdd.put(parts[0], quantityRange);
             }
             br.close();

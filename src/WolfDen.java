@@ -11,7 +11,6 @@ public class WolfDen extends Entity implements NonBlocking {
 
     public WolfDen(World world, int size) {
         super(world, size);
-        //TODO Auto-generated constructor stub
     }
 
 }

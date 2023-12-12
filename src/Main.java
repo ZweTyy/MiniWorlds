@@ -2,20 +2,14 @@ import itumulator.executable.DisplayInformation;
 import itumulator.executable.Program;
 import itumulator.world.World;
 import java.awt.Color;
-import java.awt.geom.QuadCurve2D;
-import java.util.Random;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.util.Map;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
 import itumulator.world.Location;
 
 public class Main {
 
     public static void main(String[] args) {
-        InputParser parser = new InputParser("./data/input-filer/t2-2a.txt"); // Opret en ny parser
+        InputParser parser = new InputParser("./data/input-filer/t1-1a.txt"); // Opret en ny parser
         Map<String, Integer[]> elementsToAdd = parser.parseInput(); // Kør parseren og få en map med elementer der skal
                                                                     // tilføjes
         int size = parser.getSize(); // Hiv størrelsen på verdenen ud
@@ -41,7 +35,9 @@ public class Main {
 
         p.show();
         Rabbit.resetRabbitCount();
-        EntityLoader.loadEntities(world, elementsToAdd, size);
+
+        EntityLoader.loadEntities(world, elementsToAdd, size); // Tilføj alle elementer til verdenen
+
         int initialRabbitCount = countRabbits(world);
         System.out.println("Initial rabbit count: " + initialRabbitCount);
 
@@ -61,12 +57,5 @@ public class Main {
             }
         }
         return rabbitCount;
-    }
-
-    public static void placeEntity(World world, Entity entity, int size) {
-        Location location = entity.getLocation();
-        if (world.isTileEmpty(location)) {
-            world.setTile(location, entity);
-        }
     }
 }

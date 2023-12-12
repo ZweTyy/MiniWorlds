@@ -111,17 +111,17 @@ public class Rabbit extends Animal implements Actor {
     public void eat(World world) {
         if (health <= 50) {
             System.out.println("Attempting to eat");
-                if (!(world.containsNonBlocking(this.getLocation()))) {
-                    world.step();
-                    System.out.println("Nothing to eat");
-                    return;
-                }
-                if ((world.getNonBlocking(this.getLocation()) instanceof Grass)) {
-                    Grass grass = (Grass) world.getNonBlocking(this.getLocation());
-                    grass.die(world);
-                    this.health += 50;
-                    System.out.println("I sucessfully ate");
-            }   
+            if (!(world.containsNonBlocking(this.getLocation()))) {
+                world.step();
+                System.out.println("Nothing to eat");
+                return;
+            }
+            if ((world.getNonBlocking(this.getLocation()) instanceof Grass)) {
+                Grass grass = (Grass) world.getNonBlocking(this.getLocation());
+                grass.die(world);
+                this.health += 50;
+                System.out.println("I sucessfully ate");
+            }
         }
     }
 
@@ -271,8 +271,8 @@ public class Rabbit extends Animal implements Actor {
         this.hasReproducedThisTurn = hasReproduced;
     }
 
-    @Override
-    public void reproduce() {
-        // Lav om på reproduce metode
-    }
+    // @Override
+    // public void reproduce() {
+    // // Lav om på reproduce metode
+    // }
 }

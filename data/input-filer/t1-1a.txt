@@ -1,2 +1,3 @@
 5
 grass 3
+wolf 3

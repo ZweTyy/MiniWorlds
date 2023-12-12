@@ -19,6 +19,7 @@ public class EntityLoader {
         }
     }
 
+    // Metoden laver en entity fra input filen
     private static Entity createEntity(String entityType, World world, int size, Integer[] details) {
         switch (entityType) {
             case "rabbit":
@@ -28,7 +29,7 @@ public class EntityLoader {
             case "burrow":
                 return BurrowFactory.createBurrow(world, size);
             case "wolf":
-                return WolfFactory.createWolf(world, size);
+                return WolfFactory.createWolf(world, size, details);
             case "bear":
                 return createBear(world, size, details);
             case "berry":

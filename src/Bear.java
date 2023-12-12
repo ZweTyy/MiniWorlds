@@ -57,7 +57,7 @@ public class Bear extends Animal implements Actor {
             System.out.println("age " + this.age);
         }
         super.updateStats();
-        System.out.println("health " + this.health );
+        System.out.println("health " + this.health);
     }
 
     private boolean isWithinTerritory(Location loc) {
@@ -90,10 +90,5 @@ public class Bear extends Animal implements Actor {
                 return;
             }
         }
-    }
-
-    @Override
-    public void reproduce() {
-        // Lav om på reproduce metode
     }
 }
