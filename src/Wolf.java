@@ -27,19 +27,20 @@ public class Wolf extends Animal implements Actor {
 
     @Override
     public void act(World world) {
-        if (world.isNight()) {
+        if (world.isDay()) {
             sleep();
         } else {
-            performDailyActivities(world);
+            performNightlyActivities(world);
         }
     }
 
-    private void performDailyActivities(World world) {
+    private void performNightlyActivities(World world) {
         hasReproducedThisTurn = false;
         move(world); // Assuming move is defined in Animal
         eat(world);
         if (!hasReproducedThisTurn) {
             reproduce(world, world.getSize());
+            //move reproduce to day
         }
     }
 
@@ -48,13 +49,19 @@ public class Wolf extends Animal implements Actor {
     public void eat(World world) {
         // Eat rabbit
         // check surroundings for rabbit
-        if (health <= 50) {
+        if (energy <= 50) {
             System.out.println("Attempting to eat");
             if ((world.getSurroundingTiles(this.getLocation()) instanceof Rabbit)) {
                 Rabbit rabbit = (Rabbit) world.getSurroundingTiles(this.getLocation());
                 world.delete(rabbit); // eat babbit if instance of rabbit
-                this.health += 50;// increase health
+                this.energy += 50;// increase health
                 System.out.println("I sucessfully ate a rabbit");
+            }
+            else if ((world.getSurroundingTiles(this.getLocation()) instanceof Mole)) {
+                Mole mole = (Mole) world.getSurroundingTiles(this.getLocation());
+                world.delete(mole); // eat babbit if instance of rabbit
+                this.energy += 40;// increase health
+                System.out.println("I sucessfully ate a mole");
             }
             // Eat bear if pack over 3
             // check the surroundings of all of the packmembers locations for bears
@@ -62,7 +69,7 @@ public class Wolf extends Animal implements Actor {
                 if ((world.getSurroundingTiles(wolf.getLocation()) instanceof Bear) && myPack.getPack().size() > 3) {
                     Bear bear = (Bear) world.getSurroundingTiles(wolf.getLocation());
                     world.delete(bear); // if there is a bear delete
-                    this.health += 50; // increase health
+                    this.energy += 50; // increase health
                     System.out.println("We ate a bear");
                 }
             }
