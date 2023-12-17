@@ -18,6 +18,7 @@ public class Rabbit extends Animal implements Actor, Herbivore {
     private volatile boolean hasReproducedThisTurn = false;
     private volatile boolean hidden;
     private static int amountOfRabbits = 0;
+
     /**
      * Constructs a Rabbit with a reference to the world it belongs to and its size.
      *
@@ -76,6 +77,21 @@ public class Rabbit extends Animal implements Actor, Herbivore {
     public void move(World world) {
         // We need to implement flee logic here
         super.move(world);
+    }
+
+    /**
+     * Defines the actions the rabbit takes in each simulation step.
+     * The rabbit sleeps during the night and may move, eat, and reproduce during the day.
+     *
+     * @param world the world in which the rabbit acts.
+     */
+    public void performDailyActivities(World world) {
+        hasReproducedThisTurn = false;
+        move(world); // Assuming move is defined in Animal
+        eatHerb(world);
+        if (!hasReproducedThisTurn) {
+            reproduce(world, world.getSize());
+        }
     }
 
     /**
@@ -307,15 +323,6 @@ public class Rabbit extends Animal implements Actor, Herbivore {
     private boolean isEligibleForReproduction() {
         return this.age == 4 && this.energy >= 25 && !hasReproducedThisTurn
                 && Rabbit.amountOfRabbits < world.getSize() * world.getSize() / 4;
-    }
-
-    private void performDailyActivities(World world) {
-        hasReproducedThisTurn = false;
-        move(world); // Assuming move is defined in Animal
-        eatHerb(world);
-        if (!hasReproducedThisTurn) {
-            reproduce(world, world.getSize());
-        }
     }
 
     private State determineState(World world, boolean hidden, Burrow myBurrow) {
