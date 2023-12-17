@@ -2,7 +2,7 @@ import itumulator.executable.DisplayInformation;
 import itumulator.executable.Program;
 import itumulator.world.World;
 import java.awt.Color;
-
+import java.util.List;
 import java.util.Map;
 import itumulator.world.Location;
 
@@ -10,7 +10,7 @@ public class Main {
 
     public static void main(String[] args) {
         InputParser parser = new InputParser("./data/input-filer/t1-1a.txt"); // Opret en ny parser
-        Map<String, Integer[]> elementsToAdd = parser.parseInput(); // Kør parseren og få en map med elementer der skal
+        Map<String, List<Integer[]>> elementsToAdd = parser.parseInput(); // Kør parseren og få en map med elementer der skal
                                                                     // tilføjes
         int size = parser.getSize(); // Hiv størrelsen på verdenen ud
         int delay = 1000; // Forsinkelsen mellem hver skridt af simulationen (i ms)

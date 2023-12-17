@@ -1,25 +1,32 @@
 import itumulator.world.Location;
 import itumulator.world.World;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class EntityLoader {
-    public static void loadEntities(World world, Map<String, Integer[]> entitiesToLoad, int size) {
+    public static void loadEntities(World world, Map<String, List<Integer[]>> entitiesToLoad, int size) {
         // Vi løber igennem alle de entities, som vi skal loade
-        for (Map.Entry<String, Integer[]> entry : entitiesToLoad.entrySet()) {
+        for (Map.Entry<String, List<Integer[]>> entry : entitiesToLoad.entrySet()) {
             String entityType = entry.getKey();
-            Integer[] entityQuantity = entry.getValue();
+            List<Integer[]> entityQuantities = entry.getValue();
             // Den kører for hver entity, som vi skal loade
-            for (int i = 0; i < entityQuantity[0]; i++) {
-                Entity entity = createEntity(entityType, world, size, entityQuantity);
+            for (Integer[] entityQuantity : entityQuantities) {
+                List<Integer[]> detailsList = new ArrayList<>();
+                detailsList.add(entityQuantity);
+
+                for (int i = 0; i < entityQuantity[0]; i++) {
+                Entity entity = createEntity(entityType, world, size, detailsList);
                 if (entity != null) {
                     placeEntity(world, entity);
                 }
             }
+            }
         }
     }
 
-    private static Entity createEntity(String entityType, World world, int size, Integer[] details) {
+    private static Entity createEntity(String entityType, World world, int size, List<Integer[]> details) {
         switch (entityType) {
             case "rabbit":
                 return RabbitFactory.createRabbit(world, size);
@@ -39,10 +46,12 @@ public class EntityLoader {
         }
     }
 
-    private static Bear createBear(World world, int size, Integer[] details) {
-        if (details.length > 2 && details[1] != null && details[2] != null) {
+    private static Bear createBear(World world, int size, List<Integer[]> details) {
+        if (details.size() > 2 && details.get(1) != null && details.get(2) != null) {
             // If specific coordinates are provided
-            return BearFactory.createBear(world, size, details[1], details[2]);
+            Integer x = details.get(0)[1];
+            Integer y = details.get(0)[2];
+            return BearFactory.createBear(world, size, x, y);
         } else {
             // If no coordinates provided, let the factory decide
             return BearFactory.createBear(world, size);

@@ -24,6 +24,7 @@ public class Wolf extends Animal implements Actor, Carnivore {
             sleep();
         } else {
             move(world);
+            System.out.println(myPack.getPack().size());
         }
     }
 }

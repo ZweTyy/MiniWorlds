@@ -1,6 +1,8 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -12,9 +14,9 @@ public class InputParser {
         this.filePath = filePath;
     }
 
-    public Map<String, Integer[]> parseInput() {
+    public Map<String, List<Integer[]>> parseInput() {
         final Random r = new Random(); // Laver en ny random generator
-        Map<String, Integer[]> elementsToAdd = new LinkedHashMap<>();
+        Map<String, List<Integer[]>> elementsToAdd = new LinkedHashMap<>();
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line = br.readLine();
             if (line != null) { // Sætter værdien af size til det første tal i filen
@@ -46,7 +48,12 @@ public class InputParser {
                     int quantity = Integer.parseInt(parts[1]);
                     quantityRange = new Integer[] { quantity };
                 }
-                elementsToAdd.put(parts[0], quantityRange);
+                List<Integer[]> quantities = elementsToAdd.get(parts[0]);
+                if (quantities == null) {
+                    quantities = new ArrayList<>();
+                    elementsToAdd.put(parts[0], quantities);
+                }
+                quantities.add(quantityRange);
             }
             br.close();
         } catch (Exception e) {
