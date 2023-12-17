@@ -11,19 +11,18 @@ public class RabbitTest {
     private Rabbit rabbit;
     private World world;
 
-    @Before
-    public void setUp() {
-        world = new World(10);
-        rabbit = new Rabbit(world, 10);
-    }
 
     @Test
     public void createRabbit() {
+        world = new World(10);
+        rabbit = new Rabbit(world, 10);
         assertNotNull("Rabbit should not be null", rabbit);
     }
 
     @Test
     public void rabbitLocationShouldChange() {
+        world = new World(10);
+        rabbit = new Rabbit(world, 10);
         Location initialLocation = new Location(5, 5);
         rabbit.move(world);
 
@@ -68,11 +67,13 @@ public class RabbitTest {
     @Test
     public void testEatHerb() {
         // Setup conditions for eating (e.g., place a Grass object at rabbit's location)
+        world = new World(1);
+        rabbit = new Rabbit(world, 1);
         Location rabbitLocation = rabbit.getLocation();
-        Grass grass = new Grass(world, 10);
+        Grass grass = new Grass(world, 1);
         world.setTile(rabbitLocation, grass); // Assuming method to place grass in the world
 
-        double initialEnergy = rabbit.getEnergy(); // Assuming getter for energy
+        double initialEnergy = rabbit.getEnergy();
         rabbit.eatHerb(world);
 
         assertTrue("Rabbit's energy should increase after eating", rabbit.getEnergy() > initialEnergy);

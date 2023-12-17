@@ -1,3 +1,6 @@
+package entities;
+
+
 import itumulator.world.Location;
 import itumulator.world.World;
 

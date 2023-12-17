@@ -1,9 +1,16 @@
+package utilities;
+
 import itumulator.world.Location;
 import itumulator.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import entities.Bear;
+import entities.BurrowFactory;
+import entities.Entity;
+import factories.BerryFactory;
 
 public class EntityLoader {
     public static void loadEntities(World world, Map<String, List<Integer[]>> entitiesToLoad, int size) {

@@ -1,7 +1,9 @@
-import java.util.ArrayList;
+package entities;
+
 import java.util.List;
 import java.util.Set;
 
+import WolfPack;
 import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
@@ -53,9 +55,7 @@ public class Wolf extends Animal implements Actor, Carnivore {
 
         Location closestLocation = nearbyWolves.get(0).getLocation();
         // Move towards the closest pack member
-        Set<Location> neighbours = world.getEmptySurroundingTiles(); // Hent alle tomme nabo tiles
-        List<Location> validLocations = new ArrayList<>(neighbours); // Lav en liste med alle tomme nabo tiles
-        if (!validLocations.isEmpty()) {
+        if (world.isTileEmpty(closestLocation)) {
             System.out.println("Moving towards pack member at: " + closestLocation);
             world.move(this, closestLocation);
         }

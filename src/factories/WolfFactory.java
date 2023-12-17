@@ -1,5 +1,9 @@
+package factories;
+
 import java.util.List;
 
+import WolfPack;
+import entities.Wolf;
 import itumulator.world.World;
 
 public class WolfFactory {

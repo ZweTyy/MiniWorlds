@@ -1,3 +1,6 @@
+package factories;
+
+import entities.Berry;
 import itumulator.world.World;
 
 public class BerryFactory {

@@ -1,3 +1,6 @@
+package factories;
+
+import entities.Grass;
 import itumulator.world.World;
 
 public class GrassFactory {

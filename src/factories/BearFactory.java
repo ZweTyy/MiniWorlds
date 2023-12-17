@@ -1,3 +1,5 @@
+package factories;
+
 import itumulator.world.World;
 
 public class BearFactory {

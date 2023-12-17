@@ -1,3 +1,6 @@
+package factories;
+
+import entities.Rabbit;
 import itumulator.world.World;
 
 public class RabbitFactory {
