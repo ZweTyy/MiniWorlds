@@ -13,15 +13,22 @@ public class EntityLoader {
             List<Integer[]> entityQuantities = entry.getValue();
             // Den kører for hver entity, som vi skal loade
             for (Integer[] entityQuantity : entityQuantities) {
-                List<Integer[]> detailsList = new ArrayList<>();
-                detailsList.add(entityQuantity);
-
-                for (int i = 0; i < entityQuantity[0]; i++) {
-                Entity entity = createEntity(entityType, world, size, detailsList);
-                if (entity != null) {
-                    placeEntity(world, entity);
+                // For wolf entities, handle the entire pack creation in one go
+                if ("wolf".equals(entityType)) {
+                    int numberOfWolves = entityQuantity[0];
+                    WolfPack wolfPack = WolfFactory.createWolfPack(world, size, numberOfWolves);
+                    for (Wolf wolf : wolfPack.getPack()) {
+                        System.out.println("Created wolf: " + wolf);
+                        placeEntity(world, wolf);
+                    }
+                } else {
+                    // For all other entities, create and place them one by one
+                    Entity entity = createEntity(entityType, world, size, entityQuantities);
+                    System.out.println("Created entity: " + entity);
+                    if (entity != null) {
+                        placeEntity(world, entity);
+                    }
                 }
-            }
             }
         }
     }
@@ -35,7 +42,8 @@ public class EntityLoader {
             case "burrow":
                 return BurrowFactory.createBurrow(world, size);
             case "wolf":
-                return WolfFactory.createWolf(world, size, details);
+                int numberOfWolves = details.get(0)[0];
+                return WolfFactory.createWolfPack(world, size, numberOfWolves);
             case "bear":
                 return createBear(world, size, details);
             case "berry":

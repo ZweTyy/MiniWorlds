@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import itumulator.world.Location;
 import itumulator.world.World;
 
-public class WolfPack {
+public class WolfPack extends Entity {
 
     // Need an instance variable list with all wolves in pack
     private List<Wolf> wolfPack;
 
     public WolfPack(World world, int size) {
+        super(world, size);
         this.wolfPack = new ArrayList<>();
     }
 
@@ -37,6 +38,11 @@ public class WolfPack {
 
     public void addMember(Wolf wolf) {
         wolfPack.add(wolf);
+        if (wolfPack.size() == 1) {
+            // If this is the first wolf in the pack, make it the alpha
+            System.out.println("First wolf in pack, setting as alpha: " + wolf);
+            wolf.setIsAlpha(true);
+        }
     }
 
     public Wolf getAlpha() {

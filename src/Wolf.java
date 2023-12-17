@@ -1,15 +1,19 @@
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
 
 public class Wolf extends Animal implements Actor, Carnivore {
+    private boolean isAlpha;
     private WolfPack myPack;
 
     public Wolf(World world, int size) {
         super(world, size);
         this.MAX_AGE = 14;
+        this.isAlpha = false;
     }
 
     @Override
@@ -17,6 +21,9 @@ public class Wolf extends Animal implements Actor, Carnivore {
         if (world.isNight()) {
             sleep();
         } else {
+            if (isAlpha()) {
+                move(world);
+            }
             seekPackAndHunt(world);
         }
     }
@@ -46,7 +53,12 @@ public class Wolf extends Animal implements Actor, Carnivore {
 
         Location closestLocation = nearbyWolves.get(0).getLocation();
         // Move towards the closest pack member
-        world.move(this, closestLocation);
+        Set<Location> neighbours = world.getEmptySurroundingTiles(); // Hent alle tomme nabo tiles
+        List<Location> validLocations = new ArrayList<>(neighbours); // Lav en liste med alle tomme nabo tiles
+        if (!validLocations.isEmpty()) {
+            System.out.println("Moving towards pack member at: " + closestLocation);
+            world.move(this, closestLocation);
+        }
     }
 
     private void hunt(World world) {
@@ -59,5 +71,13 @@ public class Wolf extends Animal implements Actor, Carnivore {
     public void joinPack(WolfPack pack) {
         this.myPack = pack;
         pack.addMember(this);
+    }
+
+    public void setIsAlpha(boolean isAlpha) {
+        this.isAlpha = isAlpha;
+    }
+
+    public boolean isAlpha() {
+        return isAlpha;
     }
 }
