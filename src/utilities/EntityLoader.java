@@ -10,6 +10,13 @@ import java.util.Map;
 import entities.Bear;
 import entities.BurrowFactory;
 import entities.Entity;
+import entities.Rabbit;
+import entities.Wolf;
+import entities.WolfPack;
+import factories.GrassFactory;
+import factories.RabbitFactory;
+import factories.WolfFactory;
+import factories.BearFactory;
 import factories.BerryFactory;
 
 public class EntityLoader {

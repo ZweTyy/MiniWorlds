@@ -1,6 +1,5 @@
 package entities;
 
-import Nature;
 import itumulator.executable.Program;
 import itumulator.simulator.Actor;
 import itumulator.world.NonBlocking;

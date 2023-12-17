@@ -9,9 +9,6 @@ import itumulator.world.NonBlocking;
 
 import java.util.Random;
 
-import Entity;
-import Rabbit;
-
 public class Burrow extends Entity implements NonBlocking {
     private List<Rabbit> rabbits;
     protected static final int MAX_CAPACITY = 3;

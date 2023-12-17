@@ -1,9 +1,20 @@
 import itumulator.executable.DisplayInformation;
 import itumulator.executable.Program;
 import itumulator.world.World;
+import utilities.EntityLoader;
+import utilities.InputParser;
+
 import java.awt.Color;
 import java.util.List;
 import java.util.Map;
+
+import entities.Bear;
+import entities.Berry;
+import entities.Burrow;
+import entities.Grass;
+import entities.Rabbit;
+import entities.Wolf;
+import entities.WolfPack;
 import itumulator.world.Location;
 
 public class Main {

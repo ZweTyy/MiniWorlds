@@ -2,9 +2,6 @@ package entities;
 
 import java.util.Random;
 import java.util.Set;
-
-import Nature;
-
 import java.util.ArrayList;
 import java.util.List;
 import itumulator.world.Location;

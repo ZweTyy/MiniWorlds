@@ -1,4 +1,4 @@
-package animals;
+package entities;
 
 import itumulator.simulator.Actor;
 import itumulator.world.Location;
@@ -7,10 +7,6 @@ import itumulator.world.World;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
-import Berry;
-import Carnivore;
-import Herbivore;
 
 public class Bear extends Animal implements Actor, Herbivore, Carnivore {
     private Location initialTerritoryLocation;

@@ -1,5 +1,6 @@
 package factories;
 
+import entities.Bear;
 import itumulator.world.World;
 
 public class BearFactory {
