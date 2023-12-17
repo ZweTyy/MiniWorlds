@@ -50,7 +50,7 @@ public abstract class Animal extends Entity {
             System.out.println("age " + this.age);
         }
         updateStats();
-        System.out.println("energi " + this.energy );
+        System.out.println("energy " + this.energy );
     }
 
     public void sleep() {

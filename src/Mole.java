@@ -21,7 +21,7 @@ public class Mole extends Animal implements Actor {
     }
 
     @Override
-    public void sleep(World world) {
+    public void sleep() {
         if(world.getCurrentTime() % 5 == 0 && world.getCurrentTime() % 4 == 0 ){
             return;
         } else {
@@ -60,7 +60,7 @@ public class Mole extends Animal implements Actor {
     public void act(World world) {
         hasReproducedThisTurn = false;
         eat(world);
-        sleep(world);
+        sleep();
         move(world); // when moles are above earth they are gathering supplies and can be eaten
         if (!hasReproducedThisTurn) {
             reproduce(world, world.getSize());

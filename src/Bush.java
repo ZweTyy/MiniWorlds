@@ -34,6 +34,7 @@ public class Bush extends Nature implements Actor {
 
     public void grow(World world, int size) {
         // Berries skal gro tilbage
+        
     }
 
     public void decay(World world) {

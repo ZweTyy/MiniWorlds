@@ -66,14 +66,14 @@ public class RabbitTest {
     }
 
     @Test
-    public void testEatHerb() {
+    public void testEat() {
         // Setup conditions for eating (e.g., place a Grass object at rabbit's location)
         Location rabbitLocation = rabbit.getLocation();
         Grass grass = new Grass(world, 10);
         world.setTile(rabbitLocation, grass); // Assuming method to place grass in the world
 
         double initialEnergy = rabbit.getEnergy(); // Assuming getter for energy
-        rabbit.eatHerb(world);
+        rabbit.eat(world);
 
         assertTrue("Rabbit's energy should increase after eating", rabbit.getEnergy() > initialEnergy);
     }
