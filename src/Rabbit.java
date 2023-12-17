@@ -85,7 +85,7 @@ public class Rabbit extends Animal implements Actor {
     }
 
     private boolean isEligibleForReproduction() {
-        return this.age == 4 && this.health >= 25 && !hasReproducedThisTurn
+        return this.age == 4 && this.energy >= 25 && !hasReproducedThisTurn
                 && Rabbit.amountOfRabbits < world.getSize() * world.getSize() / 4;
     }
 
@@ -103,13 +103,13 @@ public class Rabbit extends Animal implements Actor {
     }
 
     private void consumeReproductionEnergy() {
-        this.health -= 10;
+        this.energy -= 10;
         this.hasReproducedThisTurn = true;
     }
 
     @Override
     public void eat(World world) {
-        if (health <= 50) {
+        if (energy <= 50) {
             System.out.println("Attempting to eat");
             if (!(world.containsNonBlocking(this.getLocation()))) {
                 world.step();
@@ -119,7 +119,7 @@ public class Rabbit extends Animal implements Actor {
             if ((world.getNonBlocking(this.getLocation()) instanceof Grass)) {
                 Grass grass = (Grass) world.getNonBlocking(this.getLocation());
                 grass.die(world);
-                this.health += 50;
+                this.energy += 50;
                 System.out.println("I sucessfully ate");
             }
         }
@@ -217,14 +217,14 @@ public class Rabbit extends Animal implements Actor {
     private synchronized void enterBurrow(World world, Burrow burrow) {
         System.out.println("Trying to enter burrow");
         // Vi tjekker om kaninen kan komme ind i hullet
-        if (burrow != null && burrow.addRabbit(this) && health > 0) {
+        if (burrow != null && burrow.addRabbit(this) && energy > 0) {
             System.out.println("Rabbit entering burrow at: " + burrow.getLocation());
             world.remove(this); // Fjerne kaninen fra verdenen
             this.hidden = true;
             this.myBurrow = burrow; // Sætte kaninens hul til at være det hul den har fundet
             System.out.println("Rabbit location er: " + currentLocation);
         }
-        this.health -= 25;
+        this.energy -= 25;
     }
 
     private synchronized void leaveBurrow(World world) {
