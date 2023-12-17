@@ -50,18 +50,18 @@ public class Wolf extends Animal implements Actor {
         // Eat rabbit
         // check surroundings for rabbit
         if (energy <= 50) {
-            System.out.println("Attempting to eat");
+            System.out.println("Wolf attempting to eat");
             if ((world.getSurroundingTiles(this.getLocation()) instanceof Rabbit)) {
                 Rabbit rabbit = (Rabbit) world.getSurroundingTiles(this.getLocation());
                 world.delete(rabbit); // eat babbit if instance of rabbit
                 this.energy += 50;// increase energy
-                System.out.println("I sucessfully ate a rabbit");
+                System.out.println("Wolf sucessfully ate a rabbit");
             }
             else if ((world.getSurroundingTiles(this.getLocation()) instanceof Mole)) {
                 Mole mole = (Mole) world.getSurroundingTiles(this.getLocation());
                 world.delete(mole); // eat babbit if instance of rabbit
                 this.energy += 40;// increase energy
-                System.out.println("I sucessfully ate a mole");
+                System.out.println("Wolf sucessfully ate a mole");
             }
             // Eat bear if pack over 3
             // check the surroundings of all of the packmembers locations for bears
@@ -70,7 +70,10 @@ public class Wolf extends Animal implements Actor {
                     Bear bear = (Bear) world.getSurroundingTiles(wolf.getLocation());
                     world.delete(bear); // if there is a bear delete
                     this.energy += 50; // increase energy
-                    System.out.println("We ate a bear");
+                    System.out.println("Wolves ate a bear");
+                } else {
+                    world.delete(wolf);
+                    System.out.println("Bear ate wolves");
                 }
             }
         }

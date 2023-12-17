@@ -91,4 +91,12 @@ public abstract class Animal extends Entity {
     public int getAge() {
         return this.age;
     }
+
+    public int setEnergy(int energy) {
+        return this.energy = energy;
+    }
+
+    public int getEnergy() {
+        return this.energy;
+    }
 }
