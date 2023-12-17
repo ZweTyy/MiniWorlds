@@ -10,7 +10,7 @@ public abstract class Animal extends Entity {
     protected boolean alive = true;
     protected volatile boolean hasReproducedThisTurn = false;
     protected int age = 1;
-    protected int health = 100;
+    protected int energy = 100;
     protected int stepsTaken = 0;
     protected int MAX_AGE;
     List<Class> foods; 
@@ -30,13 +30,13 @@ public abstract class Animal extends Entity {
         }
         Set<Location> neighbours = world.getEmptySurroundingTiles(); // Hent alle tomme nabo tiles
         List<Location> validLocations = new ArrayList<>(neighbours); // Lav en liste med alle tomme nabo tiles
-        if (validLocations.isEmpty() || health <= 0) { // Hvis der ikke er nogen tomme nabo tiles skipper vi eller hvis
+        if (validLocations.isEmpty() || energy <= 0) { // Hvis der ikke er nogen tomme nabo tiles skipper vi eller hvis
                                                        // kaninen ikke har energi
             System.out.println(getClass().getSimpleName() + this + " has no energy or no empty neighbouring tiles.");
-            this.health -= 10;
+            this.energy -= 10;
             return;
         }
-        if (!validLocations.isEmpty() && health > 0) { // Hvis der er tomme nabo tiles og kaninen har energi bevæger den
+        if (!validLocations.isEmpty() && energy > 0) { // Hvis der er tomme nabo tiles og kaninen har energi bevæger den
                                                        // sig
             int randomIndex = r.nextInt(validLocations.size());
             Location newLocation = validLocations.get(randomIndex);
@@ -45,16 +45,16 @@ public abstract class Animal extends Entity {
             world.setCurrentLocation(initialLocation);
             System.out.println(getClass().getSimpleName() + this + " moving to: " + newLocation);
 
-            this.health -= 7.5;
+            this.energy -= 7.5;
             this.stepsTaken++;
             System.out.println("age " + this.age);
         }
         updateStats();
-        System.out.println("health " + this.health );
+        System.out.println("energi " + this.energy );
     }
 
     public void sleep() {
-        this.health += 20;
+        this.energy += 20;
         this.stepsTaken++;
     }
 
@@ -62,7 +62,7 @@ public abstract class Animal extends Entity {
         if (this.stepsTaken % 5 == 0) {
             this.age++;
         }
-        if (this.health <= 0 || this.age >= MAX_AGE) {
+        if (this.energy <= 0 || this.age >= MAX_AGE) {
             this.alive = false;
             world.delete(this);
         }
