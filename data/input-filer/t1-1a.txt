@@ -1,4 +1,3 @@
-5
+15
 grass 3
 wolf 3
-wolf 4

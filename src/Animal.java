@@ -20,9 +20,9 @@ public abstract class Animal extends Entity {
     }
 
     protected synchronized void move(World world) {
-        System.out.println(getClass().getSimpleName() + this + " moving from: " + initialLocation);
+        // System.out.println(getClass().getSimpleName() + this + " moving from: " + initialLocation);
         if (world.getCurrentLocation() == null || !alive) {
-            System.out.println(getClass().getSimpleName() + this + " is dead or has no location.");
+            // System.out.println(getClass().getSimpleName() + this + " is dead or has no location.");
             return;
         }
         Set<Location> neighbours = world.getEmptySurroundingTiles(); // Hent alle tomme nabo tiles
@@ -40,15 +40,15 @@ public abstract class Animal extends Entity {
             this.initialLocation = newLocation;
             world.move(this, initialLocation);
             world.setCurrentLocation(initialLocation);
-            System.out.println(getClass().getSimpleName() + this + " moving to: " + newLocation);
+            // System.out.println(getClass().getSimpleName() + this + " moving to: " + newLocation);
 
             this.energy -= 2.5;
             this.hunger -= 5.0;
             this.stepsTaken++;
-            System.out.println("age " + this.age);
+            // System.out.println("age " + this.age);
         }
         updateStats();
-        System.out.println("health " + this.health + " energy " + this.energy + " hunger " + this.hunger);
+        // System.out.println("health " + this.health + " energy " + this.energy + " hunger " + this.hunger);
     }
 
     public void sleep() {
