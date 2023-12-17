@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Set;
 
 import itumulator.simulator.Actor;
 import itumulator.world.Location;
@@ -7,10 +8,12 @@ import itumulator.world.World;
 
 public class Wolf extends Animal implements Actor {
     private WolfPack myPack;
+    private boolean alpha;
 
-    public Wolf(World world, int size) {
+    public Wolf(World world, int size, boolean isAlpha) {
         super(world, size);
         this.MAX_AGE = 14;
+        this.alpha = isAlpha;
     }
 
     public void setPack(WolfPack pack) {
@@ -40,23 +43,9 @@ public class Wolf extends Animal implements Actor {
         }
     }
 
-    // @Override
-    // public void reproduce(World world, int size) {
-    // // Lav om på reproduce metode
-    // if (world.isDay()) {
-    // Location newLocation = generateRandomLocation(world.getSize());
-    // if (newLocation == null) {
-    // return;
-    // }
-    // Rabbit newRabbit = new Rabbit(world, size);
-    // world.setCurrentLocation(newLocation);
-    // world.setTile(newLocation, newRabbit);
-    // }
-    // }
 
     @Override
     public void eat(World world) {
-        ArrayList<Wolf> wolfPack = new ArrayList<Wolf>(Arrays.asList(new Wolf(world, 1)));
         // Eat rabbit
         // check surroundings for rabbit
         if (health <= 50) {
@@ -69,9 +58,9 @@ public class Wolf extends Animal implements Actor {
             }
             // Eat bear if pack over 3
             // check the surroundings of all of the packmembers locations for bears
-            for (Wolf mate : wolfPack) {
-                if ((world.getSurroundingTiles(mate.getLocation()) instanceof Bear)) {
-                    Bear bear = (Bear) world.getSurroundingTiles(mate.getLocation());
+            for (Wolf wolf : myPack.getPack()) {
+                if ((world.getSurroundingTiles(wolf.getLocation()) instanceof Bear) && myPack.getPack().size() > 3) {
+                    Bear bear = (Bear) world.getSurroundingTiles(wolf.getLocation());
                     world.delete(bear); // if there is a bear delete
                     this.health += 50; // increase health
                     System.out.println("We ate a bear");
@@ -79,6 +68,24 @@ public class Wolf extends Animal implements Actor {
             }
         }
 
+    }
+
+    private void goToAlpha(){
+        Location alphaLocation = (myPack.getAlpha().getLocation());
+        Set<Location> emptyTiles = world.getEmptySurroundingTiles(alphaLocation);
+        for(Location emptyTile : emptyTiles){
+            this.setLocation(emptyTile);
+            break;
+        }
+    }
+
+    @Override
+    protected void move(World world){
+        if(alpha){
+            super.move(world);
+        } else {
+            goToAlpha();
+        }
     }
 
 }
