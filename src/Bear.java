@@ -43,7 +43,7 @@ public class Bear extends Animal implements Actor {
             }
         }
 
-        if (!validLocations.isEmpty() && health > 0) { // Hvis der er tomme nabo tiles og bjørnen har energi bevæger den
+        if (!validLocations.isEmpty() && energy > 0) { // Hvis der er tomme nabo tiles og bjørnen har energi bevæger den
                                                        // sig
             int randomIndex = r.nextInt(validLocations.size());
             Location newLocation = validLocations.get(randomIndex);
@@ -52,12 +52,12 @@ public class Bear extends Animal implements Actor {
             world.setCurrentLocation(initialLocation);
             System.out.println(getClass().getSimpleName() + this + " moving to: " + newLocation);
 
-            this.health -= 5;
+            this.energy -= 5;
             this.stepsTaken++;
             System.out.println("age " + this.age);
         }
         super.updateStats();
-        System.out.println("health " + this.health);
+        System.out.println("energy " + this.energy);
     }
 
     private boolean isWithinTerritory(Location loc) {
@@ -68,16 +68,22 @@ public class Bear extends Animal implements Actor {
 
     @Override
     public void eat(World world) {
-        if (health <= 60) {
-            System.out.println("Attempting to eat berries");
+        if (energy <= 60) {
+            System.out.println("Attempting to eat");
             try {
                 for (Location loc : world.getSurroundingTiles(initialLocation)) {
                     Object object = world.getTile(loc);
                     if (object instanceof Bush) {
                         Bush bush = (Bush) object;
                         bush.eaten();
-                        this.health += 40;
-                        System.out.println("I sucessfully ate");
+                        this.energy += 40;
+                        System.out.println("I sucessfully ate berries");
+                    }
+                    if (object instanceof Mole) {
+                        Mole mole = (Mole) object;
+                        world.delete(mole);
+                        this.energy += 30;
+                        System.out.println("I sucessfully a mole");
                     }
                     world.step();
                     System.out.println("Nothing to eat");
