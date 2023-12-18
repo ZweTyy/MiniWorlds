@@ -1,4 +1,4 @@
-package entities;
+package entities.dens;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -11,7 +11,8 @@ import java.util.Random;
 
 /**
  * Represents a burrow in a simulated ecosystem.
- * Burrows can house rabbits, and they can be occupied by a maximum of three rabbits.
+ * Burrows can house rabbits, and they can be occupied by a maximum of three
+ * rabbits.
  * Implements NonBlocking interface.
  */
 public class Burrow extends Entity implements NonBlocking {
@@ -21,10 +22,12 @@ public class Burrow extends Entity implements NonBlocking {
     Random r = new Random();
 
     /**
-     * Constructs a Burrow within the specified world and assigns it a random initial location.
+     * Constructs a Burrow within the specified world and assigns it a random
+     * initial location.
      *
      * @param world The world where the burrow exists.
-     * @param size The size parameter used to generate the burrow's initial location.
+     * @param size  The size parameter used to generate the burrow's initial
+     *              location.
      */
     public Burrow(World world, int size) {
         super(world, size);

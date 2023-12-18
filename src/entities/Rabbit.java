@@ -127,6 +127,7 @@ public class Rabbit extends Animal implements Actor, Herbivore {
             return;
         }
         Rabbit newRabbit = new Rabbit(world, size);
+        System.out.println("Rabbit reproducing at: " + newLocation);
         world.setCurrentLocation(newLocation);
         world.setTile(newLocation, newRabbit);
 
@@ -332,6 +333,10 @@ public class Rabbit extends Animal implements Actor, Herbivore {
     }
 
     private Location checkForPredators(World world) {
+        this.currentLocation = world.getCurrentLocation();
+        if (this.currentLocation == null) {
+            return null;
+        }
         Set<Location> neighbours = world.getSurroundingTiles(this.currentLocation);
         for (Location loc : neighbours) {
             Object object = world.getTile(loc);
@@ -356,9 +361,10 @@ public class Rabbit extends Animal implements Actor, Herbivore {
             // Randomly select an escape route from the available safe locations
             int randomIndex = new Random().nextInt(escapeRoutes.size());
             Location newLocation = escapeRoutes.get(randomIndex);
-            world.setTile(this.currentLocation, null); // Remove rabbit from the current location
-            this.currentLocation = newLocation;
-            world.setTile(newLocation, this); // Place rabbit in the new safe location
+
+            // Use the world's move method to move the rabbit
+            System.out.println("Rabbit fleeing to: " + newLocation);
+            world.move(this, newLocation);
             this.energy -= 5; // Fleeing costs additional energy
         } else {
             // No escape route found, rabbit is cornered and cannot move

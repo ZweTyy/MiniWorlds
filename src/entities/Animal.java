@@ -18,7 +18,7 @@ public abstract class Animal extends Entity {
     protected double hunger = 100.0;
     protected double energy = 50.0;
     protected int age = 1;
-    protected int health = 25;
+    protected int health = 100;
     protected int stepsTaken = 0;
     protected int MAX_AGE;
 
@@ -41,6 +41,10 @@ public abstract class Animal extends Entity {
      * @param world The world where the animal moves.
      */
     protected synchronized void move(World world) {
+        if (this.health <= 0 || this.age >= MAX_AGE) {
+            createCarcass();
+            return; // Stop further actions as the animal is dead
+        }
         // System.out.println(getClass().getSimpleName() + this + " moving from: " +
         // initialLocation);
         if (world.getCurrentLocation() == null || !alive) {
@@ -72,7 +76,8 @@ public abstract class Animal extends Entity {
             // System.out.println("age " + this.age);
         }
         updateStats();
-        System.out.println("health " + this.health + " energy " + this.energy + " hunger " + this.hunger);
+        // System.out.println("health " + this.health + " energy " + this.energy + "
+        // hunger " + this.hunger);
     }
 
     /**
@@ -99,10 +104,6 @@ public abstract class Animal extends Entity {
         }
         if (this.energy <= 0) {
             this.health -= 5;
-        }
-        if (this.health <= 0 || this.age >= MAX_AGE) {
-            createCarcass();
-            world.delete(this);
         }
     }
 
@@ -207,8 +208,13 @@ public abstract class Animal extends Entity {
      * 
      */
     private void createCarcass() {
-        String animalType = this.getClass().getSimpleName().toLowerCase();
-        Carcass carcass = new Carcass(world, world.getSize(), this.currentLocation, animalType);
-        world.setTile(this.currentLocation, carcass);
+        Location loc = world.getLocation(this);
+        world.delete(this);
+        if (loc != null && world.isTileEmpty(loc)) {
+            System.out.println("Creating carcass at: " + loc);
+            String animalType = this.getClass().getSimpleName().toLowerCase();
+            Carcass carcass = new Carcass(world, world.getSize(), loc, animalType);
+            world.setTile(loc, carcass);
+        }
     }
 }
