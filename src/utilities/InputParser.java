@@ -8,14 +8,31 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+/**
+ * This class is responsible for parsing input data from a file to configure the simulation.
+ * It reads entity configuration from a given file and translates it into a format usable by the simulation.
+ */
+
 public class InputParser {
     private String filePath;
     private int size;
 
+    /**
+     * Constructs an InputParser with a specified file path.
+     *
+     * @param filePath The path to the file containing the simulation input data.
+     */
     public InputParser(String filePath) {
         this.filePath = filePath;
     }
 
+    /**
+     * Parses the input file to extract entity configurations.
+     * The method reads the file line by line, interpreting each line as an instruction to create certain types of entities,
+     * along with their quantities and, if applicable, specific coordinates.
+     *
+     * @return A map where keys are entity types and values are lists of configurations (quantity and coordinates).
+     */
     public Map<String, List<Integer[]>> parseInput() {
         final Random r = new Random(); // Laver en ny random generator
         Map<String, List<Integer[]>> elementsToAdd = new LinkedHashMap<>();
@@ -64,6 +81,12 @@ public class InputParser {
         return elementsToAdd;
     }
 
+    /**
+     * Gets the size parameter extracted from the input file.
+     * This represents the size of the simulation world.
+     *
+     * @return The size parameter as an integer.
+     */
     public int getSize() {
         return this.size;
     }

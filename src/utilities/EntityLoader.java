@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import entities.Bear;
-import entities.BurrowFactory;
 import entities.Entity;
 import entities.Rabbit;
 import entities.Wolf;
@@ -18,8 +17,21 @@ import factories.RabbitFactory;
 import factories.WolfFactory;
 import factories.BearFactory;
 import factories.BerryFactory;
+import factories.BurrowFactory;
 
+/**
+ * This class provides utilities for loading various entities into the simulation world.
+ * It uses different factories to create entities and places them in the world based on given configurations.
+ */
 public class EntityLoader {
+
+    /**
+     * Loads entities into the world based on a map specifying the types and quantities of entities to load.
+     *
+     * @param world The world where entities are to be loaded.
+     * @param entitiesToLoad A map with entity types as keys and a list of configurations for quantity and location as values.
+     * @param size The size parameter used for entity creation.
+     */
     public static void loadEntities(World world, Map<String, List<Integer[]>> entitiesToLoad, int size) {
         // Vi løber igennem alle de entities, som vi skal loade
         for (Map.Entry<String, List<Integer[]>> entry : entitiesToLoad.entrySet()) {
@@ -47,6 +59,15 @@ public class EntityLoader {
         }
     }
 
+    /**
+     * Creates an entity of a specified type using the appropriate factory.
+     *
+     * @param entityType The type of entity to create.
+     * @param world The world where the entity is to be created.
+     * @param size The size parameter for the entity creation.
+     * @param details Additional details for entity creation such as quantity and specific coordinates.
+     * @return The created Entity or null if the type is unknown.
+     */
     private static Entity createEntity(String entityType, World world, int size, List<Integer[]> details) {
         switch (entityType) {
             case "rabbit":
@@ -68,6 +89,14 @@ public class EntityLoader {
         }
     }
 
+    /**
+     * Specifically creates a Bear entity, handling the case where specific coordinates are provided.
+     *
+     * @param world The world where the bear is to be created.
+     * @param size The size parameter for bear creation.
+     * @param details Details for bear creation including specific coordinates.
+     * @return The created Bear entity.
+     */
     private static Bear createBear(World world, int size, List<Integer[]> details) {
         if (details.size() > 2 && details.get(1) != null && details.get(2) != null) {
             // If specific coordinates are provided
@@ -80,6 +109,12 @@ public class EntityLoader {
         }
     }
 
+    /**
+     * Places an entity in the world at its designated location.
+     *
+     * @param world The world where the entity is to be placed.
+     * @param entity The entity to place in the world.
+     */
     private static void placeEntity(World world, Entity entity) {
         Location location = entity.getLocation();
         if (world.isTileEmpty(location) && !world.containsNonBlocking(location)) {
