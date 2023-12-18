@@ -28,6 +28,7 @@ public class Wolf extends Animal implements Actor {
     @Override
     public void act(World world) {
         if (world.isDay()) {
+            world.remove(this);
             sleep();
         } else {
             performNightlyActivities(world);
@@ -38,12 +39,7 @@ public class Wolf extends Animal implements Actor {
         hasReproducedThisTurn = false;
         move(world); // Assuming move is defined in Animal
         eat(world);
-        if (!hasReproducedThisTurn) {
-            reproduce(world, world.getSize());
-            //move reproduce to day
-        }
     }
-
 
     @Override
     public void eat(World world) {
