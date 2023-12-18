@@ -98,7 +98,7 @@ public class Bear extends Animal implements Actor, Herbivore, Carnivore {
      * @param loc The location to check.
      * @return boolean indicating whether the location is within the bear's territory.
      */
-    private boolean isWithinTerritory(Location loc) {
+    public boolean isWithinTerritory(Location loc) {
         int dx = Math.abs(loc.getX() - initialTerritoryLocation.getX());
         int dy = Math.abs(loc.getY() - initialTerritoryLocation.getY());
         return dx <= TERRITORY_RADIUS && dy <= TERRITORY_RADIUS;

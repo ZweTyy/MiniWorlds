@@ -155,4 +155,42 @@ public abstract class Animal extends Entity {
     public int getAge() {
         return this.age;
     }
+
+    /**
+     * Sets the hunger level of the animal.
+     *
+     * @param hunger The hunger level to set for the animal.
+     * @return The updated hunger level.
+     */
+    public double setHunger(int hunger) {
+        return this.hunger = hunger;
+    }
+
+    /**
+     * Gets the current hunger level of the animal.
+     *
+     * @return The current hunger level of the animal.
+     */
+    public double getHunger() {
+        return this.hunger;
+    }
+
+    /**
+     * Sets the health level of the animal.
+     *
+     * @param health The health level to set for the animal.
+     * @return The updated health level.
+     */
+    public int setHealth(int health) {
+        return this.health = health;
+    }
+
+    /**
+     * Gets the current health level of the animal.
+     *
+     * @return The current health level of the animal.
+     */
+    public int getHealth() {
+        return this.health;
+    }
 }
