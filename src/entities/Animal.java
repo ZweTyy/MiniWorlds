@@ -9,7 +9,8 @@ import itumulator.world.World;
 
 /**
  * Abstract base class for animals in the simulation.
- * Provides common functionalities for animal entities, such as movement, sleeping, and stat updates.
+ * Provides common functionalities for animal entities, such as movement,
+ * sleeping, and stat updates.
  */
 public abstract class Animal extends Entity {
     protected Location currentLocation;
@@ -22,10 +23,12 @@ public abstract class Animal extends Entity {
     protected int MAX_AGE;
 
     /**
-     * Constructs an Animal within the specified world and assigns it a random initial location.
+     * Constructs an Animal within the specified world and assigns it a random
+     * initial location.
      *
      * @param world The world where the animal exists.
-     * @param size The size parameter used to generate the animal's initial location.
+     * @param size  The size parameter used to generate the animal's initial
+     *              location.
      */
     public Animal(World world, int size) {
         super(world, size);
@@ -38,9 +41,11 @@ public abstract class Animal extends Entity {
      * @param world The world where the animal moves.
      */
     protected synchronized void move(World world) {
-        // System.out.println(getClass().getSimpleName() + this + " moving from: " + initialLocation);
+        // System.out.println(getClass().getSimpleName() + this + " moving from: " +
+        // initialLocation);
         if (world.getCurrentLocation() == null || !alive) {
-            // System.out.println(getClass().getSimpleName() + this + " is dead or has no location.");
+            // System.out.println(getClass().getSimpleName() + this + " is dead or has no
+            // location.");
             return;
         }
         Set<Location> neighbours = world.getEmptySurroundingTiles(); // Hent alle tomme nabo tiles
@@ -58,7 +63,8 @@ public abstract class Animal extends Entity {
             this.initialLocation = newLocation;
             world.move(this, initialLocation);
             world.setCurrentLocation(initialLocation);
-            // System.out.println(getClass().getSimpleName() + this + " moving to: " + newLocation);
+            // System.out.println(getClass().getSimpleName() + this + " moving to: " +
+            // newLocation);
 
             this.energy -= 2.5;
             this.hunger -= 5.0;
@@ -66,7 +72,7 @@ public abstract class Animal extends Entity {
             // System.out.println("age " + this.age);
         }
         updateStats();
-        // System.out.println("health " + this.health + " energy " + this.energy + " hunger " + this.hunger);
+        System.out.println("health " + this.health + " energy " + this.energy + " hunger " + this.hunger);
     }
 
     /**
@@ -81,7 +87,8 @@ public abstract class Animal extends Entity {
 
     /**
      * Updates the animal's stats based on its current state.
-     * This includes aging, energy and hunger management, and checking for death conditions.
+     * This includes aging, energy and hunger management, and checking for death
+     * conditions.
      */
     public void updateStats() {
         if (this.stepsTaken % 5 == 0) {
@@ -94,7 +101,7 @@ public abstract class Animal extends Entity {
             this.health -= 5;
         }
         if (this.health <= 0 || this.age >= MAX_AGE) {
-            this.alive = false;
+            createCarcass();
             world.delete(this);
         }
     }
@@ -192,5 +199,16 @@ public abstract class Animal extends Entity {
      */
     public int getHealth() {
         return this.health;
+    }
+
+    /**
+     * Helper method to create a carcass when an animal dies.
+     * The carcass is created at the animal's current location.
+     * 
+     */
+    private void createCarcass() {
+        String animalType = this.getClass().getSimpleName().toLowerCase();
+        Carcass carcass = new Carcass(world, world.getSize(), this.currentLocation, animalType);
+        world.setTile(this.currentLocation, carcass);
     }
 }

@@ -19,7 +19,7 @@ public class Wolf extends Animal implements Actor, Carnivore {
      * Constructs a Wolf with a reference to the world it belongs to and its size.
      *
      * @param world the world in which the wolf exists.
-     * @param size the size of the world, used for generating random locations.
+     * @param size  the size of the world, used for generating random locations.
      */
 
     public Wolf(World world, int size) {
@@ -45,10 +45,11 @@ public class Wolf extends Animal implements Actor, Carnivore {
             seekPackAndHunt(world);
         }
     }
-    
+
     /**
      * Seeks out pack members and performs hunting actions if possible.
-     * This method manages the wolf's behavior in finding and moving towards its pack,
+     * This method manages the wolf's behavior in finding and moving towards its
+     * pack,
      * and then performing hunting actions.
      *
      * @param world the world in which the wolf seeks and hunts.
@@ -56,12 +57,13 @@ public class Wolf extends Animal implements Actor, Carnivore {
     public void seekPackAndHunt(World world) {
         // Check for nearby pack members
         List<Wolf> nearbyWolves = findNearbyPackMembers(world);
-        
-        // If there are pack members nearby, move towards the average location of those members
+
+        // If there are pack members nearby, move towards the average location of those
+        // members
         if (!nearbyWolves.isEmpty()) {
             moveTowardsPack(nearbyWolves, world);
         }
-        
+
         // Perform a hunting action if possible
         hunt(world);
     }
@@ -125,5 +127,10 @@ public class Wolf extends Animal implements Actor, Carnivore {
 
     private void hunt(World world) {
         // Implement hunting logic, possibly involving other pack members
+    }
+
+    @Override
+    public void eatMeat(World world) {
+        // Wolves are carnivores and do not eat herbs
     }
 }

@@ -16,15 +16,15 @@ import itumulator.world.World;
  */
 public class Rabbit extends Animal implements Actor, Herbivore {
     private Burrow myBurrow;
-    private volatile boolean hasReproducedThisTurn = false;
-    private volatile boolean hidden;
+    private boolean hasReproducedThisTurn = false;
+    private boolean hidden;
     private static int amountOfRabbits = 0;
 
     /**
      * Constructs a Rabbit with a reference to the world it belongs to and its size.
      *
      * @param world the world in which the rabbit exists.
-     * @param size the size of the world, used for generating random locations.
+     * @param size  the size of the world, used for generating random locations.
      */
     public Rabbit(World world, int size) {
         super(world, size);
@@ -42,7 +42,8 @@ public class Rabbit extends Animal implements Actor, Herbivore {
 
     /**
      * Defines the actions the rabbit takes in each simulation step.
-     * The actions are determined based on the rabbit's state, which depends on time of day and whether it has a burrow.
+     * The actions are determined based on the rabbit's state, which depends on time
+     * of day and whether it has a burrow.
      *
      * @param world the world in which the rabbit acts.
      */
@@ -69,7 +70,8 @@ public class Rabbit extends Animal implements Actor, Herbivore {
     }
 
     /**
-     * Moves the rabbit in the world. It calls the move method of the superclass Animal.
+     * Moves the rabbit in the world. It calls the move method of the superclass
+     * Animal.
      * The rabbit runs away from bears and wolves.
      *
      * @param world the world in which the rabbit moves.
@@ -82,7 +84,8 @@ public class Rabbit extends Animal implements Actor, Herbivore {
 
     /**
      * Defines the actions the rabbit takes in each simulation step.
-     * The rabbit sleeps during the night and may move, eat, and reproduce during the day.
+     * The rabbit sleeps during the night and may move, eat, and reproduce during
+     * the day.
      *
      * @param world the world in which the rabbit acts.
      */
@@ -96,10 +99,11 @@ public class Rabbit extends Animal implements Actor, Herbivore {
     }
 
     /**
-     * Handles the rabbit's reproduction process. It finds a mate and produces a new rabbit if conditions are met.
+     * Handles the rabbit's reproduction process. It finds a mate and produces a new
+     * rabbit if conditions are met.
      *
      * @param world the world in which reproduction occurs.
-     * @param size the size of the world, used to restrict the number of rabbits.
+     * @param size  the size of the world, used to restrict the number of rabbits.
      */
     public void reproduce(World world, int size) {
         if (!isEligibleForReproduction() || this.currentLocation == null) {
@@ -122,14 +126,15 @@ public class Rabbit extends Animal implements Actor, Herbivore {
     }
 
     /**
-     * Enables the rabbit to eat herb (grass) in its current location to gain energy.
+     * Enables the rabbit to eat herb (grass) in its current location to gain
+     * energy.
      * This action increases the rabbit's energy and hunger levels.
      *
      * @param world the world in which the rabbit eats.
      */
     @Override
     public void eatHerb(World world) {
-        if (hunger <= 50) {
+        if (hunger <= 75) {
             System.out.println("Attempting to eat");
             try {
                 if (!(world.containsNonBlocking(this.getLocation()))) {
@@ -194,9 +199,11 @@ public class Rabbit extends Animal implements Actor, Herbivore {
     }
 
     /**
-     * Sets the flag indicating whether the rabbit has reproduced in the current turn.
+     * Sets the flag indicating whether the rabbit has reproduced in the current
+     * turn.
      *
-     * @param hasReproduced boolean flag indicating if the rabbit has reproduced this turn.
+     * @param hasReproduced boolean flag indicating if the rabbit has reproduced
+     *                      this turn.
      */
     public void setHasReproducedThisTurn(boolean hasReproduced) {
         this.hasReproducedThisTurn = hasReproduced;
@@ -302,7 +309,6 @@ public class Rabbit extends Animal implements Actor, Herbivore {
         }
     }
 
-    
     private Rabbit findMate(World world, Location location) {
         for (Location loc : world.getSurroundingTiles(location)) {
             Object object = world.getTile(loc);
