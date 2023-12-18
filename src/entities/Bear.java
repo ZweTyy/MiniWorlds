@@ -55,6 +55,9 @@ public class Bear extends Animal implements Actor, Herbivore, Carnivore {
      */
     @Override
     public void act(World world) {
+        if (!world.contains(this)) {
+            return;
+        }
         move(world);
         eatHerb(world);
     }

@@ -42,6 +42,7 @@ public abstract class Animal extends Entity {
      */
     protected synchronized void move(World world) {
         if (this.health <= 0 || this.age >= MAX_AGE) {
+            this.alive = false;
             createCarcass();
             return; // Stop further actions as the animal is dead
         }
@@ -191,6 +192,7 @@ public abstract class Animal extends Entity {
     public void setHealth(int health) {
         this.health = health;
         if (this.health <= 0) {
+            this.alive = false;
             createCarcass();
         }
     }

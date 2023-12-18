@@ -21,4 +21,12 @@ public class SimulationManager {
     public static int getCurrentDay() {
         return totalSteps / World.getTotalDayDuration();
     }
+
+    /**
+     * Resets the simulation manager.
+     * 
+     */
+    public static void reset() {
+        totalSteps = 0;
+    }
 }
