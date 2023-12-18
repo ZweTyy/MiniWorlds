@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import java.util.Random;
+
 import java.util.Set;
 
 import itumulator.simulator.Actor;
@@ -78,8 +81,14 @@ public class Rabbit extends Animal implements Actor, Herbivore {
      */
     @Override
     public void move(World world) {
-        // We need to implement flee logic here
-        super.move(world);
+        Location predatorLocation = checkForPredators(world);
+        if (predatorLocation != null) {
+            // Predator detected, attempt to flee
+            fleeFromPredator(world, predatorLocation);
+        } else {
+            // No predators detected, proceed with normal movement
+            super.move(world);
+        }
     }
 
     /**
@@ -320,6 +329,40 @@ public class Rabbit extends Animal implements Actor, Herbivore {
             }
         }
         return null;
+    }
+
+    private Location checkForPredators(World world) {
+        Set<Location> neighbours = world.getSurroundingTiles(this.currentLocation);
+        for (Location loc : neighbours) {
+            Object object = world.getTile(loc);
+            if (object instanceof Wolf || object instanceof Bear) {
+                return loc; // Return the location of the predator
+            }
+        }
+        return null; // No predators found
+    }
+
+    private void fleeFromPredator(World world, Location predatorLocation) {
+        Set<Location> neighbours = world.getEmptySurroundingTiles(this.currentLocation);
+        List<Location> escapeRoutes = new ArrayList<>();
+
+        for (Location loc : neighbours) {
+            if (!world.getSurroundingTiles(loc).contains(predatorLocation)) {
+                escapeRoutes.add(loc);
+            }
+        }
+
+        if (!escapeRoutes.isEmpty()) {
+            // Randomly select an escape route from the available safe locations
+            int randomIndex = new Random().nextInt(escapeRoutes.size());
+            Location newLocation = escapeRoutes.get(randomIndex);
+            world.setTile(this.currentLocation, null); // Remove rabbit from the current location
+            this.currentLocation = newLocation;
+            world.setTile(newLocation, this); // Place rabbit in the new safe location
+            this.energy -= 5; // Fleeing costs additional energy
+        } else {
+            // No escape route found, rabbit is cornered and cannot move
+        }
     }
 
     private void consumeReproductionEnergy() {
