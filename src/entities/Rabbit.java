@@ -11,6 +11,7 @@ import itumulator.world.Location;
 import itumulator.world.World;
 
 /**
+ * Represents a rabbit in a simulated ecosystem.
  * This class extends Animal and implements Actor and Herbivore interfaces.
  */
 public class Rabbit extends Animal implements Actor, Herbivore {
