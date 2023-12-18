@@ -18,7 +18,7 @@ public abstract class Animal extends Entity {
     protected double hunger = 100.0;
     protected double energy = 50.0;
     protected int age = 1;
-    protected int health = 100;
+    protected int health = 25;
     protected int stepsTaken = 0;
     protected int MAX_AGE;
 

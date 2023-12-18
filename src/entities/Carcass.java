@@ -14,6 +14,7 @@ public class Carcass extends Entity implements Actor {
     private Location location;
     private World world;
     private String animalType;
+    private int decayCounter;
 
     /**
      * Constructs a Carcass with a specific amount of meat and its location in the
@@ -26,9 +27,11 @@ public class Carcass extends Entity implements Actor {
      */
     public Carcass(World world, int size, Location location, String animalType) {
         super(world, size);
+        this.world = world;
         this.location = location;
         this.animalType = animalType;
         this.meatQuantity = calculateMeatQuantity();
+        this.decayCounter = calculateInitialDecayCounter();
     }
 
     /**
@@ -56,7 +59,7 @@ public class Carcass extends Entity implements Actor {
      * Removes the carcass from the world when all meat is consumed or it decays.
      */
     private void decay() {
-        world.remove(this.location);
+        world.delete(this);
     }
 
     /**
@@ -67,7 +70,15 @@ public class Carcass extends Entity implements Actor {
      */
     @Override
     public void act(World world) {
-        // Implement any behavior like decaying over time if needed.
+        if (meatQuantity > 0) {
+            // If there is still meat, decrement the decay counter.
+            decayCounter--;
+
+            // Check if the carcass should decay now.
+            if (decayCounter <= 0) {
+                decay();
+            }
+        }
     }
 
     private int calculateMeatQuantity() {
@@ -81,5 +92,9 @@ public class Carcass extends Entity implements Actor {
             default:
                 return 0;
         }
+    }
+
+    private int calculateInitialDecayCounter() {
+        return 10; // For example, the carcass will decay after 20 simulation steps.
     }
 }

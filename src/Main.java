@@ -39,7 +39,8 @@ public class Main {
         DisplayInformation bearDisplayInfo = new DisplayInformation(Color.black, "bear");
         DisplayInformation berryDisplayInfo = new DisplayInformation(Color.black, "bush-berries");
         DisplayInformation WolfPackDisplayInfo = new DisplayInformation(Color.black, "wolf");
-        DisplayInformation CarcassDisplayInfo = new DisplayInformation(Color.black, "carcass-small");
+        DisplayInformation CarcassSmallDisplayInfo = new DisplayInformation(Color.black, "carcass-small");
+        DisplayInformation CarcassDisplayInfo = new DisplayInformation(Color.black, "carcass");
         DisplayInformation LocationDisplayInfo = new DisplayInformation(Color.black);
         p.setDisplayInformation(Grass.class, grassDisplayInfo);
         p.setDisplayInformation(Rabbit.class, rabbitDisplayInfo);
@@ -48,6 +49,7 @@ public class Main {
         p.setDisplayInformation(Bear.class, bearDisplayInfo);
         p.setDisplayInformation(Berry.class, berryDisplayInfo);
         p.setDisplayInformation(WolfPack.class, WolfPackDisplayInfo);
+        p.setDisplayInformation(Carcass.class, CarcassSmallDisplayInfo);
         p.setDisplayInformation(Carcass.class, CarcassDisplayInfo);
         p.setDisplayInformation(Location.class, LocationDisplayInfo);
 
