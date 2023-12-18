@@ -30,6 +30,7 @@ public class Program {
         IsomorphicCoordinateFactory.setupFactory(display_size, size);
         w = new World(size);
         boolean startIso = size <= MAX_2D_SIZE_DEFAULT;
+
         c = new Canvas(w, display_size, startIso);
         s = new Simulator(w, c, delay);
         f = new Frame(c, s, display_size, startIso);

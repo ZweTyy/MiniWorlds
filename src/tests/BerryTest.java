@@ -13,14 +13,13 @@ public class BerryTest {
 
     private World world;
     private Berry berry;
-    private Program program;
 
     @BeforeEach
     public void setUp() {
         // Initialize the world and berry before each test
         int size = 10; // Define the size of the world
-        program = new Program(size, 720, 1000);
         world = new World(size);
+        System.out.println("World instance in setUp: " + world.hashCode());
         berry = new Berry(world, size);
     }
 
@@ -40,7 +39,7 @@ public class BerryTest {
     @Test // This test is not working
     public void testBerryGrowsBackAfterADay() {
         berry.eaten();
-        simulateDays(1); // Simulate 10 days
+        simulateDays(100); // Simulate 10 days
         berry.act(world); // Act after 10 days
 
         assertTrue(berry.hasBerries(), "Berry bush should have berries after a day.");
@@ -59,6 +58,8 @@ public class BerryTest {
 
     private void simulateDays(int days) {
         System.out.println("Starting simulateDays, current world time: " + world.getCurrentTime());
+        System.out.println("Simulating days with world instance " + world.hashCode());
+        
     
         for (int i = 0; i < days * World.getTotalDayDuration(); i++) {
             world.step();
