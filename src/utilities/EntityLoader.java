@@ -8,8 +8,11 @@ import java.util.List;
 import java.util.Map;
 
 import entities.Bear;
+import entities.Berry;
+import entities.Burrow;
 import entities.Entity;
 import entities.Rabbit;
+import entities.Grass;
 import entities.Wolf;
 import entities.WolfPack;
 import factories.GrassFactory;
@@ -20,99 +23,98 @@ import factories.BerryFactory;
 import factories.BurrowFactory;
 
 /**
- * This class provides utilities for loading various entities into the simulation world.
- * It uses different factories to create entities and places them in the world based on given configurations.
+ * This class provides utilities for loading various entities into the
+ * simulation world.
+ * It uses different factories to create entities and places them in the world
+ * based on given configurations.
  */
 public class EntityLoader {
 
     /**
-     * Loads entities into the world based on a map specifying the types and quantities of entities to load.
+     * Loads entities into the world based on a map specifying the types and
+     * quantities of entities to load.
      *
-     * @param world The world where entities are to be loaded.
-     * @param entitiesToLoad A map with entity types as keys and a list of configurations for quantity and location as values.
-     * @param size The size parameter used for entity creation.
+     * @param world          The world where entities are to be loaded.
+     * @param entitiesToLoad A map with entity types as keys and a list of
+     *                       configurations for quantity and location as values.
+     * @param size           The size parameter used for entity creation.
      */
     public static void loadEntities(World world, Map<String, List<Integer[]>> entitiesToLoad, int size) {
-        // Vi løber igennem alle de entities, som vi skal loade
         for (Map.Entry<String, List<Integer[]>> entry : entitiesToLoad.entrySet()) {
             String entityType = entry.getKey();
             List<Integer[]> entityQuantities = entry.getValue();
-            // Den kører for hver entity, som vi skal loade
+
             for (Integer[] entityQuantity : entityQuantities) {
-                // For wolf entities, handle the entire pack creation in one go
-                if ("wolf".equals(entityType)) {
-                    int numberOfWolves = entityQuantity[0];
-                    WolfPack wolfPack = WolfFactory.createWolfPack(world, size, numberOfWolves);
-                    for (Wolf wolf : wolfPack.getPack()) {
-                        System.out.println("Created wolf: " + wolf);
-                        placeEntity(world, wolf);
-                    }
-                } else {
-                    // For all other entities, create and place them one by one
-                    Entity entity = createEntity(entityType, world, size, entityQuantities);
-                    System.out.println("Created entity: " + entity);
-                    if (entity != null) {
-                        placeEntity(world, entity);
-                    }
-                }
+                createAndPlaceEntities(world, entityType, size, entityQuantity);
             }
         }
     }
 
     /**
-     * Creates an entity of a specified type using the appropriate factory.
+     * Creates and places entities in the world based on the given entity type,
+     * size, and quantity.
      *
-     * @param entityType The type of entity to create.
-     * @param world The world where the entity is to be created.
-     * @param size The size parameter for the entity creation.
-     * @param details Additional details for entity creation such as quantity and specific coordinates.
-     * @return The created Entity or null if the type is unknown.
+     * @param world          The world where entities are to be placed.
+     * @param entityType     The type of entity to create.
+     * @param size           The size parameter used for entity creation.
+     * @param entityQuantity The quantity of entities to create.
      */
-    private static Entity createEntity(String entityType, World world, int size, List<Integer[]> details) {
+    private static void createAndPlaceEntities(World world, String entityType, int size, Integer[] entityQuantity) {
         switch (entityType) {
             case "rabbit":
-                return RabbitFactory.createRabbit(world, size);
-            case "grass":
-                return GrassFactory.createGrass(world, size);
-            case "burrow":
-                return BurrowFactory.createBurrow(world, size);
+                List<Rabbit> rabbits = RabbitFactory.createMultipleRabbits(world, size, entityQuantity[0]);
+                for (Rabbit rabbit : rabbits) {
+                    placeEntity(world, rabbit);
+                }
+                break;
             case "wolf":
-                int numberOfWolves = details.get(0)[0];
-                return WolfFactory.createWolfPack(world, size, numberOfWolves);
+                WolfPack wolfPack = WolfFactory.createWolfPack(world, size, entityQuantity[0]);
+                for (Wolf wolf : wolfPack.getPack()) {
+                    placeEntity(world, wolf);
+                }
+                break;
             case "bear":
-                return createBear(world, size, details);
+                // Handle bear creation based on the length of entityQuantity.
+                // If it contains specific coordinates, create one bear at that location.
+                // Otherwise, create multiple bears with random locations.
+                if (entityQuantity.length > 2 && entityQuantity[1] != null && entityQuantity[2] != null) {
+                    Bear bear = BearFactory.createBear(world, size, entityQuantity[1], entityQuantity[2]);
+                    placeEntity(world, bear);
+                } else {
+                    List<Bear> bears = BearFactory.createMultipleBears(world, size, entityQuantity[0]);
+                    for (Bear bear : bears) {
+                        placeEntity(world, bear);
+                    }
+                }
+                break;
+            case "grass":
+                List<Grass> grasses = GrassFactory.createMultipleGrasses(world, size, entityQuantity[0]);
+                for (Grass grass : grasses) {
+                    placeEntity(world, grass);
+                }
+                break;
             case "berry":
-                return BerryFactory.createBerry(world, size);
+                List<Berry> berries = BerryFactory.createMultipleBerries(world, size, entityQuantity[0]);
+                for (Berry berry : berries) {
+                    placeEntity(world, berry);
+                }
+                break;
+            case "burrow":
+                List<Burrow> burrows = BurrowFactory.createMultipleBurrows(world, size, entityQuantity[0]);
+                for (Burrow burrow : burrows) {
+                    placeEntity(world, burrow);
+                }
+                break;
             default:
                 System.out.println("Unknown entity type: " + entityType);
-                return null;
-        }
-    }
-
-    /**
-     * Specifically creates a Bear entity, handling the case where specific coordinates are provided.
-     *
-     * @param world The world where the bear is to be created.
-     * @param size The size parameter for bear creation.
-     * @param details Details for bear creation including specific coordinates.
-     * @return The created Bear entity.
-     */
-    private static Bear createBear(World world, int size, List<Integer[]> details) {
-        if (details.size() > 2 && details.get(1) != null && details.get(2) != null) {
-            // If specific coordinates are provided
-            Integer x = details.get(0)[1];
-            Integer y = details.get(0)[2];
-            return BearFactory.createBear(world, size, x, y);
-        } else {
-            // If no coordinates provided, let the factory decide
-            return BearFactory.createBear(world, size);
+                break;
         }
     }
 
     /**
      * Places an entity in the world at its designated location.
      *
-     * @param world The world where the entity is to be placed.
+     * @param world  The world where the entity is to be placed.
      * @param entity The entity to place in the world.
      */
     private static void placeEntity(World world, Entity entity) {

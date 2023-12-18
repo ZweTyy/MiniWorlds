@@ -9,8 +9,10 @@ import java.util.Map;
 import java.util.Random;
 
 /**
- * This class is responsible for parsing input data from a file to configure the simulation.
- * It reads entity configuration from a given file and translates it into a format usable by the simulation.
+ * This class is responsible for parsing input data from a file to configure the
+ * simulation.
+ * It reads entity configuration from a given file and translates it into a
+ * format usable by the simulation.
  */
 
 public class InputParser {
@@ -28,53 +30,56 @@ public class InputParser {
 
     /**
      * Parses the input file to extract entity configurations.
-     * The method reads the file line by line, interpreting each line as an instruction to create certain types of entities,
+     * The method reads the file line by line, interpreting each line as an
+     * instruction to create certain types of entities,
      * along with their quantities and, if applicable, specific coordinates.
      *
-     * @return A map where keys are entity types and values are lists of configurations (quantity and coordinates).
+     * @return A map where keys are entity types and values are lists of
+     *         configurations (quantity and coordinates).
      */
     public Map<String, List<Integer[]>> parseInput() {
-        final Random r = new Random(); // Laver en ny random generator
+        final Random r = new Random(); // Create a new random generator
         Map<String, List<Integer[]>> elementsToAdd = new LinkedHashMap<>();
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line = br.readLine();
-            if (line != null) { // Sætter værdien af size til det første tal i filen
+            if (line != null) { // Set the size value from the first number in the file
                 this.size = Integer.parseInt(line.trim());
             }
-            while ((line = br.readLine()) != null && !line.isEmpty()) { // Derefter læser den resten af filen
+            while ((line = br.readLine()) != null && !line.isEmpty()) {
                 String[] parts = line.split(" ");
+                String entityType = parts[0];
                 String[] ranges = parts[1].split("-");
-                String[] coordinates = new String[2];
-                Integer[] quantityRange = new Integer[4];
-                if (ranges.length == 1) {
-                    int quantity = Integer.parseInt(ranges[0]);
-                    quantityRange = new Integer[] { quantity, quantity };
-                }
+                Integer[] quantityRange;
+
+                // Check if a range is specified
                 if (ranges.length == 2) {
                     int min = Integer.parseInt(ranges[0]);
                     int max = Integer.parseInt(ranges[1]);
-                    quantityRange = new Integer[] { min, r.nextInt(max - min + 1) + min };
-                }
-                if (parts[0].equals("bear") && parts.length == 3 && parts[2].matches("\\(\\d+,\\d+\\)")) {
-                    String coordinatePart = parts[2].substring(1, parts[2].length() - 1); // Fjerner paranteserne
-                    coordinates = coordinatePart.split(","); // Splitter koordinaterne op
-                    int x = Integer.parseInt(coordinates[0]);
-                    int y = Integer.parseInt(coordinates[1]);
-                    int quantity = Integer.parseInt(parts[1]);
-                    quantityRange = new Integer[] { quantity, x, y };
-                }
-                if (parts[0].equals("wolf") && parts.length >= 2) {
+                    int quantity = r.nextInt(max - min + 1) + min; // Generate a random quantity within the range
+                    quantityRange = new Integer[] { quantity };
+                } else {
+                    // Handle a single fixed quantity
                     int quantity = Integer.parseInt(parts[1]);
                     quantityRange = new Integer[] { quantity };
                 }
-                List<Integer[]> quantities = elementsToAdd.get(parts[0]);
+
+                // Additional entity-specific processing (like coordinates for bears)
+                if (entityType.equals("bear") && parts.length == 3 && parts[2].matches("\\(\\d+,\\d+\\)")) {
+                    String coordinatePart = parts[2].substring(1, parts[2].length() - 1); // Remove parentheses
+                    String[] coordinates = coordinatePart.split(","); // Split coordinates
+                    int x = Integer.parseInt(coordinates[0]);
+                    int y = Integer.parseInt(coordinates[1]);
+                    quantityRange = new Integer[] { quantityRange[0], x, y };
+                }
+
+                // Add the entity configuration to the map
+                List<Integer[]> quantities = elementsToAdd.get(entityType);
                 if (quantities == null) {
                     quantities = new ArrayList<>();
-                    elementsToAdd.put(parts[0], quantities);
+                    elementsToAdd.put(entityType, quantities);
                 }
                 quantities.add(quantityRange);
             }
-            br.close();
         } catch (Exception e) {
             System.out.println("An error occurred: " + e.getMessage());
         }

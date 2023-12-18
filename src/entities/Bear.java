@@ -10,7 +10,8 @@ import java.util.Set;
 
 /**
  * Represents a bear in a simulated ecosystem.
- * Bears can move within a defined territory, and they can eat herbs (like berries).
+ * Bears can move within a defined territory, and they can eat herbs (like
+ * berries).
  * Implements Actor, Herbivore, and Carnivore interfaces.
  */
 public class Bear extends Animal implements Actor, Herbivore, Carnivore {
@@ -22,9 +23,9 @@ public class Bear extends Animal implements Actor, Herbivore, Carnivore {
      * Constructs a Bear at a specified location in the world.
      *
      * @param world The world where the bear exists.
-     * @param size The size of the world.
-     * @param x The x-coordinate of the bear's initial territory location.
-     * @param y The y-coordinate of the bear's initial territory location.
+     * @param size  The size of the world.
+     * @param x     The x-coordinate of the bear's initial territory location.
+     * @param y     The y-coordinate of the bear's initial territory location.
      */
     public Bear(World world, int size, int x, int y) {
         super(world, size);
@@ -34,10 +35,11 @@ public class Bear extends Animal implements Actor, Herbivore, Carnivore {
     }
 
     /**
-     * Constructs a Bear within the specified world and assigns it a random initial location.
+     * Constructs a Bear within the specified world and assigns it a random initial
+     * location.
      *
      * @param world The world where the bear exists.
-     * @param size The size parameter used to generate the bear's initial location.
+     * @param size  The size parameter used to generate the bear's initial location.
      */
     public Bear(World world, int size) {
         super(world, size);
@@ -59,7 +61,8 @@ public class Bear extends Animal implements Actor, Herbivore, Carnivore {
 
     /**
      * Moves the bear to a new location within its territory.
-     * The movement is based on the surrounding empty tiles within the bear's territory.
+     * The movement is based on the surrounding empty tiles within the bear's
+     * territory.
      *
      * @param world The world where the bear moves.
      */
@@ -89,14 +92,16 @@ public class Bear extends Animal implements Actor, Herbivore, Carnivore {
             System.out.println("age " + this.age);
         }
         super.updateStats();
-        System.out.println("health " + this.health + " energy " + this.energy + " hunger " + this.hunger);
+        // System.out.println("health " + this.health + " energy " + this.energy + "
+        // hunger " + this.hunger);
     }
 
     /**
      * Checks if a location is within the bear's defined territory.
      *
      * @param loc The location to check.
-     * @return boolean indicating whether the location is within the bear's territory.
+     * @return boolean indicating whether the location is within the bear's
+     *         territory.
      */
     public boolean isWithinTerritory(Location loc) {
         int dx = Math.abs(loc.getX() - initialTerritoryLocation.getX());
@@ -105,7 +110,8 @@ public class Bear extends Animal implements Actor, Herbivore, Carnivore {
     }
 
     /**
-     * Enables the bear to eat berries (herbs) in its current location to gain energy.
+     * Enables the bear to eat berries (herbs) in its current location to gain
+     * energy.
      * This action increases the bear's energy and hunger levels.
      *
      * @param world The world in which the bear eats.
