@@ -9,6 +9,9 @@ import itumulator.world.NonBlocking;
 
 import java.util.Random;
 
+import entities.Entity;
+import entities.Rabbit;
+
 /**
  * Represents a burrow in a simulated ecosystem.
  * Burrows can house rabbits, and they can be occupied by a maximum of three
@@ -17,7 +20,7 @@ import java.util.Random;
  */
 public class Burrow extends Entity implements NonBlocking {
     private List<Rabbit> rabbits;
-    protected static final int MAX_CAPACITY = 3;
+    public static final int MAX_CAPACITY = 3;
 
     Random r = new Random();
 

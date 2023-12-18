@@ -7,5 +7,5 @@ import itumulator.world.World;
  *
  */
 public interface Carnivore {
-    void eatMeat(World world);
+    void hunt(World world);
 }

@@ -13,7 +13,7 @@ import itumulator.world.World;
  * sleeping, and stat updates.
  */
 public abstract class Animal extends Entity {
-    protected Location currentLocation;
+    protected Location currentLocation = initialLocation;
     protected boolean alive = true;
     protected double hunger = 100.0;
     protected double energy = 50.0;
@@ -187,10 +187,12 @@ public abstract class Animal extends Entity {
      * Sets the health level of the animal.
      *
      * @param health The health level to set for the animal.
-     * @return The updated health level.
      */
-    public int setHealth(int health) {
-        return this.health = health;
+    public void setHealth(int health) {
+        this.health = health;
+        if (this.health <= 0) {
+            createCarcass();
+        }
     }
 
     /**

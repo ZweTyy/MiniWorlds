@@ -144,7 +144,7 @@ public class Bear extends Animal implements Actor, Herbivore, Carnivore {
     }
 
     @Override
-    public void eatMeat(World world) {
+    public void hunt(World world) {
 
     }
 }

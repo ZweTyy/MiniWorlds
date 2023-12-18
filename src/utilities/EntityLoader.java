@@ -9,12 +9,12 @@ import java.util.Map;
 
 import entities.Bear;
 import entities.Berry;
-import entities.Burrow;
 import entities.Entity;
 import entities.Rabbit;
 import entities.Grass;
 import entities.Wolf;
 import entities.WolfPack;
+import entities.dens.Burrow;
 import factories.GrassFactory;
 import factories.RabbitFactory;
 import factories.WolfFactory;

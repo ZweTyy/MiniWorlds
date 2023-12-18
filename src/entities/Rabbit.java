@@ -5,12 +5,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import entities.dens.Burrow;
+
 import java.util.Random;
 
 import java.util.Set;
 
 import itumulator.simulator.Actor;
 import itumulator.world.Location;
+import itumulator.world.NonBlocking;
 import itumulator.world.World;
 
 /**
@@ -258,7 +261,8 @@ public class Rabbit extends Animal implements Actor, Herbivore {
         List<Location> validLocations = new ArrayList<>(neighbours);
         // Her tilføjer vi valide lokationer til listen
         for (Location loc : neighbours) {
-            if (world.isTileEmpty(loc) || world.getTile(loc) instanceof Grass) {
+            if (world.isTileEmpty(loc)
+                    || world.getTile(loc) instanceof Grass && !(world.getTile(loc) instanceof NonBlocking)) {
                 validLocations.add(loc);
             }
         }
