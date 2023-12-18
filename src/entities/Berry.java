@@ -4,6 +4,7 @@ import itumulator.executable.Program;
 import itumulator.simulator.Actor;
 import itumulator.world.NonBlocking;
 import itumulator.world.World;
+import utilities.SimulationManager;
 
 /**
  * Represents a berry bush in a simulated ecosystem.
@@ -31,7 +32,7 @@ public class Berry extends Nature implements Actor {
      */
     @Override
     public void act(World world) {
-        int currentDay = world.getCurrentTime() / World.getTotalDayDuration();
+        int currentDay = SimulationManager.getCurrentDay();
         System.out.println("Acting on day: " + currentDay + ", hasBerries: " + hasBerries);
 
         if (!hasBerries && (currentDay > lastEatenDay)) {

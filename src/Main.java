@@ -4,6 +4,7 @@ import itumulator.world.World;
 import utilities.EntityConfig;
 import utilities.EntityLoader;
 import utilities.InputParser;
+import utilities.SimulationManager;
 
 import java.awt.Color;
 import java.util.List;
@@ -67,6 +68,7 @@ public class Main {
         // Kører simulationen 100 gange og opdaterer kanin tælleren hver gang
         for (int i = 0; i < 150; i++) {
             p.simulate();
+            SimulationManager.incrementStep();
             Rabbit.updateRabbitCount(world);
         }
     }

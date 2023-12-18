@@ -71,7 +71,12 @@ public class InputParser {
             }
 
                 EntityConfig config = new EntityConfig(quantity, x, y, additionalInfo);
-                elementsToAdd.computeIfAbsent(entityType, k -> new ArrayList<>()).add(config);
+                List<EntityConfig> configs = elementsToAdd.get(entityType);
+                if (configs == null) {
+                    configs = new ArrayList<>();
+                    elementsToAdd.put(entityType, configs);
+                }
+                configs.add(config);
             }
         } catch (Exception e) {
             System.out.println("An error occurred: " + e.getMessage());
