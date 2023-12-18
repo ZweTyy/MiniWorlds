@@ -36,16 +36,16 @@ public class EntityLoader {
      *
      * @param world          The world where entities are to be loaded.
      * @param entitiesToLoad A map with entity types as keys and a list of
-     *                       configurations for quantity and location as values.
+     *                       EntityConfig objects as values.
      * @param size           The size parameter used for entity creation.
      */
-    public static void loadEntities(World world, Map<String, List<Integer[]>> entitiesToLoad, int size) {
-        for (Map.Entry<String, List<Integer[]>> entry : entitiesToLoad.entrySet()) {
+    public static void loadEntities(World world, Map<String, List<EntityConfig>> entitiesToLoad, int size) {
+        for (Map.Entry<String, List<EntityConfig>> entry : entitiesToLoad.entrySet()) {
             String entityType = entry.getKey();
-            List<Integer[]> entityQuantities = entry.getValue();
+            List<EntityConfig> entityConfigs = entry.getValue();
 
-            for (Integer[] entityQuantity : entityQuantities) {
-                createAndPlaceEntities(world, entityType, size, entityQuantity);
+            for (EntityConfig config : entityConfigs) {
+                createAndPlaceEntities(world, entityType, size, config);
             }
         }
     }
@@ -59,52 +59,50 @@ public class EntityLoader {
      * @param size           The size parameter used for entity creation.
      * @param entityQuantity The quantity of entities to create.
      */
-    private static void createAndPlaceEntities(World world, String entityType, int size, Integer[] entityQuantity) {
+    private static void createAndPlaceEntities(World world, String entityType, int size, EntityConfig config) {
         switch (entityType) {
             case "rabbit":
-                List<Rabbit> rabbits = RabbitFactory.createMultipleRabbits(world, size, entityQuantity[0]);
+                List<Rabbit> rabbits = RabbitFactory.createMultipleRabbits(world, size, config.getQuantity());
                 for (Rabbit rabbit : rabbits) {
                     placeEntity(world, rabbit);
                 }
                 break;
             case "wolf":
-                WolfPack wolfPack = WolfFactory.createWolfPack(world, size, entityQuantity[0]);
+                WolfPack wolfPack = WolfFactory.createWolfPack(world, size, config.getQuantity());
                 for (Wolf wolf : wolfPack.getPack()) {
                     placeEntity(world, wolf);
                 }
                 break;
             case "bear":
-                // Handle bear creation based on the length of entityQuantity.
-                // If it contains specific coordinates, create one bear at that location.
-                // Otherwise, create multiple bears with random locations.
-                if (entityQuantity.length > 2 && entityQuantity[1] != null && entityQuantity[2] != null) {
-                    Bear bear = BearFactory.createBear(world, size, entityQuantity[1], entityQuantity[2]);
+                if (config.getX() != null && config.getY() != null) {
+                    Bear bear = BearFactory.createBear(world, size, config.getX(), config.getY());
                     placeEntity(world, bear);
                 } else {
-                    List<Bear> bears = BearFactory.createMultipleBears(world, size, entityQuantity[0]);
+                    List<Bear> bears = BearFactory.createMultipleBears(world, size, config.getQuantity());
                     for (Bear bear : bears) {
                         placeEntity(world, bear);
                     }
                 }
                 break;
             case "grass":
-                List<Grass> grasses = GrassFactory.createMultipleGrasses(world, size, entityQuantity[0]);
+                List<Grass> grasses = GrassFactory.createMultipleGrasses(world, size, config.getQuantity());
                 for (Grass grass : grasses) {
                     placeEntity(world, grass);
                 }
                 break;
             case "berry":
-                List<Berry> berries = BerryFactory.createMultipleBerries(world, size, entityQuantity[0]);
+                List<Berry> berries = BerryFactory.createMultipleBerries(world, size, config.getQuantity());
                 for (Berry berry : berries) {
                     placeEntity(world, berry);
                 }
                 break;
             case "burrow":
-                List<Burrow> burrows = BurrowFactory.createMultipleBurrows(world, size, entityQuantity[0]);
+                List<Burrow> burrows = BurrowFactory.createMultipleBurrows(world, size, config.getQuantity());
                 for (Burrow burrow : burrows) {
                     placeEntity(world, burrow);
                 }
                 break;
+            // Add cases for other entities like grass, berries, burrows
             default:
                 System.out.println("Unknown entity type: " + entityType);
                 break;

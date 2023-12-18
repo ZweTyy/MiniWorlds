@@ -37,48 +37,39 @@ public class InputParser {
      * @return A map where keys are entity types and values are lists of
      *         configurations (quantity and coordinates).
      */
-    public Map<String, List<Integer[]>> parseInput() {
-        final Random r = new Random(); // Create a new random generator
-        Map<String, List<Integer[]>> elementsToAdd = new LinkedHashMap<>();
+    public Map<String, List<EntityConfig>> parseInput() {
+        final Random r = new Random();
+        Map<String, List<EntityConfig>> elementsToAdd = new LinkedHashMap<>();
+
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line = br.readLine();
-            if (line != null) { // Set the size value from the first number in the file
+            if (line != null) {
                 this.size = Integer.parseInt(line.trim());
             }
+
             while ((line = br.readLine()) != null && !line.isEmpty()) {
                 String[] parts = line.split(" ");
                 String entityType = parts[0];
                 String[] ranges = parts[1].split("-");
-                Integer[] quantityRange;
+                int minQuantity = Integer.parseInt(ranges[0]);
+                int maxQuantity = ranges.length > 1 ? Integer.parseInt(ranges[1]) : minQuantity;
+                int quantity = r.nextInt(maxQuantity - minQuantity + 1) + minQuantity;
 
-                // Check if a range is specified
-                if (ranges.length == 2) {
-                    int min = Integer.parseInt(ranges[0]);
-                    int max = Integer.parseInt(ranges[1]);
-                    int quantity = r.nextInt(max - min + 1) + min; // Generate a random quantity within the range
-                    quantityRange = new Integer[] { quantity };
-                } else {
-                    // Handle a single fixed quantity
-                    int quantity = Integer.parseInt(parts[1]);
-                    quantityRange = new Integer[] { quantity };
+                Integer x = null, y = null;
+                String additionalInfo = null;
+
+                if (entityType.equals("bear") && parts[2].matches("\\(\\d+,\\d+\\)")) {
+                    String[] coordinates = parts[2].substring(1, parts[2].length() - 1).split(",");
+                    x = Integer.parseInt(coordinates[0]);
+                    y = Integer.parseInt(coordinates[1]);
                 }
 
-                // Additional entity-specific processing (like coordinates for bears)
-                if (entityType.equals("bear") && parts.length == 3 && parts[2].matches("\\(\\d+,\\d+\\)")) {
-                    String coordinatePart = parts[2].substring(1, parts[2].length() - 1); // Remove parentheses
-                    String[] coordinates = coordinatePart.split(","); // Split coordinates
-                    int x = Integer.parseInt(coordinates[0]);
-                    int y = Integer.parseInt(coordinates[1]);
-                    quantityRange = new Integer[] { quantityRange[0], x, y };
+                if (parts.length > 2 && !parts[2].matches("\\d+-\\d+")) {
+                    additionalInfo = parts[2];
                 }
 
-                // Add the entity configuration to the map
-                List<Integer[]> quantities = elementsToAdd.get(entityType);
-                if (quantities == null) {
-                    quantities = new ArrayList<>();
-                    elementsToAdd.put(entityType, quantities);
-                }
-                quantities.add(quantityRange);
+                EntityConfig config = new EntityConfig(quantity, x, y, additionalInfo);
+                elementsToAdd.computeIfAbsent(entityType, k -> new ArrayList<>()).add(config);
             }
         } catch (Exception e) {
             System.out.println("An error occurred: " + e.getMessage());

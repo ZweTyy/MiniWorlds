@@ -1,6 +1,7 @@
 import itumulator.executable.DisplayInformation;
 import itumulator.executable.Program;
 import itumulator.world.World;
+import utilities.EntityConfig;
 import utilities.EntityLoader;
 import utilities.InputParser;
 
@@ -21,8 +22,9 @@ public class Main {
 
     public static void main(String[] args) {
         InputParser parser = new InputParser("./data/input-filer/t1-1a.txt"); // Opret en ny parser
-        Map<String, List<Integer[]>> elementsToAdd = parser.parseInput(); // Kør parseren og få en map med elementer der skal
-                                                                    // tilføjes
+        Map<String, List<EntityConfig>> elementsToAdd = parser.parseInput(); // Kør parseren og få en map med elementer
+                                                                             // der skal
+        // tilføjes
         int size = parser.getSize(); // Hiv størrelsen på verdenen ud
         int delay = 1000; // Forsinkelsen mellem hver skridt af simulationen (i ms)
         int display_size = 720; // Skærm opløsningen (i px)
