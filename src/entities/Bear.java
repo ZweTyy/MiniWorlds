@@ -131,7 +131,6 @@ public class Bear extends Animal implements Actor, Herbivore, Carnivore {
                         this.energy += 25;
                         System.out.println("I sucessfully ate");
                     }
-                    world.step();
                     System.out.println("Nothing to eat");
                 }
 

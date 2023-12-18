@@ -58,15 +58,17 @@ public class InputParser {
                 Integer x = null, y = null;
                 String additionalInfo = null;
 
-                if (entityType.equals("bear") && parts[2].matches("\\(\\d+,\\d+\\)")) {
-                    String[] coordinates = parts[2].substring(1, parts[2].length() - 1).split(",");
-                    x = Integer.parseInt(coordinates[0]);
-                    y = Integer.parseInt(coordinates[1]);
-                }
+                // Check if coordinates are provided for bears
+            if (entityType.equals("bear") && parts.length > 2 && parts[2].matches("\\(\\d+,\\d+\\)")) {
+                String[] coordinates = parts[2].substring(1, parts[2].length() - 1).split(",");
+                x = Integer.parseInt(coordinates[0]);
+                y = Integer.parseInt(coordinates[1]);
+            }
 
-                if (parts.length > 2 && !parts[2].matches("\\d+-\\d+")) {
-                    additionalInfo = parts[2];
-                }
+            // Check for additional information
+            if (parts.length > 2 && !parts[2].matches("\\d+-\\d+")) {
+                additionalInfo = parts[2];
+            }
 
                 EntityConfig config = new EntityConfig(quantity, x, y, additionalInfo);
                 elementsToAdd.computeIfAbsent(entityType, k -> new ArrayList<>()).add(config);
