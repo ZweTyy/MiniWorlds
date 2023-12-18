@@ -116,6 +116,7 @@ public class Bear extends Animal implements Actor, Herbivore, Carnivore {
             System.out.println("Attempting to eat berries");
             try {
                 for (Location loc : world.getSurroundingTiles(initialLocation)) {
+                    System.out.println("Checking location: " + loc);
                     Object object = world.getTile(loc);
                     if (object instanceof Berry) {
                         Berry berry = (Berry) object;
@@ -126,7 +127,6 @@ public class Bear extends Animal implements Actor, Herbivore, Carnivore {
                     }
                     world.step();
                     System.out.println("Nothing to eat");
-                    return;
                 }
 
             } catch (IllegalArgumentException iae) {
