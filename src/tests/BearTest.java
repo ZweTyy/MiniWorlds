@@ -58,7 +58,7 @@ public class BearTest {
         for (int i = 0; i < 10; i++) {
             bear.act(world); // Simulate several steps to allow aging
         }
-
+        
         assertTrue(bear.getAge() > 1, "Bear should age as it acts");
     }
 
