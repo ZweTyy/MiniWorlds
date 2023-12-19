@@ -53,6 +53,11 @@ public class Carcass extends Entity implements Actor, DynamicDisplayInformationP
 
     @Override
     public void act(World world) {
+        if (!world.contains(this)) {
+            System.out.println("Carcass is not in the world.");
+            return;
+        }
+        
         if (meatQuantity > 0) {
             // If there is still meat, decrement the decay counter and grow the fungus
             decayCounter--;
@@ -112,8 +117,16 @@ public class Carcass extends Entity implements Actor, DynamicDisplayInformationP
         return fungus;
     }
 
+    public boolean hasFungus() {
+        return fungus != null;
+    }
+
     public void setFungus(Fungus fungus) {
         this.fungus = fungus;
+    }
+
+    public int getDecayCounter() {
+        return decayCounter;
     }
 
     @Override
