@@ -24,7 +24,7 @@ import itumulator.world.World;
  * This class extends Animal and implements Actor, Herbivore and
  * DynamicDisplayInformationProviderinterfaces.
  */
-public class Rabbit extends Animal implements Actor, Prey, DynamicDisplayInformationProvider {
+public class Rabbit extends Animal implements Actor, Herbivore, Prey, DynamicDisplayInformationProvider {
     private Burrow myBurrow;
     private boolean hasReproducedThisTurn = false;
     private boolean hidden;
@@ -109,7 +109,7 @@ public class Rabbit extends Animal implements Actor, Prey, DynamicDisplayInforma
     public void performDailyActivities(World world) {
         hasReproducedThisTurn = false;
         move(world); // Assuming move is defined in Animal
-        eat(world);
+        eatHerb(world);
         if (!hasReproducedThisTurn) {
             reproduce(world, world.getSize());
         }
@@ -150,7 +150,8 @@ public class Rabbit extends Animal implements Actor, Prey, DynamicDisplayInforma
      *
      * @param world the world in which the rabbit eats.
      */
-    public void eat(World world) {
+    @Override
+    public void eatHerb(World world) {
         if (hunger <= 75) {
             System.out.println("Attempting to eat");
             try {
@@ -354,6 +355,7 @@ public class Rabbit extends Animal implements Actor, Prey, DynamicDisplayInforma
         }
         return null; // No predators found
     }
+
     @Override
     public void fleeFromPredator(World world, Location predatorLocation) {
         Set<Location> neighbours = world.getEmptySurroundingTiles(this.currentLocation);
