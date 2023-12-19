@@ -1,5 +1,6 @@
 package entities;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,8 @@ import java.util.Random;
 
 import java.util.Set;
 
+import itumulator.executable.DisplayInformation;
+import itumulator.executable.DynamicDisplayInformationProvider;
 import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.NonBlocking;
@@ -18,9 +21,9 @@ import itumulator.world.World;
 
 /**
  * Represents a rabbit in a simulated ecosystem.
- * This class extends Animal and implements Actor and Herbivore interfaces.
+ * This class extends Animal and implements Actor, Herbivore and DynamicDisplayInformationProviderinterfaces.
  */
-public class Rabbit extends Animal implements Actor, Herbivore {
+public class Rabbit extends Animal implements Actor, Herbivore, DynamicDisplayInformationProvider {
     private Burrow myBurrow;
     private boolean hasReproducedThisTurn = false;
     private boolean hidden;
@@ -418,5 +421,14 @@ public class Rabbit extends Animal implements Actor, Herbivore {
             return State.DAY_AND_HIDDEN;
         }
         return world.isNight() && myBurrow == null ? State.NIGHT_WITH_NO_BURROW : State.NIGHT_WITH_BURROW;
+    }
+
+    @Override
+    public DisplayInformation getInformation() {
+        if (this.isInfected) {
+            return new DisplayInformation(Color.GREEN, "rabbit-fungi-small", true);
+        } else {
+            return new DisplayInformation(Color.GREEN, "rabbit-small");
+        }
     }
 }

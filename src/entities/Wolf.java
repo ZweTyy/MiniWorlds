@@ -1,9 +1,12 @@
 package entities;
 
+import java.awt.Color;
 import java.util.List;
 import java.util.Set;
 
 import entities.dens.WolfDen;
+import itumulator.executable.DisplayInformation;
+import itumulator.executable.DynamicDisplayInformationProvider;
 import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
@@ -12,7 +15,7 @@ import itumulator.world.World;
  * Represents a wolf in a simulated ecosystem.
  * This class extends Animal and implements Actor and Carnivore interfaces.
  */
-public class Wolf extends Animal implements Actor, Carnivore {
+public class Wolf extends Animal implements Actor, Carnivore, DynamicDisplayInformationProvider {
     private boolean isAlpha;
     private WolfPack myPack;
     private int huntingRange = 3;
@@ -462,5 +465,14 @@ public class Wolf extends Animal implements Actor, Carnivore {
         int dx = loc1.getX() - loc2.getX();
         int dy = loc1.getY() - loc2.getY();
         return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    @Override
+    public DisplayInformation getInformation() {
+        if (this.isInfected) {
+            return new DisplayInformation(Color.GREEN, "wolf-fungi", true);
+        } else {
+            return new DisplayInformation(Color.GREEN, "wolf");
+        }
     }
 }

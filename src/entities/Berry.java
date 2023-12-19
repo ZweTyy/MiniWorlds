@@ -1,5 +1,9 @@
 package entities;
 
+import java.awt.Color;
+
+import itumulator.executable.DisplayInformation;
+import itumulator.executable.DynamicDisplayInformationProvider;
 import itumulator.executable.Program;
 import itumulator.simulator.Actor;
 import itumulator.world.NonBlocking;
@@ -10,7 +14,7 @@ import utilities.SimulationManager;
  * Represents a berry bush in a simulated ecosystem.
  * This class extends Nature and implements Actor.
  */
-public class Berry extends Nature implements Actor {
+public class Berry extends Nature implements Actor, DynamicDisplayInformationProvider {
     private boolean hasBerries = true;
     private int lastEatenDay = -1;
 
@@ -62,4 +66,16 @@ public class Berry extends Nature implements Actor {
         return hasBerries;
     }
 
+    @Override
+    public DisplayInformation getInformation() {
+        if (hasBerries) {
+            // If the fungus is visible, return display information with a specific color and possibly an image
+            // The imageKey should correspond to an actual image in your resources if images are being used
+            // The random_direction is set to true to allow for random orientation of the image
+            return new DisplayInformation(Color.GREEN, "bush-berries", true);
+        } else {
+            // If the fungus is not visible yet, return display information with a transparent color
+            return new DisplayInformation(Color.GREEN, "bush"); // Transparent color, effectively invisible
+        }
+    }
 }

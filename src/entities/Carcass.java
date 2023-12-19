@@ -1,10 +1,14 @@
 package entities;
 
+import java.awt.Color;
+
+import itumulator.executable.DisplayInformation;
+import itumulator.executable.DynamicDisplayInformationProvider;
 import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
 
-public class Carcass extends Entity implements Actor {
+public class Carcass extends Entity implements Actor, DynamicDisplayInformationProvider {
     private int meatQuantity;
     private Location location;
     private World world;
@@ -27,7 +31,7 @@ public class Carcass extends Entity implements Actor {
         this.animalType = animalType;
         this.meatQuantity = calculateMeatQuantity();
         this.decayCounter = calculateInitialDecayCounter();
-        this.fungus = new Fungus(world, size); // Initialize the fungus when the carcass is created
+        this.fungus = new Fungus(world, size, meatQuantity); // Initialize the fungus when the carcass is created
     }
 
     /**
@@ -43,8 +47,8 @@ public class Carcass extends Entity implements Actor {
         this.world = world;
         this.location = initialLocation;
         this.meatQuantity = 10;
-        this.decayCounter = 10;
-        this.fungus = new Fungus(world, size); // Initialize the fungus when the carcass is created
+        this.decayCounter = 15;
+        this.fungus = new Fungus(world, size, meatQuantity); // Initialize the fungus when the carcass is created
     }
 
     @Override
@@ -65,19 +69,20 @@ public class Carcass extends Entity implements Actor {
         // When the carcass is fully decayed, remove it from the world
         world.delete(this);
         // If the fungus has grown to a certain size, make it visible
-        if (fungus.getSize() >= Fungus.SOME_GROWTH_THRESHOLD && !fungus.isVisible()) {
-            fungus.makeVisible();
+        if (fungus.getSize() >= Fungus.GROWTH_THRESHOLD && fungus.isVisible()) {
+            world.setTile(location, fungus);
+            System.out.println("Fungus is now visible at: " + location);
         }
     }
 
     private int calculateMeatQuantity() {
         switch (animalType) {
             case "rabbit":
-                return 5;
+                return 10;
             case "wolf":
-                return 15;
+                return 25;
             case "bear":
-                return 30;
+                return 50;
             default:
                 return 0;
         }
@@ -105,5 +110,18 @@ public class Carcass extends Entity implements Actor {
 
     public Fungus getFungus() {
         return fungus;
+    }
+
+    public void setFungus(Fungus fungus) {
+        this.fungus = fungus;
+    }
+
+    @Override
+    public DisplayInformation getInformation() {
+        if (meatQuantity > 25) {
+            return new DisplayInformation(Color.GREEN, "carcass-small", true);
+        } else {
+            return new DisplayInformation(Color.GREEN, "carcass");
+        }
     }
 }

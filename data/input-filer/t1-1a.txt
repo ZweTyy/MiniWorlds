@@ -1,5 +1,3 @@
-5
+2
 carcass 1
-fungi 1-10
-cordyceps rabbit 1
-cordyceps wolf 1-5
+fungi 1-5
