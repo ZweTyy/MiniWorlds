@@ -19,7 +19,7 @@ public class Bear extends Animal implements Actor, Carnivore, Herbivore {
     private Location initialTerritoryLocation;
     private boolean isHungry = false;
     private final int TERRITORY_RADIUS = 3;
-    public static int attackPower = 50;
+    public static int attackPower = 35;
 
     /**
      * Constructs a Bear at a specified location in the world.
@@ -63,6 +63,7 @@ public class Bear extends Animal implements Actor, Carnivore, Herbivore {
         move(world);
         eatHerb(world);
         checkAndAttackIntruders(world);
+        checkAndEatCarcass(world);
     }
 
     /**
@@ -157,6 +158,27 @@ public class Bear extends Animal implements Actor, Carnivore, Herbivore {
                 attack((Animal) object, world);
             }
         }
+    }
+
+    private void checkAndEatCarcass(World world) {
+        if (hunger < 75 || health < 75) {
+            Set<Location> territory = getTerritory();  // Use getTerritory() to check within the bear's territory
+            for (Location loc : territory) {
+                Object object = world.getTile(loc);
+                if (object instanceof Carcass) {
+                    eatCarcass((Carcass) object, world);
+                    break; // Assuming the bear eats only one carcass at a time
+                }
+            }
+        }
+    }
+    
+    private void eatCarcass(Carcass carcass, World world) {
+        System.out.println("Bear eating carcass at " + carcass.getLocation());
+        // Increase bear's health or reduce hunger
+        this.health = Math.min(this.health + carcass.getMeatQuantity(), 100); // assuming 'getNutritionalValue' method exists in Carcass
+        this.hunger = Math.max(this.hunger - carcass.getMeatQuantity(), 0);
+        world.delete(carcass); // Remove carcass from the world after being consumed
     }
 
     private Set<Location> getTerritory() {

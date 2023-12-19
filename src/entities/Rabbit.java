@@ -350,6 +350,7 @@ public class Rabbit extends Animal implements Actor, Herbivore, Prey, DynamicDis
         for (Location loc : neighbours) {
             Object object = world.getTile(loc);
             if (object instanceof Wolf || object instanceof Bear) {
+                System.out.println("Predator detected at: " + loc);
                 return loc; // Return the location of the predator
             }
         }
@@ -377,6 +378,7 @@ public class Rabbit extends Animal implements Actor, Herbivore, Prey, DynamicDis
             world.move(this, newLocation);
             this.energy -= 5; // Fleeing costs additional energy
         } else {
+            System.out.println("Rabbit is cornered and cannot move.");
             // No escape route found, rabbit is cornered and cannot move
         }
     }
