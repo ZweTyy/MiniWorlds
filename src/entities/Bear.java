@@ -14,7 +14,7 @@ import java.util.Set;
  * berries).
  * Implements Actor, Herbivore, and Carnivore interfaces.
  */
-public class Bear extends Animal implements Actor, Herbivore, Carnivore {
+public class Bear extends Animal implements Actor, Predator {
     private Location initialTerritoryLocation;
     private boolean isHungry = false;
     private final int TERRITORY_RADIUS = 3;
