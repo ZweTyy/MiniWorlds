@@ -211,7 +211,7 @@ public abstract class Animal extends Entity {
      * The carcass is created at the animal's current location.
      * 
      */
-    private void createCarcass() {
+    protected void createCarcass() {
         Location loc = world.getLocation(this);
         world.delete(this);
         if (loc != null && world.isTileEmpty(loc)) {

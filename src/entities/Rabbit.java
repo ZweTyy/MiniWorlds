@@ -128,8 +128,13 @@ public class Rabbit extends Animal implements Actor, Herbivore, Prey, DynamicDis
         }
         Rabbit mate = findMate(world, currentLocation);
         if (mate == null) {
-            return;
+            return; // No eligible mate found
         }
+        createOffspring(world, size, mate);
+    }
+    
+
+    private void createOffspring(World world, int size, Rabbit mate) {
         Location newLocation = generateRandomLocation(world.getSize());
         if (newLocation == null) {
             return;
@@ -138,10 +143,11 @@ public class Rabbit extends Animal implements Actor, Herbivore, Prey, DynamicDis
         System.out.println("Rabbit reproducing at: " + newLocation);
         world.setCurrentLocation(newLocation);
         world.setTile(newLocation, newRabbit);
-
+    
         consumeReproductionEnergy();
-        mate.consumeReproductionEnergy();
+        mate.consumeReproductionEnergy(); // Now mate can be resolved
     }
+    
 
     /**
      * Enables the rabbit to eat herb (grass) in its current location to gain
@@ -156,7 +162,6 @@ public class Rabbit extends Animal implements Actor, Herbivore, Prey, DynamicDis
             System.out.println("Attempting to eat");
             try {
                 if (!(world.containsNonBlocking(this.getLocation()))) {
-                    world.step();
                     System.out.println("Nothing to eat");
                     return;
                 }
@@ -329,16 +334,17 @@ public class Rabbit extends Animal implements Actor, Herbivore, Prey, DynamicDis
     }
 
     private Rabbit findMate(World world, Location location) {
-        for (Location loc : world.getSurroundingTiles(location)) {
+        Set<Location> surroundingTiles = world.getSurroundingTiles(location);
+        for (Location loc : surroundingTiles) {
             Object object = world.getTile(loc);
             if (object instanceof Rabbit) {
                 Rabbit potentialMate = (Rabbit) object;
-                if (potentialMate.isEligibleForReproduction()) {
+                if (potentialMate != this && potentialMate.isEligibleForReproduction()) {
                     return potentialMate;
                 }
             }
         }
-        return null;
+        return null; // No eligible mate found
     }
 
     private Location checkForPredators(World world) {

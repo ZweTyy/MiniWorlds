@@ -195,8 +195,7 @@ public class Bear extends Animal implements Actor, Carnivore, Herbivore {
             System.out.println("Bear missed");
             return;
         }
-        animal.setHealth(animal.getHealth() - attackPower); // assuming 'setHealth' and 'getHealth' methods exist
-        // Additional logic for fight outcome, retreat, etc.
+        animal.setHealth(animal.getHealth() - attackPower);
     }
 
     @Override
