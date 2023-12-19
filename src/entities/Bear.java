@@ -55,6 +55,7 @@ public class Bear extends Animal implements Actor, Herbivore, Carnivore {
      */
     @Override
     public void act(World world) {
+        System.out.println("Bear's initial location: " + initialTerritoryLocation);
         if (!world.contains(this)) {
             return;
         }

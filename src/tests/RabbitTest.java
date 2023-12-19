@@ -1,4 +1,5 @@
 package tests;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,7 +14,6 @@ public class RabbitTest {
 
     private Rabbit rabbit;
     private World world;
-
 
     @Test
     public void createRabbit() {
@@ -72,14 +72,43 @@ public class RabbitTest {
         // Setup conditions for eating (e.g., place a Grass object at rabbit's location)
         world = new World(1);
         rabbit = new Rabbit(world, 1);
+        rabbit.setHunger(50);
         Location rabbitLocation = rabbit.getLocation();
         Grass grass = new Grass(world, 1);
-        world.setTile(rabbitLocation, grass); // Assuming method to place grass in the world
+        world.setTile(rabbitLocation, grass);
+        world.setTile(rabbitLocation, rabbit);
 
         double initialEnergy = rabbit.getEnergy();
         rabbit.eatHerb(world);
 
         assertTrue("Rabbit's energy should increase after eating", rabbit.getEnergy() > initialEnergy);
+    }
+
+    @Test
+    public void testMoveWhenFullySurrounded() {
+        world = new World(3);
+        Location centerLocation = new Location(1, 1); // Center of the 3x3 grid
+        rabbit = new Rabbit(world, 3);
+        rabbit.setLocation(centerLocation);
+        world.setTile(centerLocation, rabbit); // Place the rabbit at the center
+
+        // Surround the rabbit with other rabbits on all sides, including diagonals
+        world.setTile(new Location(1, 0), new Rabbit(world, 3)); // North
+        world.setTile(new Location(1, 2), new Rabbit(world, 3)); // South
+        world.setTile(new Location(2, 1), new Rabbit(world, 3)); // East
+        world.setTile(new Location(0, 1), new Rabbit(world, 3)); // West
+
+        // Diagonal positions
+        world.setTile(new Location(0, 0), new Rabbit(world, 3)); // Northwest
+        world.setTile(new Location(2, 0), new Rabbit(world, 3)); // Northeast
+        world.setTile(new Location(0, 2), new Rabbit(world, 3)); // Southwest
+        world.setTile(new Location(2, 2), new Rabbit(world, 3)); // Southeast
+
+        // Call the move method
+        rabbit.move(world);
+
+        // Assert that the rabbit's location remains unchanged
+        assertEquals(centerLocation, rabbit.getLocation());
     }
 
 }

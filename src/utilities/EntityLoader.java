@@ -119,16 +119,18 @@ public class EntityLoader {
                     placeEntity(world, carcass);
                 }
                 break;
-                case "cordyceps rabbit":
+            case "cordyceps rabbit":
                 // Logic to create and place cordyceps-infected rabbits
-                List<Rabbit> cordycepsRabbits = CordycepsFactory.createMultipleCordycepsRabbits(world, size, config.getQuantity());
+                List<Rabbit> cordycepsRabbits = CordycepsFactory.createMultipleCordycepsRabbits(world, size,
+                        config.getQuantity());
                 for (Rabbit rabbit : cordycepsRabbits) {
                     placeEntity(world, rabbit);
                 }
                 break;
             case "cordyceps wolf":
                 // Logic to create and place cordyceps-infected wolves
-                List<Wolf> cordycepsWolves = CordycepsFactory.createMultipleCordycepsWolves(world, size, config.getQuantity());
+                List<Wolf> cordycepsWolves = CordycepsFactory.createMultipleCordycepsWolves(world, size,
+                        config.getQuantity());
                 for (Wolf wolf : cordycepsWolves) {
                     placeEntity(world, wolf);
                 }
