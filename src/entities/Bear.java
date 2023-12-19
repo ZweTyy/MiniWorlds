@@ -5,6 +5,7 @@ import itumulator.world.Location;
 import itumulator.world.World;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -14,10 +15,11 @@ import java.util.Set;
  * berries).
  * Implements Actor, Herbivore, and Carnivore interfaces.
  */
-public class Bear extends Animal implements Actor, Herbivore, Carnivore {
+public class Bear extends Animal implements Actor, Carnivore, Herbivore {
     private Location initialTerritoryLocation;
     private boolean isHungry = false;
     private final int TERRITORY_RADIUS = 3;
+    public static int attackPower = 35;
 
     /**
      * Constructs a Bear at a specified location in the world.
@@ -55,12 +57,13 @@ public class Bear extends Animal implements Actor, Herbivore, Carnivore {
      */
     @Override
     public void act(World world) {
-        System.out.println("Bear's initial location: " + initialTerritoryLocation);
         if (!world.contains(this)) {
             return;
         }
         move(world);
         eatHerb(world);
+        checkAndAttackIntruders(world);
+        checkAndEatCarcass(world);
     }
 
     /**
@@ -123,10 +126,10 @@ public class Bear extends Animal implements Actor, Herbivore, Carnivore {
     @Override
     public void eatHerb(World world) {
         if (hunger <= 75) {
-            System.out.println("Attempting to eat berries");
+            // System.out.println("Attempting to eat berries");
             try {
                 for (Location loc : world.getSurroundingTiles(initialLocation)) {
-                    System.out.println("Checking location: " + loc);
+                    // System.out.println("Checking location: " + loc);
                     Object object = world.getTile(loc);
                     if (object instanceof Berry) {
                         Berry berry = (Berry) object;
@@ -135,7 +138,7 @@ public class Bear extends Animal implements Actor, Herbivore, Carnivore {
                         this.energy += 25;
                         System.out.println("I sucessfully ate");
                     }
-                    System.out.println("Nothing to eat");
+                    // System.out.println("Nothing to eat");
                 }
 
             } catch (IllegalArgumentException iae) {
@@ -146,8 +149,57 @@ public class Bear extends Animal implements Actor, Herbivore, Carnivore {
         }
     }
 
+    private void checkAndAttackIntruders(World world) {
+        Set<Location> territory = getTerritory();
+        for (Location loc : territory) {
+            Object object = world.getTile(loc);
+            if (object != null && object instanceof Animal && object != this) {
+                System.out.println("Bear found intruder: " + object);
+                attack((Animal) object, world);
+            }
+        }
+    }
+
+    private void checkAndEatCarcass(World world) {
+        if (hunger < 75 || health < 75) {
+            Set<Location> territory = getTerritory();  // Use getTerritory() to check within the bear's territory
+            for (Location loc : territory) {
+                Object object = world.getTile(loc);
+                if (object instanceof Carcass) {
+                    eatCarcass((Carcass) object, world);
+                    break; // Assuming the bear eats only one carcass at a time
+                }
+            }
+        }
+    }
+    
+    private void eatCarcass(Carcass carcass, World world) {
+        System.out.println("Bear eating carcass at " + carcass.getLocation());
+        // Increase bear's health or reduce hunger
+        this.health = Math.min(this.health + carcass.getMeatQuantity(), 100); // assuming 'getNutritionalValue' method exists in Carcass
+        this.hunger = Math.max(this.hunger - carcass.getMeatQuantity(), 0);
+        world.delete(carcass); // Remove carcass from the world after being consumed
+    }
+
+    private Set<Location> getTerritory() {
+        Set<Location> territory = new HashSet<>();
+        Set<Location> surroundingTiles = world.getSurroundingTiles(initialTerritoryLocation, TERRITORY_RADIUS);
+        territory.addAll(surroundingTiles);
+        return territory;
+    }
+
+    private void attack(Animal animal, World world) {
+        System.out.println("Bear attacking " + animal);
+        double chance = Math.random();
+        if (chance < 0.5) {
+            System.out.println("Bear missed");
+            return;
+        }
+        animal.setHealth(animal.getHealth() - attackPower);
+    }
+
     @Override
     public void hunt(World world) {
-
+        
     }
 }

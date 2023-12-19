@@ -90,6 +90,21 @@ public class WolfPack extends Entity {
     }
 
     /**
+     * Handles the removal of a wolf from the pack.
+     * If the removed wolf is the alpha, assigns a new alpha from the remaining members.
+     * @param wolf The wolf to be removed.
+     */
+    public void removeMember(Wolf wolf) {
+        wolfPack.remove(wolf);
+        if (wolf.isAlpha() && !wolfPack.isEmpty()) {
+            // Assign the new alpha
+            Wolf newAlpha = wolfPack.get(0); // Just an example, could be based on other criteria
+            newAlpha.setIsAlpha(true);
+            System.out.println("New alpha assigned: " + newAlpha);
+        }
+    }
+
+    /**
      * Creates a wolf den for the pack.
      * The den is placed on the world map at a random location.
      * 
@@ -101,6 +116,20 @@ public class WolfPack extends Entity {
         // Place the den on the world map at a random location
         Location denLocation = generateRandomLocation(size);
         world.setTile(denLocation, this.den);
+    }
+
+    /**
+     * Checks if the alpha wolf is alive.
+     * If the alpha is dead, assigns a new alpha from the remaining members.
+     */
+    public void checkAndAssignNewAlpha() {
+        if (!wolfPack.isEmpty() && !wolfPack.get(0).isAlive()) { // Assuming isAlive() method checks if health > 0
+            wolfPack.remove(0); // Remove the dead alpha
+            if (!wolfPack.isEmpty()) {
+                wolfPack.get(0).setIsAlpha(true); // Assign the new alpha
+                System.out.println("New alpha assigned: " + wolfPack.get(0));
+            }
+        }
     }
 
     /**

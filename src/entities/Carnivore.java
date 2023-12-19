@@ -7,5 +7,7 @@ import itumulator.world.World;
  *
  */
 public interface Carnivore {
+    public int attackPower = 0;
+
     void hunt(World world);
 }

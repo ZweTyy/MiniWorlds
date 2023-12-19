@@ -15,7 +15,7 @@ import itumulator.world.World;
  * Represents a wolf in a simulated ecosystem.
  * This class extends Animal and implements Actor and Carnivore interfaces.
  */
-public class Wolf extends Animal implements Actor, Carnivore, DynamicDisplayInformationProvider {
+public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDisplayInformationProvider {
     private boolean isAlpha;
     private WolfPack myPack;
     private int huntingRange = 3;
@@ -23,6 +23,7 @@ public class Wolf extends Animal implements Actor, Carnivore, DynamicDisplayInfo
     private int attackPower = 20;
     private boolean isInDen = false;
     private boolean isInfected;
+    private boolean isAlreadyEngagedInFight = false;
 
     /**
      * Constructs a Wolf with a reference to the world it belongs to and its size.
@@ -50,6 +51,9 @@ public class Wolf extends Animal implements Actor, Carnivore, DynamicDisplayInfo
         }
 
         if (world.isNight()) {
+            if (isInDen() && myPack.getPack().size() < 3) {
+                reproduce(world);
+            }
             sleep(); // Assume a sleep method is implemented
         } else {
             leaveDen(world); // Wolves leave the den at the start of the day
@@ -61,6 +65,15 @@ public class Wolf extends Animal implements Actor, Carnivore, DynamicDisplayInfo
 
             // Non-alpha wolves follow the alpha after it has moved
             followAlpha(world);
+
+            Bear nearbyBear = findNearbyBear(world);
+            if (nearbyBear != null) {
+                if (shouldAttackBear()) {
+                attackBear(nearbyBear, world);
+                } else {
+                fleeFromPredator(world, nearbyBear.getLocation());
+                }
+            }
 
             Wolf enemyWolf = findEnemyWolf(world);
             if (enemyWolf != null && world.contains(enemyWolf)) {
@@ -92,6 +105,19 @@ public class Wolf extends Animal implements Actor, Carnivore, DynamicDisplayInfo
         }
     }
 
+    private void reproduce(World world) {
+        // We will also assume that each pair produces only one offspring at a time for simplicity.
+        Wolf newWolf = new Wolf(world, world.getSize()); // Assuming world.getSize() provides a size value appropriate for generating a random location.
+        newWolf.setPack(this.myPack); // Set the pack for the new wolf
+        this.myPack.addMember(newWolf); // Add the new wolf to the pack
+
+        // Optionally, adjust the energy levels of the reproducing wolves
+        this.energy -= 10; // Reproduction energy cost
+        System.out.println("New wolf added to the pack at location: " + newWolf.getLocation());
+        world.setCurrentLocation(newWolf.getLocation());
+        world.setTile(newWolf.getLocation(), newWolf);
+    }
+
     @Override
     public void hunt(World world) {
         Rabbit targetRabbit = findNearbyRabbit(world);
@@ -102,6 +128,58 @@ public class Wolf extends Animal implements Actor, Carnivore, DynamicDisplayInfo
             }
         }
     }
+
+    private Bear findNearbyBear(World world) {
+        Set<Location> surroundingTiles = world.getSurroundingTiles(this.currentLocation, huntingRange); // Using the wolf's hunting range
+        for (Location loc : surroundingTiles) {
+            Object object = world.getTile(loc);
+            if (object instanceof Bear) {
+                return (Bear) object;
+            }
+        }
+        return null;
+    }
+    
+    private boolean shouldAttackBear() {
+        return myPack != null && (myPack.getPack().size() >= 3 || isAlreadyEngagedInFight);
+    }
+
+    @Override
+    public void fleeFromPredator(World world, Location predatorLocation) {
+        Set<Location> neighbours = world.getEmptySurroundingTiles(this.currentLocation);
+        Location farthestLocation = null;
+        double maxDistance = -1;
+    
+        for (Location loc : neighbours) {
+            double distance = distanceTo(loc, predatorLocation);
+            if (distance > maxDistance) {
+                farthestLocation = loc;
+                maxDistance = distance;
+            }
+        }
+    
+        if (farthestLocation != null) {
+            System.out.println("Wolf fleeing to: " + farthestLocation);
+            world.move(this, farthestLocation);
+            this.currentLocation = farthestLocation;
+        } else {
+            System.out.println("Wolf is cornered and cannot move.");
+        }
+    }
+
+    private void attackBear(Bear bear, World world) {
+        double chance = Math.random();
+        isAlreadyEngagedInFight = true;
+        // Attack logic - reduce bear's health
+        if (chance <= 0.5) {
+            System.out.println("Attack missed.");
+            return; // Attack missed, rabbit escapes
+        }
+        bear.setHealth(bear.getHealth() - attackPower); // Assuming the bear has setHealth and getHealth methods
+        System.out.println("Wolves attacking bear. Bear's health now: " + bear.getHealth());
+    }
+    
+    
 
     private void chaseRabbit(Rabbit rabbit, World world) {
         Location rabbitLocation = rabbit.getLocation();
@@ -326,7 +404,7 @@ public class Wolf extends Animal implements Actor, Carnivore, DynamicDisplayInfo
         return distanceTo(alphaLocation) <= 3; // Replace '3' with the desired range
     }
 
-    // Moves the wolf towards a specified location, if it's not already there
+    // Moves the wolf towards a specified location if it's not already there
     private void moveTowards(Location targetLocation, World world) {
         // Ensure that the wolf does not already occupy the target location
         if (this.currentLocation.equals(targetLocation)) {
@@ -465,6 +543,19 @@ public class Wolf extends Animal implements Actor, Carnivore, DynamicDisplayInfo
         int dx = loc1.getX() - loc2.getX();
         int dy = loc1.getY() - loc2.getY();
         return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    @Override
+    public void setHealth(int health) {
+        this.health = health;
+        if (this.health <= 0) {
+            this.alive = false;
+            createCarcass();
+            if (this.isAlpha) {
+                System.out.println("Alpha wolf died.");
+                myPack.checkAndAssignNewAlpha();
+            }
+        }
     }
 
     @Override

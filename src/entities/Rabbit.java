@@ -24,7 +24,7 @@ import itumulator.world.World;
  * This class extends Animal and implements Actor, Herbivore and
  * DynamicDisplayInformationProviderinterfaces.
  */
-public class Rabbit extends Animal implements Actor, Herbivore, DynamicDisplayInformationProvider {
+public class Rabbit extends Animal implements Actor, Herbivore, Prey, DynamicDisplayInformationProvider {
     private Burrow myBurrow;
     private boolean hasReproducedThisTurn = false;
     private boolean hidden;
@@ -128,8 +128,13 @@ public class Rabbit extends Animal implements Actor, Herbivore, DynamicDisplayIn
         }
         Rabbit mate = findMate(world, currentLocation);
         if (mate == null) {
-            return;
+            return; // No eligible mate found
         }
+        createOffspring(world, size, mate);
+    }
+    
+
+    private void createOffspring(World world, int size, Rabbit mate) {
         Location newLocation = generateRandomLocation(world.getSize());
         if (newLocation == null) {
             return;
@@ -138,10 +143,11 @@ public class Rabbit extends Animal implements Actor, Herbivore, DynamicDisplayIn
         System.out.println("Rabbit reproducing at: " + newLocation);
         world.setCurrentLocation(newLocation);
         world.setTile(newLocation, newRabbit);
-
+    
         consumeReproductionEnergy();
-        mate.consumeReproductionEnergy();
+        mate.consumeReproductionEnergy(); // Now mate can be resolved
     }
+    
 
     /**
      * Enables the rabbit to eat herb (grass) in its current location to gain
@@ -156,7 +162,6 @@ public class Rabbit extends Animal implements Actor, Herbivore, DynamicDisplayIn
             System.out.println("Attempting to eat");
             try {
                 if (!(world.containsNonBlocking(this.getLocation()))) {
-                    world.step();
                     System.out.println("Nothing to eat");
                     return;
                 }
@@ -329,16 +334,17 @@ public class Rabbit extends Animal implements Actor, Herbivore, DynamicDisplayIn
     }
 
     private Rabbit findMate(World world, Location location) {
-        for (Location loc : world.getSurroundingTiles(location)) {
+        Set<Location> surroundingTiles = world.getSurroundingTiles(location);
+        for (Location loc : surroundingTiles) {
             Object object = world.getTile(loc);
             if (object instanceof Rabbit) {
                 Rabbit potentialMate = (Rabbit) object;
-                if (potentialMate.isEligibleForReproduction()) {
+                if (potentialMate != this && potentialMate.isEligibleForReproduction()) {
                     return potentialMate;
                 }
             }
         }
-        return null;
+        return null; // No eligible mate found
     }
 
     private Location checkForPredators(World world) {
@@ -350,13 +356,15 @@ public class Rabbit extends Animal implements Actor, Herbivore, DynamicDisplayIn
         for (Location loc : neighbours) {
             Object object = world.getTile(loc);
             if (object instanceof Wolf || object instanceof Bear) {
+                System.out.println("Predator detected at: " + loc);
                 return loc; // Return the location of the predator
             }
         }
         return null; // No predators found
     }
 
-    private void fleeFromPredator(World world, Location predatorLocation) {
+    @Override
+    public void fleeFromPredator(World world, Location predatorLocation) {
         Set<Location> neighbours = world.getEmptySurroundingTiles(this.currentLocation);
         List<Location> escapeRoutes = new ArrayList<>();
 
@@ -376,6 +384,7 @@ public class Rabbit extends Animal implements Actor, Herbivore, DynamicDisplayIn
             world.move(this, newLocation);
             this.energy -= 5; // Fleeing costs additional energy
         } else {
+            System.out.println("Rabbit is cornered and cannot move.");
             // No escape route found, rabbit is cornered and cannot move
         }
     }
