@@ -13,6 +13,7 @@ import java.util.Map;
 import entities.Bear;
 import entities.Berry;
 import entities.Carcass;
+import entities.Fungus;
 import entities.Grass;
 import entities.Rabbit;
 import entities.Wolf;
@@ -56,6 +57,7 @@ public class Main {
         p.setDisplayInformation(Carcass.class, CarcassDisplayInfo);
         p.setDisplayInformation(WolfDen.class, WolfDenDisplayInfo);
         p.setDisplayInformation(Location.class, LocationDisplayInfo);
+        p.setDisplayInformation(Fungus.class, new DisplayInformation(Color.GREEN, "fungi", true));
 
         p.show();
         Rabbit.resetRabbitCount();

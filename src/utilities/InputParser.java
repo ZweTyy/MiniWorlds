@@ -40,36 +40,42 @@ public class InputParser {
     public Map<String, List<EntityConfig>> parseInput() {
         final Random r = new Random();
         Map<String, List<EntityConfig>> elementsToAdd = new LinkedHashMap<>();
-
+    
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line = br.readLine();
             if (line != null) {
                 this.size = Integer.parseInt(line.trim());
             }
-
+    
             while ((line = br.readLine()) != null && !line.isEmpty()) {
                 String[] parts = line.split(" ");
+                
+                // Handle compound entity names like "cordyceps rabbit" or "cordyceps wolf"
                 String entityType = parts[0];
-                String[] ranges = parts[1].split("-");
-                int minQuantity = Integer.parseInt(ranges[0]);
-                int maxQuantity = ranges.length > 1 ? Integer.parseInt(ranges[1]) : minQuantity;
+                int quantityIndex = 1;
+                if (entityType.equals("cordyceps") && parts.length > 2) {
+                    entityType += " " + parts[1];
+                    quantityIndex = 2; // Adjust the index for quantity if it's a compound name
+                }
+    
+                // Parse the quantity, which can be a range or a single number
+                int minQuantity, maxQuantity;
+                if (parts[quantityIndex].contains("-")) {
+                    String[] ranges = parts[quantityIndex].split("-");
+                    minQuantity = Integer.parseInt(ranges[0]);
+                    maxQuantity = ranges.length > 1 ? Integer.parseInt(ranges[1]) : minQuantity;
+                } else {
+                    minQuantity = maxQuantity = Integer.parseInt(parts[quantityIndex]);
+                }
                 int quantity = r.nextInt(maxQuantity - minQuantity + 1) + minQuantity;
-
+    
+                // Parse additional info if present
                 Integer x = null, y = null;
                 String additionalInfo = null;
-
-                // Check if coordinates are provided for bears
-            if (entityType.equals("bear") && parts.length > 2 && parts[2].matches("\\(\\d+,\\d+\\)")) {
-                String[] coordinates = parts[2].substring(1, parts[2].length() - 1).split(",");
-                x = Integer.parseInt(coordinates[0]);
-                y = Integer.parseInt(coordinates[1]);
-            }
-
-            // Check for additional information
-            if (parts.length > 2 && !parts[2].matches("\\d+-\\d+")) {
-                additionalInfo = parts[2];
-            }
-
+                if (parts.length > quantityIndex + 1) {
+                    // Additional info parsing logic here
+                }
+    
                 EntityConfig config = new EntityConfig(quantity, x, y, additionalInfo);
                 List<EntityConfig> configs = elementsToAdd.get(entityType);
                 if (configs == null) {
@@ -83,6 +89,7 @@ public class InputParser {
         }
         return elementsToAdd;
     }
+    
 
     /**
      * Gets the size parameter extracted from the input file.

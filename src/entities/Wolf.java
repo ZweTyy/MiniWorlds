@@ -19,6 +19,7 @@ public class Wolf extends Animal implements Actor, Carnivore {
     private int attackRange = 1;
     private int attackPower = 20;
     private boolean isInDen = false;
+    private boolean isInfected;
 
     /**
      * Constructs a Wolf with a reference to the world it belongs to and its size.
@@ -409,6 +410,24 @@ public class Wolf extends Animal implements Actor, Carnivore {
      */
     public boolean isAlpha() {
         return isAlpha;
+    }
+
+    /**
+     * Sets the infection status of the wolf.
+     *
+     * @param isInfected boolean indicating if the wolf is infected.
+     */
+    public void setInfected(boolean isInfected) {
+        this.isInfected = isInfected;
+    }
+
+    /**
+     * Returns the infection status of the wolf.
+     *
+     * @return boolean indicating whether the wolf is infected.
+     */
+    public boolean isInfected() {
+        return isInfected;
     }
 
     private List<Wolf> findNearbyPackMembers(World world) {

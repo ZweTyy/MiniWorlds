@@ -1,3 +1,5 @@
-2
-berry 1
-bear 1
+5
+carcass 1
+fungi 1-10
+cordyceps rabbit 1
+cordyceps wolf 1-5

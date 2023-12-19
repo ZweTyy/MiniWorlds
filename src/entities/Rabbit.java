@@ -24,6 +24,7 @@ public class Rabbit extends Animal implements Actor, Herbivore {
     private Burrow myBurrow;
     private boolean hasReproducedThisTurn = false;
     private boolean hidden;
+    private boolean isInfected;
     private static int amountOfRabbits = 0;
 
     /**
@@ -383,6 +384,24 @@ public class Rabbit extends Animal implements Actor, Herbivore {
     private boolean isEligibleForReproduction() {
         return this.age == 4 && this.energy >= 25 && !hasReproducedThisTurn
                 && Rabbit.amountOfRabbits < world.getSize() * world.getSize() / 4;
+    }
+
+    /**
+     * Sets the rabbit's infection status.
+     *
+     * @return boolean indicating whether the rabbit is infected.
+     */
+    public void setInfected(boolean isInfected) {
+        this.isInfected = isInfected;
+    }
+
+    /**
+     * Returns the rabbit's infection status.
+     *
+     * @return boolean indicating whether the rabbit is infected.
+     */
+    public boolean isInfected() {
+        return isInfected;
     }
 
     private State determineState(World world, boolean hidden, Burrow myBurrow) {

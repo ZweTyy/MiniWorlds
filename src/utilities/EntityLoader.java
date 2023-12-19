@@ -9,7 +9,9 @@ import java.util.Map;
 
 import entities.Bear;
 import entities.Berry;
+import entities.Carcass;
 import entities.Entity;
+import entities.Fungus;
 import entities.Rabbit;
 import entities.Grass;
 import entities.Wolf;
@@ -21,6 +23,9 @@ import factories.WolfFactory;
 import factories.BearFactory;
 import factories.BerryFactory;
 import factories.BurrowFactory;
+import factories.CarcassFactory;
+import factories.CordycepsFactory;
+import factories.FungusFactory;
 
 /**
  * This class provides utilities for loading various entities into the
@@ -100,6 +105,32 @@ public class EntityLoader {
                 List<Burrow> burrows = BurrowFactory.createMultipleBurrows(world, size, config.getQuantity());
                 for (Burrow burrow : burrows) {
                     placeEntity(world, burrow);
+                }
+                break;
+            case "fungi":
+                List<Fungus> fungi = FungusFactory.createMultipleFungi(world, size, config.getQuantity());
+                for (Fungus fungus : fungi) {
+                    placeEntity(world, fungus);
+                }
+                break;
+            case "carcass":
+                List<Carcass> carcasses = CarcassFactory.createMultipleCarcasses(world, size, config.getQuantity());
+                for (Carcass carcass : carcasses) {
+                    placeEntity(world, carcass);
+                }
+                break;
+                case "cordyceps rabbit":
+                // Logic to create and place cordyceps-infected rabbits
+                List<Rabbit> cordycepsRabbits = CordycepsFactory.createMultipleCordycepsRabbits(world, size, config.getQuantity());
+                for (Rabbit rabbit : cordycepsRabbits) {
+                    placeEntity(world, rabbit);
+                }
+                break;
+            case "cordyceps wolf":
+                // Logic to create and place cordyceps-infected wolves
+                List<Wolf> cordycepsWolves = CordycepsFactory.createMultipleCordycepsWolves(world, size, config.getQuantity());
+                for (Wolf wolf : cordycepsWolves) {
+                    placeEntity(world, wolf);
                 }
                 break;
             // Add cases for other entities like grass, berries, burrows
