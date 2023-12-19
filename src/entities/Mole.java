@@ -1,3 +1,5 @@
+package entities;
+
 import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
@@ -5,6 +7,7 @@ import itumulator.world.World;
 public class Mole extends Animal implements Actor {
 
     private static int amountOfMoles = 0;
+    private boolean underground = true;
 
     public Mole(World world, int size) {
         super(world, size);
@@ -58,9 +61,14 @@ public class Mole extends Animal implements Actor {
     @Override
     public void act(World world) {
         hasReproducedThisTurn = false;
+        if (hunger <= 75) {
+            underground = false;
+        }
+        if (!underground) {
+            super.move(world); // when moles are above earth they are gathering supplies and can be eaten
+        }
         eat(world);
         sleep();
-        move(world); // when moles are above earth they are gathering supplies and can be eaten
         if (!hasReproducedThisTurn) {
             reproduce(world, world.getSize());
         }
