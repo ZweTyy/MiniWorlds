@@ -15,6 +15,7 @@ import itumulator.world.World;
 public abstract class Animal extends Entity {
     protected Location currentLocation = initialLocation;
     protected boolean alive = true;
+    protected boolean hasReproducedThisTurn = false;
     protected double hunger = 100.0;
     protected double energy = 50.0;
     protected int age = 1;

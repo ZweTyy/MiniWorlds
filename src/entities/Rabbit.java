@@ -26,7 +26,6 @@ import itumulator.world.World;
  */
 public class Rabbit extends Animal implements Actor, Herbivore, Prey, DynamicDisplayInformationProvider {
     private Burrow myBurrow;
-    private boolean hasReproducedThisTurn = false;
     private boolean hidden;
     private boolean isInfected;
     private static int amountOfRabbits = 0;

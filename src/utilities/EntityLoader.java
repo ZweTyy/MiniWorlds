@@ -14,10 +14,12 @@ import entities.Entity;
 import entities.Fungus;
 import entities.Rabbit;
 import entities.Grass;
+import entities.Mole;
 import entities.Wolf;
 import entities.WolfPack;
 import entities.dens.Burrow;
 import factories.GrassFactory;
+import factories.MoleFactory;
 import factories.RabbitFactory;
 import factories.WolfFactory;
 import factories.BearFactory;
@@ -133,6 +135,13 @@ public class EntityLoader {
                         config.getQuantity());
                 for (Wolf wolf : cordycepsWolves) {
                     placeEntity(world, wolf);
+                }
+                break;
+            case "mole":
+                // Logic to create and place moles
+                List<Mole> moles = MoleFactory.createMultipleMoles(world, size, config.getQuantity());
+                for (Mole mole : moles) {
+                    placeEntity(world, mole);
                 }
                 break;
             // Add cases for other entities like grass, berries, burrows
