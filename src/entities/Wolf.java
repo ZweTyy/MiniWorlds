@@ -54,6 +54,7 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
             if (isInDen() && myPack.getPack().size() < 3) {
                 reproduce(world);
             }
+            recoverHealthAtDen();
             sleep(); // Assume a sleep method is implemented
         } else {
             leaveDen(world); // Wolves leave the den at the start of the day
@@ -354,8 +355,7 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
     }
 
     private void recoverHealthAtDen() {
-        // Recover a certain amount of health when at the den
-        this.health += 25;
+        this.health += 5;
     }
 
     private Carcass findNearbyCarcass(World world) {
