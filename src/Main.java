@@ -26,7 +26,7 @@ import itumulator.world.Location;
 public class Main {
 
     public static void main(String[] args) {
-        InputParser parser = new InputParser("./data/input-filer/t2-5b.txt"); // Opret en ny parser
+        InputParser parser = new InputParser("./data/input-filer/t4-2a.txt"); // Opret en ny parser
         Map<String, List<EntityConfig>> elementsToAdd = parser.parseInput(); // Kør parseren og få en map med elementer
                                                                              // der skal
         // tilføjes

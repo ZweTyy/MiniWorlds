@@ -79,11 +79,11 @@ public abstract class Animal extends Entity {
      * This method simulates the resting state of the animal.
      */
     public void sleep() {
+        this.energy += 15;
+        this.stepsTaken++;
         if (this.health <= 100) {
             this.health += 5;
         }
-        this.energy += 10;
-        this.stepsTaken++;
     }
 
     /**

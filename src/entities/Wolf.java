@@ -721,6 +721,12 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
         if (world.isDay() && findNearbyCarcass(world) != null) {
             return State.IS_DAY_AND_CARCASS_NEARBY;
         }
+        if (isAlpha()) {
+            return State.ALPHA_MOVING;
+        }
+        if (!isAlpha() && isCloseToAlpha(myPack.getAlpha().currentLocation)) {
+            return State.FOLLOWING_ALPHA;
+        }
         if (findNearbyBear(world) != null) {
             return State.FLEEING_PREDATOR;
         }
@@ -729,12 +735,6 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
         }
         if (findNearbyPrey(world) != null) {
             return State.HUNTING;
-        }
-        if (isAlpha()) {
-            return State.ALPHA_MOVING;
-        }
-        if (!isAlpha() && isCloseToAlpha(myPack.getAlpha().currentLocation)) {
-            return State.FOLLOWING_ALPHA;
         }
         return State.OTHER;
     }

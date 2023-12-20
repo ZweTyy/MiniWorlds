@@ -61,7 +61,7 @@ public class Bear extends Animal implements Actor, Carnivore, Herbivore {
             return;
         }
         if (world.isNight()) {
-            sleep();
+            super.sleep();
             return;
         }
         move(world);
@@ -87,7 +87,6 @@ public class Bear extends Animal implements Actor, Carnivore, Herbivore {
                 validLocations.add(loc);
             }
         }
-
         if (!validLocations.isEmpty() && energy > 0) { // Hvis der er tomme nabo tiles og bjørnen har energi bevæger den
                                                        // sig
             int randomIndex = r.nextInt(validLocations.size());
