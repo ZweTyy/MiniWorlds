@@ -7,6 +7,7 @@ import entities.Grass;
 import entities.Rabbit;
 import itumulator.world.Location;
 import itumulator.world.World;
+import utilities.SimulationManager;
 
 import static org.junit.Assert.*;
 
@@ -60,10 +61,10 @@ public class RabbitTest {
         Location rabbitLocation = new Location(5, 5);
         world.setTile(rabbitLocation, rabbit);
 
-        int initialRabbitCount = Rabbit.countRabbits(world);
+        int initialRabbitCount = SimulationManager.countRabbits(world);
         rabbit.reproduce(world, world.getSize());
 
-        int newRabbitCount = Rabbit.countRabbits(world);
+        int newRabbitCount = SimulationManager.countRabbits(world);
         assertTrue("Rabbit count should increase after reproduction", newRabbitCount > initialRabbitCount);
     }
 

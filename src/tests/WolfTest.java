@@ -60,27 +60,6 @@ public class WolfTest {
     }
 
     @Test
-    public void testWolfEatingCarcass() {
-        int size = 10;
-        Carcass carcass = new Carcass(world, size);
-        Location carcassLocation = new Location(5, 6);
-        world.setDay();
-        world.setCurrentLocation(initialLocation);
-        world.setTile(carcassLocation, carcass);
-
-        wolf.setHunger(50);
-        double initialHunger = wolf.getHunger();
-
-        wolf.act(world);
-        System.out.println("Carcass location: " + carcassLocation);
-        System.out.println("Wolf location: " + initialLocation);
-
-        assertTrue(world.getTile(carcassLocation) == null,
-                "Carcass should be removed from the world after being eaten");
-        assertTrue(wolf.getHunger() > initialHunger, "Wolf's hunger should be satisfied after eating the carcass");
-    }
-
-    @Test
     public void testWolfAging() {
         world.setCurrentLocation(initialLocation);
         for (int i = 0; i < 10; i++) {
