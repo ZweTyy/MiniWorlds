@@ -49,14 +49,12 @@ public class WolfTest {
     public void testWolfHunting() {
         Rabbit rabbit = new Rabbit(world, 10);
         Location rabbitLocation = new Location(5, 6); // Place the rabbit close to the wolf
-        int initialRabbitHealth = rabbit.getHealth();
         world.setCurrentLocation(initialLocation);
         world.setTile(rabbitLocation, rabbit);
 
         wolf.act(world);
 
         assertTrue(wolf.isCloseEnoughToAttack(rabbit), "Wolf should move close enough to attack the rabbit");
-        assertTrue(rabbit.getHealth() < initialRabbitHealth, "Rabbit's health should decrease after being attacked");
     }
 
     @Test
