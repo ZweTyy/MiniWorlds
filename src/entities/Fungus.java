@@ -13,7 +13,7 @@ import java.awt.Color;
  * The fungus has behaviors such as growing, spreading, and a lifecycle that
  * ends when it dies.
  */
-public class Fungus extends Entity implements Actor, DynamicDisplayInformationProvider {
+public class Fungus extends Nature implements Actor, DynamicDisplayInformationProvider {
     private int size;
     private boolean visible;
     private Location location;
