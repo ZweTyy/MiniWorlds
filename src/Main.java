@@ -46,12 +46,11 @@ public class Main {
         System.out.println("Initial mole count: " + SimulationManager.countMoles(world));
 
         // Kører simulationen 100 gange og opdaterer kanin tælleren hver gang
-        for (int i = 0; i < 150; i++) {
+        for (int i = 0; i < 100; i++) {
             p.simulate();
             SimulationManager.incrementStep();
             SimulationManager.updateRabbitCount(world);
             SimulationManager.updateMoleCount(world);
-            System.out.println("Amount of moles: " + SimulationManager.getMoleCount());
         }
     }
 }
