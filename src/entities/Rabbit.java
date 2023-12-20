@@ -375,6 +375,10 @@ public class Rabbit extends Animal implements Actor, Herbivore, Prey, DynamicDis
         return isInfected;
     }
 
+    public boolean getHasReproducedThisTurn() {
+        return hasReproducedThisTurn;
+    }
+
     private State determineState(World world, boolean hidden, Burrow myBurrow) {
         if (!hidden && world.isDay()) {
             return State.OTHERWISE;
