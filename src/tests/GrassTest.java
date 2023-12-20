@@ -1,6 +1,7 @@
 import org.junit.Before;
 import org.junit.Test;
 
+import entities.Grass;
 import itumulator.world.Location;
 import itumulator.world.World;
 

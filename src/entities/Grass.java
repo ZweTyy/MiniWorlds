@@ -61,14 +61,27 @@ public class Grass extends Nature implements Actor, NonBlocking {
         return alive;
     }
     
-    private void decay(World world) {
+    /**
+     * Defines the actions the grass takes when it decays.
+     * The grass has a chance to die.
+     *
+     * @param world the world in which the grass decays.
+     */
+    public void decay(World world) {
         // Græs har en chance for at dø tilfældigt
         if (this.alive && r.nextDouble() < 0.025) { // 2.5% chance for at dø
             die(world);
         }
     }
 
-    private void spread(World world, int size) {
+    /**
+     * Defines the actions the grass takes when it spreads.
+     * The grass has a chance to spread to nearby locations.
+     *
+     * @param world the world in which the grass spreads.
+     * @param size the size of the world, used for generating random locations.
+     */
+    public void spread(World world, int size) {
         if (this.alive && r.nextDouble() < 0.1) { // 10% chance for at sprede sig
             Set<Location> neighbours = world.getEmptySurroundingTiles(super.getLocation());
             List<Location> validLocations = new ArrayList<>();
