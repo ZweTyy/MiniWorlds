@@ -151,6 +151,11 @@ public class Bear extends Animal implements Actor, Carnivore, Herbivore {
         }
     }
 
+    /**
+     * Checks the bear's territory for intruders and attacks them if found.
+     *
+     * @param world The world where the bear checks for intruders.
+     */
     private void checkAndAttackIntruders(World world) {
         Set<Location> territory = getTerritory();
         for (Location loc : territory) {
@@ -162,6 +167,12 @@ public class Bear extends Animal implements Actor, Carnivore, Herbivore {
         }
     }
 
+    /**
+     * Checks for and consumes carcasses within the bear's territory to gain health
+     * or reduce hunger.
+     *
+     * @param world The world where the bear checks for carcasses.
+     */
     private void checkAndEatCarcass(World world) {
         if (hunger < 75 || health < 75) {
             Set<Location> territory = getTerritory(); // Use getTerritory() to check within the bear's territory
@@ -175,6 +186,12 @@ public class Bear extends Animal implements Actor, Carnivore, Herbivore {
         }
     }
 
+    /**
+     * Consumes a carcass, increasing the bear's health or reducing hunger.
+     *
+     * @param carcass The carcass to be consumed.
+     * @param world   The world where the carcass is located.
+     */
     private void eatCarcass(Carcass carcass, World world) {
         System.out.println("Bear eating carcass at " + carcass.getLocation());
         // Increase bear's health or reduce hunger
@@ -183,6 +200,11 @@ public class Bear extends Animal implements Actor, Carnivore, Herbivore {
         world.delete(carcass); // Remove carcass from the world after being consumed
     }
 
+    /**
+     * Returns a set of locations representing the bear's territory.
+     *
+     * @return A set of locations within the bear's territory.
+     */
     private Set<Location> getTerritory() {
         Set<Location> territory = new HashSet<>();
         Set<Location> surroundingTiles = world.getSurroundingTiles(initialTerritoryLocation, TERRITORY_RADIUS);
@@ -190,6 +212,12 @@ public class Bear extends Animal implements Actor, Carnivore, Herbivore {
         return territory;
     }
 
+    /**
+     * Attacks another animal within the bear's territory.
+     *
+     * @param animal The animal to be attacked.
+     * @param world  The world where the attack occurs.
+     */
     private void attack(Animal animal, World world) {
         System.out.println("Bear attacking " + animal);
         double chance = Math.random();
@@ -200,6 +228,11 @@ public class Bear extends Animal implements Actor, Carnivore, Herbivore {
         animal.setHealth(animal.getHealth() - attackPower);
     }
 
+    /**
+     * Defines the bear's hunting behavior. Currently not implemented.
+     *
+     * @param world The world where the bear hunts.
+     */
     @Override
     public void hunt(World world) {
 

@@ -19,10 +19,12 @@ public class Berry extends Nature implements Actor, DynamicDisplayInformationPro
     private int lastEatenDay = -1;
 
     /**
-     * Constructs a Berry bush within the specified world and assigns it a random initial location.
+     * Constructs a Berry bush within the specified world and assigns it a random
+     * initial location.
      *
      * @param world The world where the berry bush exists.
-     * @param size The size parameter used to generate the berry bush's initial location.
+     * @param size  The size parameter used to generate the berry bush's initial
+     *              location.
      */
     public Berry(World world, int size) {
         super(world, size);
@@ -30,7 +32,8 @@ public class Berry extends Nature implements Actor, DynamicDisplayInformationPro
 
     /**
      * Defines the actions the berry bush takes in each simulation step.
-     * The berry bush may grow berries if it has been a certain number of days since the last time it was eaten.
+     * The berry bush may grow berries if it has been a certain number of days since
+     * the last time it was eaten.
      *
      * @param world The world in which the berry bush acts.
      */
@@ -66,16 +69,20 @@ public class Berry extends Nature implements Actor, DynamicDisplayInformationPro
         return hasBerries;
     }
 
+    /**
+     * Returns the display information for the berry bush.
+     * If the berry bush has berries, it will be a Berry bush.
+     * If the berry bush does not have berries, it will be a normal bush without the
+     * berries.
+     *
+     * @return The display information for the berry bush.
+     */
     @Override
     public DisplayInformation getInformation() {
         if (hasBerries) {
-            // If the fungus is visible, return display information with a specific color and possibly an image
-            // The imageKey should correspond to an actual image in your resources if images are being used
-            // The random_direction is set to true to allow for random orientation of the image
             return new DisplayInformation(Color.GREEN, "bush-berries", true);
         } else {
-            // If the fungus is not visible yet, return display information with a transparent color
-            return new DisplayInformation(Color.GREEN, "bush"); // Transparent color, effectively invisible
+            return new DisplayInformation(Color.GREEN, "bush");
         }
     }
 }

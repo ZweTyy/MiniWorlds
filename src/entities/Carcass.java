@@ -8,6 +8,11 @@ import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
 
+/**
+ * This class represents a carcass in the simulation.
+ * It provides functionalities for handling the carcass's state, such as
+ * decaying and growing fungus.
+ */
 public class Carcass extends Entity implements Actor, DynamicDisplayInformationProvider {
     private int meatQuantity;
     private Location location;
@@ -54,6 +59,13 @@ public class Carcass extends Entity implements Actor, DynamicDisplayInformationP
         this.fungus = new Fungus(world, size, meatQuantity); // Initialize the fungus when the carcass is created
     }
 
+    /**
+     * Defines the behavior of the carcass in each simulation step.
+     * It checks the state of the carcass and updates it accordingly, such as
+     * decaying or growing fungus.
+     *
+     * @param world The world in which the carcass exists.
+     */
     @Override
     public void act(World world) {
         if (!world.contains(this)) {
@@ -73,16 +85,24 @@ public class Carcass extends Entity implements Actor, DynamicDisplayInformationP
         }
     }
 
+    /**
+     * Handles the event when the carcass is fully decayed.
+     * Removes the carcass from the world and makes the fungus visible if it has
+     * grown to a certain size.
+     */
     private void onFullyDecayed() {
-        // When the carcass is fully decayed, remove it from the world
         world.delete(this);
-        // If the fungus has grown to a certain size, make it visible
         if (fungus.getSize() >= Fungus.GROWTH_THRESHOLD && fungus.isVisible()) {
             world.setTile(location, fungus);
             System.out.println("Fungus is now visible at: " + location);
         }
     }
 
+    /**
+     * Calculates the initial quantity of meat based on the type of animal.
+     *
+     * @return The initial meat quantity of the carcass.
+     */
     private int calculateMeatQuantity() {
         switch (animalType) {
             case "rabbit":
@@ -98,41 +118,87 @@ public class Carcass extends Entity implements Actor, DynamicDisplayInformationP
         }
     }
 
+    /**
+     * Calculates the initial decay counter for the carcass.
+     *
+     * @return The initial decay counter value.
+     */
     private int calculateInitialDecayCounter() {
-        return 10; // Set this to the number of simulation steps after which the carcass decays.
+        return 10;
     }
 
+    /**
+     * Consumes a specified amount of meat from the carcass and triggers decay if
+     * all meat is consumed.
+     *
+     * @param amount The amount of meat to consume.
+     */
     public void consumeMeat(int amount) {
         this.meatQuantity -= amount;
         if (this.meatQuantity <= 0) {
-            decayCounter = 0; // Trigger decay in the next simulation step.
+            decayCounter = 0;
         }
     }
 
+    /**
+     * Returns the current quantity of meat in the carcass.
+     *
+     * @return The current meat quantity.
+     */
     public int getMeatQuantity() {
         return meatQuantity;
     }
 
+    /**
+     * Returns the location of the carcass.
+     *
+     * @return The current location of the carcass.
+     */
     public Location getLocation() {
         return location;
     }
 
+    /**
+     * Returns the fungus associated with the carcass.
+     *
+     * @return The fungus growing on the carcass, if any.
+     */
     public Fungus getFungus() {
         return fungus;
     }
 
+    /**
+     * Checks if the carcass has fungus growing on it.
+     *
+     * @return True if the carcass has fungus, otherwise false.
+     */
     public boolean hasFungus() {
         return fungus != null;
     }
 
+    /**
+     * Checks if the carcass still has meat.
+     *
+     * @return True if the carcass has meat, otherwise false.
+     */
     public boolean hasMeat() {
         return meatQuantity > 0;
     }
 
+    /**
+     * Sets the fungus associated with the carcass.
+     *
+     * @param fungus The fungus to be associated with the carcass.
+     */
     public void setFungus(Fungus fungus) {
         this.fungus = fungus;
     }
 
+    /**
+     * Returns the current decay counter of the carcass.
+     *
+     * @return The current decay counter.
+     */
     public int getDecayCounter() {
         return decayCounter;
     }

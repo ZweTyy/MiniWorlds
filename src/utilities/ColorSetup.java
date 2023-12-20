@@ -17,8 +17,16 @@ import itumulator.executable.DisplayInformation;
 import itumulator.executable.Program;
 import itumulator.world.Location;
 
+/**
+ * This class sets up the colors for the entities in the simulation.
+ */
 public class ColorSetup {
 
+    /**
+     * Sets up the colors and images for the entities in the simulation.
+     * 
+     * @param p The program in which the colors are set up.
+     */
     public static void setUpColor(Program p) {
         DisplayInformation grassDisplayInfo = new DisplayInformation(Color.green, "grass");
         DisplayInformation rabbitDisplayInfo = new DisplayInformation(Color.white, "rabbit-small");

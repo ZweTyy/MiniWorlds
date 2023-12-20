@@ -47,8 +47,6 @@ public abstract class Animal extends Entity {
             createCarcass();
             return; // Stop further actions as the animal is dead
         }
-        // System.out.println(getClass().getSimpleName() + this + " moving from: " +
-        // initialLocation);
         if (world.getCurrentLocation() == null || !alive) {
             // System.out.println(getClass().getSimpleName() + this + " is dead or has no
             // location.");
@@ -69,16 +67,11 @@ public abstract class Animal extends Entity {
             this.initialLocation = newLocation;
             world.move(this, initialLocation);
             world.setCurrentLocation(initialLocation);
-            // System.out.println(getClass().getSimpleName() + this + " moving to: " +
-            // newLocation);
             this.energy -= 2.5;
             this.hunger -= 5.0;
             this.stepsTaken++;
-            // System.out.println("age " + this.age);
         }
         updateStats();
-        // System.out.println("health " + this.health + " energy " + this.energy + "
-        // hunger " + this.hunger);
     }
 
     /**

@@ -7,7 +7,8 @@ import java.util.Random;
 
 /**
  * Abstract base class for entities in the simulation.
- * This class provides common functionalities for all entities, such as location handling.
+ * This class provides common functionalities for all entities, such as location
+ * handling.
  */
 public abstract class Entity {
     protected Location initialLocation;
@@ -15,10 +16,12 @@ public abstract class Entity {
     protected static final Random r = new Random();
 
     /**
-     * Constructs an Entity within the specified world and assigns it a random initial location.
+     * Constructs an Entity within the specified world and assigns it a random
+     * initial location.
      *
      * @param world The world where the entity exists.
-     * @param size The size parameter used to generate the entity's initial location.
+     * @param size  The size parameter used to generate the entity's initial
+     *              location.
      */
     public Entity(World world, int size) {
         this.world = world;

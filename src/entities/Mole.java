@@ -9,17 +9,37 @@ import itumulator.world.Location;
 import itumulator.world.World;
 import utilities.SimulationManager;
 
+/**
+ * Represents a mole within a simulation environment. The mole has behaviors
+ * such as going
+ * underground, coming above ground, searching for food, and reproducing.
+ */
 public class Mole extends Animal implements Actor, Prey {
 
     private static int amountOfMoles = SimulationManager.getMoleCount();
     private boolean underground = false;
 
+    /**
+     * Constructs a Mole instance and initializes it within the specified world.
+     * The mole is initially above ground and increases the total mole count.
+     *
+     * @param world The world where the mole exists.
+     * @param size  The size of the world.
+     */
     public Mole(World world, int size) {
         super(world, size);
         this.MAX_AGE = 8;
         amountOfMoles++;
     }
 
+    /**
+     * Checks the mole's hunger level and decides whether to go underground or come
+     * above ground.
+     * If hunger is below 70, the mole comes above ground. If hunger is 100 or
+     * above, the mole goes underground.
+     *
+     * @param world The world where the mole exists.
+     */
     public void checkHunger(World world) {
         if (hunger <= 70) {
             comeAboveGround(world);
@@ -28,6 +48,11 @@ public class Mole extends Animal implements Actor, Prey {
         }
     }
 
+    /**
+     * Mole's behavior during sleep. Decreases hunger, and if it's night and the
+     * mole is underground,
+     * increases energy and health.
+     */
     @Override
     public void sleep() {
         this.hunger -= 5;
@@ -37,11 +62,24 @@ public class Mole extends Animal implements Actor, Prey {
         }
     }
 
+    /**
+     * Checks if the mole is eligible for reproduction based on its age, energy, and
+     * whether it has already reproduced.
+     *
+     * @return true if the mole is eligible for reproduction, false otherwise.
+     */
     private boolean isEligibleForReproduction() {
         return this.age >= 3 && this.energy >= 25 && !hasReproducedThisTurn
                 && Mole.amountOfMoles < world.getSize() * world.getSize() / 4;
     }
 
+    /**
+     * Handles mole reproduction. If eligible, the mole reproduces by creating a new
+     * mole at a random location.
+     *
+     * @param world The world where the mole exists.
+     * @param size  The size of the world.
+     */
     public void reproduce(World world, int size) {
         if (!isEligibleForReproduction() || this.currentLocation == null) {
             return;
@@ -55,11 +93,22 @@ public class Mole extends Animal implements Actor, Prey {
         }
     }
 
+    /**
+     * Consumes energy after reproduction and sets the reproduction flag for the
+     * current turn.
+     */
     private void consumeReproductionEnergy() {
         this.energy -= 30;
         this.hasReproducedThisTurn = true;
     }
 
+    /**
+     * Defines the mole's behavior in each simulation step. Includes checking for
+     * predators, handling hunger,
+     * sleeping, moving, and reproducing.
+     *
+     * @param world The world in which the mole acts.
+     */
     @Override
     public void act(World world) {
         hasReproducedThisTurn = false;
@@ -80,6 +129,12 @@ public class Mole extends Animal implements Actor, Prey {
         }
     }
 
+    /**
+     * Checks for predators in the neighboring tiles of the mole's current location.
+     *
+     * @param world The world where the mole exists.
+     * @return The location of a detected predator, or null if no predator is found.
+     */
     private Location checkForPredators(World world) {
         this.currentLocation = world.getCurrentLocation();
         if (this.currentLocation == null) {
@@ -96,24 +151,6 @@ public class Mole extends Animal implements Actor, Prey {
         return null; // No predators found
     }
 
-    /**
-     * Sends the mole underground in the provided world.
-     *
-     * This method is responsible for hiding the mole from the world view by
-     * removing it from
-     * the world's surface. If the mole is already underground or its current
-     * location is
-     * not known,
-     * the method does nothing. Otherwise, it removes the mole from its current
-     * location in the world,
-     * sets the mole's 'underground' status to true, and prints a message to the
-     * console indicating
-     * that the mole is going underground.
-     *
-     * @param world The world from which the mole will go underground. This world
-     *              object
-     *              is used to remove the mole from its current location.
-     */
     public void goUnderground(World world) {
         System.out.println("Mole hunger: " + hunger);
         if (!underground && this.currentLocation != null) {
@@ -123,24 +160,6 @@ public class Mole extends Animal implements Actor, Prey {
         }
     }
 
-    /**
-     * Brings the mole above ground in the provided world.
-     * 
-     * If the mole is underground, this method locates the surrounding empty tiles
-     * of the mole's initial location. It then moves the mole to one of these empty
-     * tiles.
-     * If no empty tiles are available, the mole remains at its current location.
-     * Once above ground, the mole is made visible in the world view and a message
-     * is printed
-     * to the console indicating the mole's new location. The method also updates
-     * the mole's
-     * 'underground' status to false.
-     *
-     * @param world The world in which the mole resides and will come above ground.
-     *              This world object is used to find empty surrounding tiles and
-     *              update
-     *              the tile representation of the mole.
-     */
     public void comeAboveGround(World world) {
         if (underground) {
             Set<Location> emptyTiles = world.getEmptySurroundingTiles(this.initialLocation);
@@ -152,7 +171,11 @@ public class Mole extends Animal implements Actor, Prey {
         }
     }
 
-    // Method for the mole to search for carcasses
+    /**
+     * Method for the mole to search for carcasses as a source of food.
+     *
+     * @param world The world where the mole is searching for carcasses.
+     */
     private void searchForCarcasses(World world) {
         Set<Location> surroundingTiles = world.getSurroundingTiles(this.currentLocation);
         for (Location loc : surroundingTiles) {
@@ -166,6 +189,13 @@ public class Mole extends Animal implements Actor, Prey {
         }
     }
 
+    /**
+     * Consumes a carcass found in the world, increasing the mole's energy and
+     * hunger.
+     *
+     * @param carcass The carcass to be consumed.
+     * @param world   The world where the carcass is located.
+     */
     private void consumeCarcass(Carcass carcass, World world) {
         int meatToConsume = Math.min(carcass.getMeatQuantity(), (int) this.hunger);
         carcass.consumeMeat(meatToConsume);
@@ -176,6 +206,13 @@ public class Mole extends Animal implements Actor, Prey {
         }
     }
 
+    /**
+     * Mole's behavior when fleeing from a predator. The mole moves to a safe
+     * neighboring location if possible.
+     *
+     * @param world            The world where the mole exists.
+     * @param predatorLocation The location of the detected predator.
+     */
     @Override
     public void fleeFromPredator(World world, Location predatorLocation) {
         Set<Location> neighbours = world.getEmptySurroundingTiles(this.currentLocation);
@@ -202,6 +239,12 @@ public class Mole extends Animal implements Actor, Prey {
         }
     }
 
+    /**
+     * Sets the mole's underground status.
+     *
+     * @param underground The new underground status.
+     * @return The updated underground status.
+     */
     public boolean setUnderground(boolean underground) {
         return this.underground = underground;
     }

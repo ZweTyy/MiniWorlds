@@ -133,6 +133,13 @@ public class Rabbit extends Animal implements Actor, Herbivore, Prey, DynamicDis
         createOffspring(world, size, mate);
     }
 
+    /**
+     * Creates a new rabbit offspring in a random empty location in the world.
+     *
+     * @param world the world in which the rabbit reproduces.
+     * @param size  the size of the world, used for generating random locations.
+     * @param mate  the rabbit's mate.
+     */
     private void createOffspring(World world, int size, Rabbit mate) {
         Location newLocation = generateRandomLocation(world.getSize());
         if (newLocation == null) {
@@ -190,6 +197,13 @@ public class Rabbit extends Animal implements Actor, Herbivore, Prey, DynamicDis
         this.hasReproducedThisTurn = hasReproduced;
     }
 
+    /**
+     * Enables the rabbit to find a burrow.
+     * The rabbit detects burrows in adjacent tiles and enters the first available
+     * burrow found.
+     *
+     * @param world the world in which the rabbit finds a burrow.
+     */
     private void findAndEnterBurrow(World world) {
         System.out.println("Finding burrow");
         Burrow availableBurrow = null;
@@ -216,6 +230,12 @@ public class Rabbit extends Animal implements Actor, Herbivore, Prey, DynamicDis
         }
     }
 
+    /**
+     * Enables the rabbit to dig a burrow.
+     * The rabbit moves to a random empty tile and digs a burrow.
+     *
+     * @param world the world in which the rabbit digs a burrow.
+     */
     private void digBurrow(World world) {
         // Vi sikrer os at kaninens lokation ikke er null
         this.currentLocation = world.getCurrentLocation();
@@ -254,6 +274,13 @@ public class Rabbit extends Animal implements Actor, Herbivore, Prey, DynamicDis
         }
     }
 
+    /**
+     * Enables the rabbit to enter a burrow.
+     * The rabbit moves to the burrow and hides inside it.
+     *
+     * @param world  the world in which the rabbit enters a burrow.
+     * @param burrow the burrow the rabbit enters.
+     */
     private void enterBurrow(World world, Burrow burrow) {
         System.out.println("Trying to enter burrow");
         // Vi tjekker om kaninen kan komme ind i hullet
@@ -267,6 +294,12 @@ public class Rabbit extends Animal implements Actor, Herbivore, Prey, DynamicDis
         this.health -= 25;
     }
 
+    /**
+     * Enables the rabbit to leave its burrow. The rabbit moves to an empty tile in
+     * a random direction.
+     * 
+     * @param world the world in which the rabbit leaves its burrow.
+     */
     private void leaveBurrow(World world) {
         if (this.myBurrow != null && this.hidden) {
             System.out.println("Rabbit leaving burrow at: " + this.myBurrow.getLocation());
@@ -291,6 +324,16 @@ public class Rabbit extends Animal implements Actor, Herbivore, Prey, DynamicDis
         }
     }
 
+    /**
+     * Finds a mate for the rabbit.
+     * The rabbit detects other rabbits in adjacent tiles and returns the first
+     * eligible mate found.
+     *
+     * @param world    the world in which the rabbit finds a mate.
+     * @param location the location of the rabbit.
+     * @return the first eligible mate found, or null if no eligible mates are
+     *         found.
+     */
     private Rabbit findMate(World world, Location location) {
         Set<Location> surroundingTiles = world.getSurroundingTiles(location);
         for (Location loc : surroundingTiles) {
@@ -305,6 +348,13 @@ public class Rabbit extends Animal implements Actor, Herbivore, Prey, DynamicDis
         return null; // No eligible mate found
     }
 
+    /**
+     * Checks for predators in the rabbit's surroundings.
+     * The rabbit detects wolves and bears in adjacent tiles.
+     *
+     * @param world the world in which the rabbit checks for predators.
+     * @return the location of the predator, or null if no predators are found.
+     */
     private Location checkForPredators(World world) {
         this.currentLocation = world.getCurrentLocation();
         if (this.currentLocation == null) {
@@ -321,6 +371,13 @@ public class Rabbit extends Animal implements Actor, Herbivore, Prey, DynamicDis
         return null; // No predators found
     }
 
+    /**
+     * Makes the rabbit flee from a predator.
+     * The rabbit moves to a random location that is not adjacent to the predator.
+     *
+     * @param world            the world in which the rabbit flees.
+     * @param predatorLocation the location of the predator.
+     */
     @Override
     public void fleeFromPredator(World world, Location predatorLocation) {
         Set<Location> neighbours = world.getEmptySurroundingTiles(this.currentLocation);
@@ -347,11 +404,19 @@ public class Rabbit extends Animal implements Actor, Herbivore, Prey, DynamicDis
         }
     }
 
+    /**
+     * Consumes energy when the rabbit reproduces.
+     */
     private void consumeReproductionEnergy() {
         this.energy -= 25;
         this.hasReproducedThisTurn = true;
     }
 
+    /**
+     * Determines if the rabbit is eligible for reproduction.
+     *
+     * @return boolean indicating whether the rabbit is eligible for reproduction.
+     */
     private boolean isEligibleForReproduction() {
         return this.age == 4 && this.energy >= 25 && !hasReproducedThisTurn
                 && Rabbit.amountOfRabbits < world.getSize() * world.getSize() / 4;
@@ -375,6 +440,13 @@ public class Rabbit extends Animal implements Actor, Herbivore, Prey, DynamicDis
         return isInfected;
     }
 
+    /**
+     * Returns the rabbit's flag indicating whether it has reproduced in the current
+     * turn.
+     * 
+     * @return boolean indicating whether the rabbit has reproduced in the current
+     *         turn.
+     */
     public boolean getHasReproducedThisTurn() {
         return hasReproducedThisTurn;
     }
@@ -395,6 +467,13 @@ public class Rabbit extends Animal implements Actor, Herbivore, Prey, DynamicDis
         return world.isNight() && myBurrow == null ? State.NIGHT_WITH_NO_BURROW : State.NIGHT_WITH_BURROW;
     }
 
+    /**
+     * Provides display information for the rabbit. The appearance is based on its
+     * infection
+     * status.
+     *
+     * @return The display information for the rabbit.
+     */
     @Override
     public DisplayInformation getInformation() {
         if (this.isInfected) {

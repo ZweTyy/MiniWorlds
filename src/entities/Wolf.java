@@ -113,7 +113,6 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
         newWolf.setPack(this.myPack); // Set the pack for the new wolf
         this.myPack.addMember(newWolf); // Add the new wolf to the pack
 
-        // Optionally, adjust the energy levels of the reproducing wolves
         this.energy -= 10; // Reproduction energy cost
         System.out.println("New wolf added to the pack at location: " + newWolf.getLocation());
         world.setCurrentLocation(newWolf.getLocation());
@@ -156,6 +155,11 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
         return null;
     }
 
+    /**
+     * Checks if the wolf should attack a bear.
+     * 
+     * @return boolean indicating whether the wolf should attack a bear.
+     */
     private boolean shouldAttackBear() {
         System.out.println("Checking if wolf should attack bear.");
         return myPack != null && (myPack.getPack().size() >= 3 || isAlreadyEngagedInFight);
@@ -203,9 +207,9 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
 
         if (chance <= 0.66) {
             System.out.println("Attack missed.");
-            return; // Attack missed, rabbit escapes
+            return;
         }
-        bear.setHealth(bear.getHealth() - attackPower); // Assuming the bear has setHealth and getHealth methods
+        bear.setHealth(bear.getHealth() - attackPower);
         System.out.println("Wolves attacking bear. Bear's health now: " + bear.getHealth());
     }
 
@@ -270,14 +274,13 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
         // 50% chance to successfully attack the rabbit
         if (chance <= 0.5) {
             System.out.println("Attack missed.");
-            return; // Attack missed, rabbit escapes
+            return;
         }
 
         // If the attack is successful
-        prey.setHealth(prey.health -= attackPower); // Decrease the rabbit's health by the attack power
+        prey.setHealth(prey.health -= attackPower);
         System.out.println("Prey attacked. Health now: " + prey.getHealth());
 
-        // Check if the rabbit is caught (assuming rabbit is dead when health <= 0)
         if (prey.getHealth() <= 0) {
             System.out.println("Prey caught.");
             eatPrey(prey, world);
@@ -286,11 +289,23 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
         }
     }
 
+    /**
+     * Checks if the wolf is adjacent to the prey.
+     * 
+     * @param prey The prey to check.
+     * @return boolean indicating whether the wolf is adjacent to the prey.
+     */
     private boolean isAdjacentToPrey(Animal prey) {
         Location preyLocation = prey.getLocation();
         return distanceTo(preyLocation) <= 1; // Adjacent if the distance is 1 or less
     }
 
+    /**
+     * Consumes the prey, increasing the wolf's energy.
+     * 
+     * @param prey  The prey to consume.
+     * @param world The world where the consumption occurs.
+     */
     private void eatPrey(Animal prey, World world) {
         // Increase energy after eating the prey
         this.energy += prey.getEnergy();
@@ -427,10 +442,19 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
         }
     }
 
+    /**
+     * The wolf rests and recovers health.
+     */
     private void recoverHealthAtDen() {
         this.health += 5;
     }
 
+    /**
+     * Checks surrounding tiles for a carcass to eat.
+     * 
+     * @param world The world in which the wolf is searching for a carcass.
+     * @return The nearest carcass, or null if no carcass is found.
+     */
     private Carcass findNearbyCarcass(World world) {
         Set<Location> surroundingTiles = world.getSurroundingTiles(currentLocation, huntingRange);
         for (Location loc : surroundingTiles) {
@@ -442,6 +466,12 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
         return null;
     }
 
+    /**
+     * The wolf consumes a carcass, increasing its energy.
+     * 
+     * @param carcass The carcass to consume.
+     * @param world   The world where the consumption occurs.
+     */
     private void consumeCarcass(Carcass carcass, World world) {
         if (carcass != null && carcass.getMeatQuantity() > 0) {
             int meatToConsume = Math.min(carcass.getMeatQuantity(), (int) this.hunger);
@@ -455,6 +485,11 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
         }
     }
 
+    /**
+     * Non alpha wolves follow the alpha wolf if they aren't close.
+     * 
+     * @param world
+     */
     private void followAlpha(World world) {
         if (isAlpha || myPack == null) {
             return; // Alpha doesn't need to follow anyone, and lone wolves don't follow.
@@ -473,13 +508,23 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
         }
     }
 
+    /**
+     * Checks if the wolf is close to the alpha wolf.
+     * 
+     * @param alphaLocation The location of the alpha wolf.
+     * @return boolean indicating whether the wolf is close to the alpha.
+     */
     private boolean isCloseToAlpha(Location alphaLocation) {
-        return distanceTo(alphaLocation) <= 3; // Replace '3' with the desired range
+        return distanceTo(alphaLocation) <= 3;
     }
 
-    // Moves the wolf towards a specified location if it's not already there
+    /**
+     * Moves towards the target location.
+     * 
+     * @param targetLocation The location to move towards.
+     * @param world          The world in which the movement occurs.
+     */
     private void moveTowards(Location targetLocation, World world) {
-        // Ensure that the wolf does not already occupy the target location
         if (this.currentLocation.equals(targetLocation)) {
             return;
         }
@@ -602,11 +647,23 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
         return isAlreadyEngagedInFight;
     }
 
+    /**
+     * Finds nearby pack members within a certain range.
+     * 
+     * @param world The world in which the wolf is searching for pack members.
+     * @return A list of nearby pack members.
+     */
     private List<Wolf> findNearbyPackMembers(World world) {
         int searchRange = 3;
         return myPack.getNearbyMembers(this, searchRange);
     }
 
+    /**
+     * Moves towards the closest pack member.
+     * 
+     * @param nearbyWolves A list of nearby pack members.
+     * @param world        The world in which the movement occurs.
+     */
     private void moveTowardsPack(List<Wolf> nearbyWolves, World world) {
         if (nearbyWolves.isEmpty()) {
             return;
@@ -751,15 +808,15 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
         }
     }
 
-    private void other(World world) {
-
-    }
-
     private void consumeNearbyCarcassIfNeeded(World world) {
         Carcass nearbyCarcass = findNearbyCarcass(world);
         if (nearbyCarcass != null && world.contains(nearbyCarcass)) {
             consumeCarcass(nearbyCarcass, world);
         }
+    }
+
+    private void other(World world) {
+
     }
 
     /**
