@@ -117,7 +117,9 @@ public class WolfPack extends Entity {
         this.den = new WolfDen(world, size, this);
         // Place the den on the world map at a random location
         Location denLocation = generateRandomLocation(size);
-        world.setTile(denLocation, this.den);
+        if (world.isTileEmpty(denLocation)) {
+            world.setTile(denLocation, this.den);
+        }
     }
 
     /**

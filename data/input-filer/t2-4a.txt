@@ -1,4 +1,4 @@
-25
+20
 grass 15-20
 wolf 3
 rabbit 2-5

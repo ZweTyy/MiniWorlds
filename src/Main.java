@@ -26,7 +26,7 @@ import itumulator.world.Location;
 public class Main {
 
     public static void main(String[] args) {
-        InputParser parser = new InputParser("./data/input-filer/t1-1a.txt"); // Opret en ny parser
+        InputParser parser = new InputParser("./data/input-filer/t2-5b.txt"); // Opret en ny parser
         Map<String, List<EntityConfig>> elementsToAdd = parser.parseInput(); // Kør parseren og få en map med elementer
                                                                              // der skal
         // tilføjes
@@ -45,8 +45,8 @@ public class Main {
         System.out.println("Initial rabbit count: " + SimulationManager.countRabbits(world));
         System.out.println("Initial mole count: " + SimulationManager.countMoles(world));
 
-        // Kører simulationen 100 gange og opdaterer kanin tælleren hver gang
-        for (int i = 0; i < 100; i++) {
+        // Kører simulationen 50 gange og opdaterer kanin tælleren hver gang
+        for (int i = 0; i < 50; i++) {
             p.simulate();
             SimulationManager.incrementStep();
             SimulationManager.updateRabbitCount(world);

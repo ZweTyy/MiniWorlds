@@ -161,7 +161,6 @@ public class Bear extends Animal implements Actor, Carnivore, Herbivore {
         for (Location loc : territory) {
             Object object = world.getTile(loc);
             if (object != null && object instanceof Animal && object != this) {
-                // System.out.println("Bear found intruder: " + object);
                 attack((Animal) object, world);
             }
         }
@@ -175,7 +174,7 @@ public class Bear extends Animal implements Actor, Carnivore, Herbivore {
      */
     private void checkAndEatCarcass(World world) {
         if (hunger < 75 || health < 75) {
-            Set<Location> territory = getTerritory(); // Use getTerritory() to check within the bear's territory
+            Set<Location> territory = getTerritory();
             for (Location loc : territory) {
                 Object object = world.getTile(loc);
                 if (object instanceof Carcass) {
