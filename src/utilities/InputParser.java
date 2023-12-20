@@ -57,6 +57,11 @@ public class InputParser {
                     entityType += " " + parts[1];
                     quantityIndex = 2; // Adjust the index for quantity if it's a compound name
                 }
+                String secondaryType = parts[1];
+                if (secondaryType.equals("fungi")) {
+                    entityType += " " + parts[1];
+                    quantityIndex = 2;
+                }
 
                 // Parse the quantity, which can be a range or a single number
                 int minQuantity, maxQuantity;

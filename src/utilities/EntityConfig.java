@@ -11,6 +11,7 @@ public class EntityConfig {
     private Integer x;
     private Integer y;
     private String additionalInfo; // e.g., associated entity type
+    private String secondInfo;
 
     /**
      * Constructs a new EntityConfig with specified parameters.

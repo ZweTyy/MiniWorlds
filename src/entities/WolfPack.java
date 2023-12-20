@@ -114,12 +114,14 @@ public class WolfPack extends Entity {
      * @param size  The size parameter used to generate the den's initial location.
      */
     public void createDen(World world, int size) {
+        Location denLocation = generateRandomLocation(size);
+        if (!world.isTileEmpty(denLocation)) {
+            System.out.println("Cannot create den at initial location: " + initialLocation);
+            return;
+        }
         this.den = new WolfDen(world, size, this);
         // Place the den on the world map at a random location
-        Location denLocation = generateRandomLocation(size);
-        if (world.isTileEmpty(denLocation)) {
-            world.setTile(denLocation, this.den);
-        }
+        world.setTile(denLocation, this.den);
     }
 
     /**
