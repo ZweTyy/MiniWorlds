@@ -722,7 +722,7 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
         if (isAlpha()) {
             return State.ALPHA_MOVING;
         }
-        if (!isAlpha() && isCloseToAlpha(myPack.getAlpha().currentLocation)) {
+        if (!isAlpha() && !isCloseToAlpha(myPack.getAlpha().currentLocation)) {
             return State.FOLLOWING_ALPHA;
         }
         if (findNearbyBear(world) != null) {
@@ -814,7 +814,7 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
     }
 
     private void other(World world) {
-
+        move(world);
     }
 
     /**
