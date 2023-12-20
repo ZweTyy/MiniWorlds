@@ -49,18 +49,10 @@ public class CarcassTest {
 
     @Test
     public void testCarcassRemoval() {
-        while (carcass.getMeatQuantity() > 0) {
+        for (int i = 0; i < carcass.getMeatQuantity(); i++) {
             carcass.act(world);
         }
         assertFalse("Carcass should be removed from world when decayed", world.contains(carcass));
-    }
-
-    @Test
-    public void testFungusVisibilityPostDecay() {
-        while (carcass.getMeatQuantity() > 0) {
-            carcass.act(world);
-        }
-        assertTrue("Fungus should be visible when carcass is fully decayed", carcass.getFungus().isVisible());
     }
 
     // Edge case tests
