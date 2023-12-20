@@ -1,0 +1,5 @@
+19
+mole 4
+bear 1
+bear 1 (10,8)
+wolf 2

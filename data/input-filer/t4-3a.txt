@@ -1,0 +1,6 @@
+10
+mole 2-4 
+wolf 2
+wolf 3 
+rabbit 1
+grass 5

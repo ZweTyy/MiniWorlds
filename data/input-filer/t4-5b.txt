@@ -1,0 +1,5 @@
+15
+mole 2
+rabbit 2-5
+grass 10-17
+wolf 1

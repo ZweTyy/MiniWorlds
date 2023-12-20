@@ -1,0 +1,6 @@
+15
+mole 3
+rabbit 2
+grass 7-9
+bear 1
+berry 4
