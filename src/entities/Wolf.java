@@ -40,11 +40,14 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
 
     enum State {
         IN_DEN_AT_NIGHT,
+        NOT_IN_DEN_AT_NIGHT,
+        IS_DAY_AND_CARCASS_NEARBY,
         HUNTING,
         ALPHA_MOVING,
         FOLLOWING_ALPHA,
         FLEEING_PREDATOR,
         FIGHTING_ENEMY_WOLF,
+        IS_DAY_AND_STILL_IN_DEN,
         OTHER
     }
 
@@ -57,13 +60,22 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
     @Override
     public void act(World world) {
         if (!world.contains(this)) {
-            return; // If the wolf has been removed from the world, do not perform any actions
+            return;
         }
         State state = determineState(world);
 
         switch (state) {
+            case IS_DAY_AND_STILL_IN_DEN:
+                isDayAndStillInDen(world);
+                break;
             case IN_DEN_AT_NIGHT:
                 inDenAtNight(world);
+                break;
+            case NOT_IN_DEN_AT_NIGHT:
+                notInDenAtNight(world);
+                break;
+            case IS_DAY_AND_CARCASS_NEARBY:
+                isDayAndCarcassNearby(world);
                 break;
             case HUNTING:
                 hunting(world);
@@ -221,12 +233,23 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
         }
     }
 
-    private boolean isCloseEnoughToAttack(Animal prey) {
+    /**
+     * Checks if the wolf is close enough to attack the prey.
+     * 
+     * @param prey The prey to check.
+     * @return boolean indicating whether the wolf is close enough to attack the prey.
+     */
+    public boolean isCloseEnoughToAttack(Animal prey) {
         // Check if the wolf is close enough to attack the rabbit
         return distanceTo(prey.getLocation()) <= attackRange;
     }
 
-    private void attackPrey(Animal prey, World world) {
+    /**
+     * Attacks the prey, reducing its health.
+     * 
+     * @param prey The prey to attack.
+     */
+    public void attackPrey(Animal prey, World world) {
         double chance = Math.random();
         if (!isAdjacentToPrey(prey)) {
             System.out.println("Too far to attack the rabbit.");
@@ -607,8 +630,17 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
     }
 
     private State determineState(World world) {
+        if (world.isDay() && isInDen()) {
+            return State.IS_DAY_AND_STILL_IN_DEN;
+        }
         if (world.isNight() && isInDen()) {
             return State.IN_DEN_AT_NIGHT;
+        }
+        if (world.isNight() && !isInDen()) {
+            return State.NOT_IN_DEN_AT_NIGHT;
+        }
+        if (world.isDay() && findNearbyCarcass(world) != null) {
+            return State.IS_DAY_AND_CARCASS_NEARBY;
         }
         if (findNearbyPrey(world) != null) {
             return State.HUNTING;
@@ -628,12 +660,29 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
         return State.OTHER;
     }
 
+    private void isDayAndStillInDen(World world) {
+        leaveDen(world);
+    }
+
     private void inDenAtNight(World world) {
         if (isInDen() && myPack.getPack().size() == 2) {
             reproduce(world);
         }
         recoverHealthAtDen();
         sleep();
+    }
+
+    private void notInDenAtNight(World world) {
+        if (!isInDen() && world.isNight() || this.health < 30) {
+            returnToDenIfNeeded(world);
+        }
+    }
+
+    private void isDayAndCarcassNearby(World world) {
+        Carcass nearbyCarcass = findNearbyCarcass(world);
+        if (nearbyCarcass != null && world.contains(nearbyCarcass)) {
+            consumeCarcass(nearbyCarcass, world);
+        }
     }
     
     private void hunting(World world) {
@@ -649,13 +698,13 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
 
     private void alphaMoving(World world) {
         if (isAlpha()) {
-            move(world);
+            super.move(world);
         }
     }
     
     private void followingAlpha(World world) {
         if (!isAlpha()) {
-            move(world);
+            followAlpha(world);
         }
     }
     
@@ -679,9 +728,9 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
             return;
         }
     }
-    
+
     private void other(World world) {
-        returnToDenIfNeeded(world);
+        
     }
     
     private void consumeNearbyCarcassIfNeeded(World world) {

@@ -106,7 +106,6 @@ public class Carcass extends Entity implements Actor, DynamicDisplayInformationP
         }
     }
 
-    // Accessor methods as needed for meatQuantity, location, and fungus.
     public int getMeatQuantity() {
         return meatQuantity;
     }
@@ -121,6 +120,10 @@ public class Carcass extends Entity implements Actor, DynamicDisplayInformationP
 
     public boolean hasFungus() {
         return fungus != null;
+    }
+
+    public boolean hasMeat() {
+        return meatQuantity > 0;
     }
 
     public void setFungus(Fungus fungus) {

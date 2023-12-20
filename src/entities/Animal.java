@@ -41,7 +41,7 @@ public abstract class Animal extends Entity {
      *
      * @param world The world where the animal moves.
      */
-    protected synchronized void move(World world) {
+    public synchronized void move(World world) {
         if (this.health <= 0 || this.age >= MAX_AGE) {
             this.alive = false;
             createCarcass();
@@ -71,7 +71,6 @@ public abstract class Animal extends Entity {
             world.setCurrentLocation(initialLocation);
             // System.out.println(getClass().getSimpleName() + this + " moving to: " +
             // newLocation);
-
             this.energy -= 2.5;
             this.hunger -= 5.0;
             this.stepsTaken++;
