@@ -41,6 +41,7 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
     enum State {
         IN_DEN_AT_NIGHT,
         HUNTING,
+        ALPHA_MOVING,
         FOLLOWING_ALPHA,
         FLEEING_PREDATOR,
         FIGHTING_ENEMY_WOLF,
@@ -58,7 +59,6 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
         if (!world.contains(this)) {
             return; // If the wolf has been removed from the world, do not perform any actions
         }
-
         State state = determineState(world);
 
         switch (state) {
@@ -67,6 +67,9 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
                 break;
             case HUNTING:
                 hunting(world);
+                break;
+            case ALPHA_MOVING:
+                alphaMoving(world);
                 break;
             case FOLLOWING_ALPHA:
                 followingAlpha(world);
@@ -606,17 +609,23 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
     private State determineState(World world) {
         if (world.isNight() && isInDen()) {
             return State.IN_DEN_AT_NIGHT;
-        } else if (findNearbyPrey(world) != null) {
-            return State.HUNTING;
-        } else if (!isAlpha() && isCloseToAlpha(myPack.getAlpha().currentLocation)) {
-            return State.FOLLOWING_ALPHA;
-        } else if (findNearbyBear(world) != null) {
-            return State.FLEEING_PREDATOR;
-        } else if (findEnemyWolf(world) != null) {
-            return State.FIGHTING_ENEMY_WOLF;
-        } else {
-            return State.OTHER;
         }
+        if (findNearbyPrey(world) != null) {
+            return State.HUNTING;
+        }
+        if (isAlpha()) {
+            return State.ALPHA_MOVING;
+        }
+        if (!isAlpha() && isCloseToAlpha(myPack.getAlpha().currentLocation)) {
+            return State.FOLLOWING_ALPHA;
+        }
+        if (findNearbyBear(world) != null) {
+            return State.FLEEING_PREDATOR;
+        }
+        if (findEnemyWolf(world) != null) {
+            return State.FIGHTING_ENEMY_WOLF;
+        }
+        return State.OTHER;
     }
 
     private void inDenAtNight(World world) {
@@ -629,7 +638,7 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
     
     private void hunting(World world) {
         Animal targetPrey = findNearbyPrey(world);
-        if (targetPrey != null) {
+        if (targetPrey != null && world.contains(targetPrey)) {
             chasePrey(targetPrey, world);
             if (isCloseEnoughToAttack(targetPrey)) {
                 attackPrey(targetPrey, world);
@@ -637,11 +646,15 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
         }
         consumeNearbyCarcassIfNeeded(world);
     }
+
+    private void alphaMoving(World world) {
+        if (isAlpha()) {
+            move(world);
+        }
+    }
     
     private void followingAlpha(World world) {
         if (!isAlpha()) {
-            followAlpha(world);
-        } else {
             move(world);
         }
     }
@@ -649,7 +662,11 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
     private void fleeingPredator(World world) {
         Bear nearbyBear = findNearbyBear(world);
         if (nearbyBear != null) {
-            fleeFromPredator(world, nearbyBear.getLocation());
+            if (shouldAttackBear()) {
+                attackBear(nearbyBear, world);
+            } else {
+                fleeFromPredator(world, nearbyBear.getLocation());
+            }
         }
     }
     
@@ -658,11 +675,13 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
         if (enemyWolf != null && world.contains(enemyWolf)) {
             fight(enemyWolf, world);
         }
+        if (!world.contains(this)) {
+            return;
+        }
     }
     
     private void other(World world) {
         returnToDenIfNeeded(world);
-        // You may include other general behaviors here, such as random movement or exploration
     }
     
     private void consumeNearbyCarcassIfNeeded(World world) {
