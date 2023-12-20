@@ -54,7 +54,7 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
      * @param world the world in which the wolf acts.
      */
     @Override
-    ppublic void act(World world) {
+    public void act(World world) {
         if (!world.contains(this)) {
             return; // If the wolf has been removed from the world, do not perform any actions
         }
