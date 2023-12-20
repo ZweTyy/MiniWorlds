@@ -91,7 +91,9 @@ public class WolfPack extends Entity {
 
     /**
      * Handles the removal of a wolf from the pack.
-     * If the removed wolf is the alpha, assigns a new alpha from the remaining members.
+     * If the removed wolf is the alpha, assigns a new alpha from the remaining
+     * members.
+     * 
      * @param wolf The wolf to be removed.
      */
     public void removeMember(Wolf wolf) {

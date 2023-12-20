@@ -3,6 +3,7 @@ package entities;
 import java.awt.Color;
 import java.util.List;
 import java.util.Set;
+import java.util.function.BooleanSupplier;
 
 import entities.dens.WolfDen;
 import itumulator.executable.DisplayInformation;
@@ -19,8 +20,8 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
     private boolean isAlpha;
     private WolfPack myPack;
     private int huntingRange = 3;
-    private int attackRange = 1;
-    private int attackPower = 20;
+    private int attackRange = 2;
+    private int attackPower = 25;
     private boolean isInDen = false;
     private boolean isInfected;
     private boolean isAlreadyEngagedInFight = false;
@@ -156,6 +157,7 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
     }
 
     private boolean shouldAttackBear() {
+        System.out.println("Checking if wolf should attack bear.");
         return myPack != null && (myPack.getPack().size() >= 3 || isAlreadyEngagedInFight);
     }
 
@@ -198,8 +200,8 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
     private void attackBear(Bear bear, World world) {
         double chance = Math.random();
         isAlreadyEngagedInFight = true;
-        // Attack logic - reduce bear's health
-        if (chance <= 0.5) {
+
+        if (chance <= 0.66) {
             System.out.println("Attack missed.");
             return; // Attack missed, rabbit escapes
         }
@@ -248,7 +250,7 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
      *         prey.
      */
     public boolean isCloseEnoughToAttack(Animal prey) {
-        // Check if the wolf is close enough to attack the rabbit
+        // Check if the wolf is close enough to attack the prey
         return distanceTo(prey.getLocation()) <= attackRange;
     }
 
@@ -258,6 +260,7 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
      * @param prey The prey to attack.
      */
     public void attackPrey(Animal prey, World world) {
+        System.out.println("Attacking prey at: " + prey.getLocation());
         double chance = Math.random();
         if (!isAdjacentToPrey(prey)) {
             System.out.println("Too far to attack the rabbit.");
@@ -590,6 +593,15 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
         return isInDen;
     }
 
+    /**
+     * Returns if the wolf is currently engaged in a fight.
+     * 
+     * @return boolean indicating if the wolf is engaged in a fight.
+     */
+    public boolean isEngagedInFight() {
+        return isAlreadyEngagedInFight;
+    }
+
     private List<Wolf> findNearbyPackMembers(World world) {
         int searchRange = 3;
         return myPack.getNearbyMembers(this, searchRange);
@@ -652,6 +664,12 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
         if (world.isDay() && findNearbyCarcass(world) != null) {
             return State.IS_DAY_AND_CARCASS_NEARBY;
         }
+        if (findNearbyBear(world) != null) {
+            return State.FLEEING_PREDATOR;
+        }
+        if (findEnemyWolf(world) != null) {
+            return State.FIGHTING_ENEMY_WOLF;
+        }
         if (findNearbyPrey(world) != null) {
             return State.HUNTING;
         }
@@ -660,12 +678,6 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
         }
         if (!isAlpha() && isCloseToAlpha(myPack.getAlpha().currentLocation)) {
             return State.FOLLOWING_ALPHA;
-        }
-        if (findNearbyBear(world) != null) {
-            return State.FLEEING_PREDATOR;
-        }
-        if (findEnemyWolf(world) != null) {
-            return State.FIGHTING_ENEMY_WOLF;
         }
         return State.OTHER;
     }

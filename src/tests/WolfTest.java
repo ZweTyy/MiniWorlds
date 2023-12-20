@@ -3,6 +3,7 @@ package tests;
 import entities.Wolf;
 import entities.WolfPack;
 import entities.Rabbit;
+import entities.Bear;
 import entities.Carcass;
 import itumulator.world.Location;
 import itumulator.world.World;
@@ -106,4 +107,100 @@ public class WolfTest {
 
         assertFalse(wolf.getEnergy() == 100, "Wolf's energy should not stay the same after moving");
     }
+
+    @Test
+    public void testAlphaAssignmentOnDeath() {
+        int size = 10;
+        Wolf wolf2 = new Wolf(world, size);
+        WolfPack pack = new WolfPack(world, size);
+        wolf.joinPack(pack);
+        wolf2.joinPack(pack);
+        Wolf alphaWolf = pack.getAlpha();
+        alphaWolf.setHealth(0); // Simulate alpha wolf's death
+        wolf.act(world); // Trigger the pack to respond to the alpha's death
+
+        assertNotEquals(alphaWolf, pack.getAlpha(), "A new alpha should be assigned on the previous alpha's death");
+    }
+
+    @Test
+    public void testJoinAndLeavePack() {
+        int size = 10;
+        WolfPack pack = new WolfPack(world, size);
+        Wolf newWolf = new Wolf(world, size);
+        newWolf.joinPack(pack);
+        assertTrue(pack.getPack().contains(newWolf), "Wolf should be part of the pack after joining");
+
+        pack.removeMember(newWolf);
+        assertFalse(pack.getPack().contains(newWolf), "Wolf should not be part of the pack after leaving");
+    }
+
+    @Test
+    public void testWolfDenCreation() {
+        int size = 10;
+        WolfPack pack = new WolfPack(world, size);
+        pack.createDen(world, size);
+
+        assertNotNull(pack.getDen(), "Wolf pack should have a den after creation");
+    }
+
+    @Test
+    public void testWolfAvoidsFightingWhenOutNumbered() {
+        int size = 10;
+        WolfPack pack = new WolfPack(world, size);
+        Wolf newWolf = new Wolf(world, size);
+        wolf.joinPack(pack);
+        newWolf.joinPack(pack);
+        world.setTile(new Location(5, 4), newWolf);
+
+        Bear bear = new Bear(world, size, 5, 6);
+        world.setTile(new Location(5, 6), bear);
+
+        wolf.act(world);
+        newWolf.act(world);
+
+        assertFalse(wolf.isEngagedInFight(), "Wolf should not attack the bear when outnumbered");
+    }
+
+    @Test
+    public void testWolfAttacksWhenOutNumbering() {
+        int size = 10;
+        WolfPack pack = new WolfPack(world, size);
+        Wolf newWolf = new Wolf(world, size);
+        Wolf newWolf2 = new Wolf(world, size);
+        wolf.joinPack(pack);
+        newWolf.joinPack(pack);
+        newWolf2.joinPack(pack);
+        world.setTile(new Location(5, 4), newWolf);
+        world.setTile(new Location(5, 7), newWolf2);
+
+        Bear bear = new Bear(world, size, 5, 6);
+        world.setTile(new Location(5, 6), bear);
+
+        wolf.act(world);
+        newWolf.act(world);
+
+        assertTrue(newWolf.isEngagedInFight(), "Wolf should attack the bear when outnumbering");
+    }
+
+    @Test
+    public void testWolfChasesAndAttacksPrey() {
+        int size = 2;
+        world = new World(size);
+        initialLocation = new Location(0, 1);
+        wolf = new Wolf(world, size);
+        wolf.setHunger(50);
+        world.setTile(initialLocation, wolf);
+        WolfPack pack = new WolfPack(world, size);
+        wolf.joinPack(pack);
+        Rabbit rabbit = new Rabbit(world, size);
+        Location rabbitLocation = new Location(0, 0);
+        world.setTile(rabbitLocation, rabbit);
+
+        // Act
+        wolf.act(world);
+
+        // Assert that the rabbit is close enough to get attacked
+        assertTrue(wolf.isCloseEnoughToAttack(rabbit), "Wolf should move close enough to attack the rabbit");
+    }
+
 }
