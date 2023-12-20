@@ -398,12 +398,10 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
      */
     private void returnToDenIfNeeded(World world) {
         if ((world.isNight() || this.health < 30) && !isInDen()) {
-            System.out.println(this + " is considering returning to den.");
             WolfDen den = myPack.getDen();
             if (den != null) {
                 Location denLocation = den.getLocation();
                 if (denLocation != null && world.contains(den)) {
-                    System.out.println(this + " is returning to den at " + denLocation);
                     den.addWolf(this);
                     world.remove(this); // Remove wolf from the world
                     this.isInDen = true;
@@ -721,6 +719,12 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
         if (world.isDay() && findNearbyCarcass(world) != null) {
             return State.IS_DAY_AND_CARCASS_NEARBY;
         }
+        if (isAlpha()) {
+            return State.ALPHA_MOVING;
+        }
+        if (!isAlpha() && isCloseToAlpha(myPack.getAlpha().currentLocation)) {
+            return State.FOLLOWING_ALPHA;
+        }
         if (findNearbyBear(world) != null) {
             return State.FLEEING_PREDATOR;
         }
@@ -729,12 +733,6 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
         }
         if (findNearbyPrey(world) != null) {
             return State.HUNTING;
-        }
-        if (isAlpha()) {
-            return State.ALPHA_MOVING;
-        }
-        if (!isAlpha() && isCloseToAlpha(myPack.getAlpha().currentLocation)) {
-            return State.FOLLOWING_ALPHA;
         }
         return State.OTHER;
     }

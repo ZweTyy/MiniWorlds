@@ -26,6 +26,7 @@ import factories.BearFactory;
 import factories.BerryFactory;
 import factories.BurrowFactory;
 import factories.CarcassFactory;
+import factories.CarcassFungiFactory;
 import factories.CordycepsFactory;
 import factories.FungusFactory;
 
@@ -118,6 +119,13 @@ public class EntityLoader {
             case "carcass":
                 List<Carcass> carcasses = CarcassFactory.createMultipleCarcasses(world, size, config.getQuantity());
                 for (Carcass carcass : carcasses) {
+                    placeEntity(world, carcass);
+                }
+                break;
+            case "carcass fungi":
+                List<Carcass> carcassesFungi = CarcassFungiFactory.createMultipleCarcassesFungi(world, size,
+                        config.getQuantity());
+                for (Carcass carcass : carcassesFungi) {
                     placeEntity(world, carcass);
                 }
                 break;
