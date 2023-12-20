@@ -88,6 +88,8 @@ public class Carcass extends Entity implements Actor, DynamicDisplayInformationP
                 return 25;
             case "bear":
                 return 50;
+            case "mole":
+                return 5;
             default:
                 return 0;
         }

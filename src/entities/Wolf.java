@@ -51,7 +51,7 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
         }
 
         if (world.isNight()) {
-            if (isInDen() && myPack.getPack().size() < 3) {
+            if (isInDen() && myPack.getPack().size() == 2) {
                 reproduce(world);
             }
             recoverHealthAtDen();
@@ -84,11 +84,11 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
                     return;
                 }
             } else {
-                Rabbit targetRabbit = findNearbyRabbit(world);
-                if (targetRabbit != null && world.contains(targetRabbit)) {
-                    chaseRabbit(targetRabbit, world);
-                    if (isCloseEnoughToAttack(targetRabbit)) {
-                        attackRabbit(targetRabbit, world);
+                Animal targetPrey = findNearbyPrey(world);
+                if (targetPrey != null && world.contains(targetPrey)) {
+                    chasePrey(targetPrey, world);
+                    if (isCloseEnoughToAttack(targetPrey)) {
+                        attackPrey(targetPrey, world);
                         // After attacking the rabbit, it might be dead and a carcass created
                     }
                 }
@@ -107,7 +107,6 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
     }
 
     private void reproduce(World world) {
-        // We will also assume that each pair produces only one offspring at a time for simplicity.
         Wolf newWolf = new Wolf(world, world.getSize()); // Assuming world.getSize() provides a size value appropriate for generating a random location.
         newWolf.setPack(this.myPack); // Set the pack for the new wolf
         this.myPack.addMember(newWolf); // Add the new wolf to the pack
@@ -121,11 +120,11 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
 
     @Override
     public void hunt(World world) {
-        Rabbit targetRabbit = findNearbyRabbit(world);
-        if (targetRabbit != null) {
-            chaseRabbit(targetRabbit, world);
-            if (isCloseEnoughToAttack(targetRabbit)) {
-                attackRabbit(targetRabbit, world);
+        Animal targetPrey = findNearbyPrey(world);
+        if (targetPrey != null) {
+            chasePrey(targetPrey, world);
+            if (isCloseEnoughToAttack(targetPrey)) {
+                attackPrey(targetPrey, world);
             }
         }
     }
@@ -182,8 +181,8 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
     
     
 
-    private void chaseRabbit(Rabbit rabbit, World world) {
-        Location rabbitLocation = rabbit.getLocation();
+    private void chasePrey(Animal prey, World world) {
+        Location rabbitLocation = prey.getLocation();
         Location bestAdjacentLocation = null;
         double minDistance = Double.MAX_VALUE;
 
@@ -202,7 +201,7 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
 
         // Move to the closest adjacent empty tile
         if (bestAdjacentLocation != null) {
-            System.out.println("Chasing rabbit, moving to location: " + bestAdjacentLocation);
+            System.out.println("Chasing prey, moving to location: " + bestAdjacentLocation);
             this.currentLocation = bestAdjacentLocation;
             world.move(this, bestAdjacentLocation);
         } else {
@@ -210,15 +209,15 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
         }
     }
 
-    private boolean isCloseEnoughToAttack(Rabbit rabbit) {
+    private boolean isCloseEnoughToAttack(Animal prey) {
         // Check if the wolf is close enough to attack the rabbit
-        return distanceTo(rabbit.getLocation()) <= attackRange; // Define 'attackRange'
+        return distanceTo(prey.getLocation()) <= attackRange; // Define 'attackRange'
     }
 
-    private void attackRabbit(Rabbit rabbit, World world) {
+    private void attackPrey(Animal prey, World world) {
         // Generate a random number between 0 and 1
         double chance = Math.random();
-        if (!isAdjacentToRabbit(rabbit)) {
+        if (!isAdjacentToPrey(prey)) {
             System.out.println("Too far to attack the rabbit.");
             return;
         }
@@ -230,46 +229,46 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
         }
 
         // If the attack is successful
-        rabbit.setHealth(rabbit.health -= attackPower); // Decrease the rabbit's health by the attack power
-        System.out.println("Rabbit attacked. Health now: " + rabbit.getHealth());
+        prey.setHealth(prey.health -= attackPower); // Decrease the rabbit's health by the attack power
+        System.out.println("Rabbit attacked. Health now: " + prey.getHealth());
 
         // Check if the rabbit is caught (assuming rabbit is dead when health <= 0)
-        if (rabbit.getHealth() <= 0) {
+        if (prey.getHealth() <= 0) {
             System.out.println("Rabbit caught.");
-            eatRabbit(rabbit, world);
+            eatPrey(prey, world);
         } else {
             System.out.println("Rabbit injured but escaped.");
         }
     }
 
-    private boolean isAdjacentToRabbit(Rabbit rabbit) {
-        Location rabbitLocation = rabbit.getLocation();
-        return distanceTo(rabbitLocation) <= 1; // Adjacent if the distance is 1 or less
+    private boolean isAdjacentToPrey(Animal prey) {
+        Location preyLocation = prey.getLocation();
+        return distanceTo(preyLocation) <= 1; // Adjacent if the distance is 1 or less
     }
 
-    private void eatRabbit(Rabbit rabbit, World world) {
+    private void eatPrey(Animal prey, World world) {
         // Increase energy after eating the rabbit
-        this.energy += rabbit.getEnergy(); // Assume Rabbit class has getEnergyValue method
+        this.energy += prey.getEnergy();
     }
 
-    private Rabbit findNearbyRabbit(World world) {
+    private Animal findNearbyPrey(World world) {
         Set<Location> surroundingTiles = world.getSurroundingTiles(currentLocation, huntingRange); // Define
                                                                                                    // 'huntingRange'
-        Rabbit closestRabbit = null;
+        Animal closestPrey = null;
         double minDistance = Double.MAX_VALUE;
 
         for (Location loc : surroundingTiles) {
             Object object = world.getTile(loc);
-            if (object instanceof Rabbit) {
-                Rabbit rabbit = (Rabbit) object;
-                double distance = distanceTo(rabbit.getLocation());
+            if (object instanceof Rabbit || object instanceof Mole) {
+                Animal animal = (Animal) object;
+                double distance = distanceTo(animal.getLocation());
                 if (distance < minDistance) {
-                    closestRabbit = rabbit;
+                    closestPrey = animal;
                     minDistance = distance;
                 }
             }
         }
-        return closestRabbit;
+        return closestPrey;
     }
 
     private Wolf findEnemyWolf(World world) {

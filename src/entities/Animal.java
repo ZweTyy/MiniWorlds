@@ -15,6 +15,7 @@ import itumulator.world.World;
 public abstract class Animal extends Entity {
     protected Location currentLocation = initialLocation;
     protected boolean alive = true;
+    protected boolean hasReproducedThisTurn = false;
     protected double hunger = 100.0;
     protected double energy = 50.0;
     protected int age = 1;
@@ -86,8 +87,10 @@ public abstract class Animal extends Entity {
      * This method simulates the resting state of the animal.
      */
     public void sleep() {
+        if (this.health <= 100) {
+            this.health += 5;
+        }
         this.energy += 10;
-        this.hunger -= 1;
         this.stepsTaken++;
     }
 
@@ -101,7 +104,8 @@ public abstract class Animal extends Entity {
             this.age++;
         }
         if (this.hunger <= 0) {
-            this.health -= 10;
+            this.health -= 2;
+            this.hunger = 0;
         }
         if (this.energy <= 0) {
             this.health -= 5;
