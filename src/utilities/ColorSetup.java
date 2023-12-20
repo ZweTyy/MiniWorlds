@@ -7,6 +7,7 @@ import entities.Berry;
 import entities.Carcass;
 import entities.Fungus;
 import entities.Grass;
+import entities.Mole;
 import entities.Rabbit;
 import entities.Wolf;
 import entities.WolfPack;
@@ -29,6 +30,7 @@ public class ColorSetup {
         DisplayInformation CarcassSmallDisplayInfo = new DisplayInformation(Color.black, "carcass-small");
         DisplayInformation CarcassDisplayInfo = new DisplayInformation(Color.black, "carcass");
         DisplayInformation WolfDenDisplayInfo = new DisplayInformation(Color.black, "hole");
+        DisplayInformation MoleDisplayInfo = new DisplayInformation(Color.black, "mole");
         DisplayInformation LocationDisplayInfo = new DisplayInformation(Color.black);
         p.setDisplayInformation(Grass.class, grassDisplayInfo);
         p.setDisplayInformation(Rabbit.class, rabbitDisplayInfo);
@@ -40,8 +42,9 @@ public class ColorSetup {
         p.setDisplayInformation(Carcass.class, CarcassSmallDisplayInfo);
         p.setDisplayInformation(Carcass.class, CarcassDisplayInfo);
         p.setDisplayInformation(WolfDen.class, WolfDenDisplayInfo);
-        p.setDisplayInformation(Location.class, LocationDisplayInfo);
         p.setDisplayInformation(Fungus.class, new DisplayInformation(Color.GREEN, "fungi", true));
+        p.setDisplayInformation(Mole.class, MoleDisplayInfo);
+        p.setDisplayInformation(Location.class, LocationDisplayInfo);
 
     }
 
