@@ -46,7 +46,7 @@ public class Bear extends Animal implements Actor, Carnivore, Herbivore {
     public Bear(World world, int size) {
         super(world, size);
         this.MAX_AGE = 20;
-        initialTerritoryLocation = generateRandomLocation(size);
+        initialTerritoryLocation = initialLocation;
     }
 
     /**

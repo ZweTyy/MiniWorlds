@@ -398,12 +398,10 @@ public class Wolf extends Animal implements Actor, Carnivore, Prey, DynamicDispl
      */
     private void returnToDenIfNeeded(World world) {
         if ((world.isNight() || this.health < 30) && !isInDen()) {
-            System.out.println(this + " is considering returning to den.");
             WolfDen den = myPack.getDen();
             if (den != null) {
                 Location denLocation = den.getLocation();
                 if (denLocation != null && world.contains(den)) {
-                    System.out.println(this + " is returning to den at " + denLocation);
                     den.addWolf(this);
                     world.remove(this); // Remove wolf from the world
                     this.isInDen = true;
