@@ -47,20 +47,16 @@ public class WolfTest {
 
     @Test
     public void testWolfHunting() {
-        world = new World(2);
-        wolf = new Wolf(world, 2);
-        initialLocation = new Location(0, 1);
-        Rabbit rabbit = new Rabbit(world, 2);
-        Location rabbitLocation = new Location(0, 0); // Place the rabbit close to the wolf
-        WolfPack pack = new WolfPack(world, 2);
-        wolf.joinPack(pack);
-        world.setTile(initialLocation, wolf);
+        Rabbit rabbit = new Rabbit(world, 10);
+        Location rabbitLocation = new Location(5, 6); // Place the rabbit close to the wolf
+        int initialRabbitHealth = rabbit.getHealth();
         world.setCurrentLocation(initialLocation);
         world.setTile(rabbitLocation, rabbit);
 
         wolf.act(world);
 
         assertTrue(wolf.isCloseEnoughToAttack(rabbit), "Wolf should move close enough to attack the rabbit");
+        assertTrue(rabbit.getHealth() < initialRabbitHealth, "Rabbit's health should decrease after being attacked");
     }
 
     @Test
@@ -146,21 +142,25 @@ public class WolfTest {
 
     @Test
     public void testWolfAttacksWhenOutNumbering() {
-        int size = 10;
+        world = new World(2);
+        int size = 2;
         WolfPack pack = new WolfPack(world, size);
         Wolf newWolf = new Wolf(world, size);
         Wolf newWolf2 = new Wolf(world, size);
-        wolf.joinPack(pack);
+        Wolf newWolf3 = new Wolf(world, size);
         newWolf.joinPack(pack);
         newWolf2.joinPack(pack);
-        world.setTile(new Location(5, 4), newWolf);
-        world.setTile(new Location(5, 7), newWolf2);
+        newWolf3.joinPack(pack);
+        world.setTile(new Location(0, 1), newWolf);
+        world.setTile(new Location(1, 1), newWolf2);
+        world.setTile(new Location(1, 0), newWolf3);
 
-        Bear bear = new Bear(world, size, 5, 6);
-        world.setTile(new Location(5, 6), bear);
+        Bear bear = new Bear(world, size, 0, 0);
+        world.setTile(new Location(0, 0), bear);
 
-        wolf.act(world);
         newWolf.act(world);
+        newWolf2.act(world);
+        newWolf3.act(world);
 
         assertTrue(newWolf.isEngagedInFight(), "Wolf should attack the bear when outnumbering");
     }
