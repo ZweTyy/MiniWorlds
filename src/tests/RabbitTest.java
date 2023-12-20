@@ -7,8 +7,10 @@ import entities.Grass;
 import entities.Rabbit;
 import itumulator.world.Location;
 import itumulator.world.World;
+import utilities.SimulationManager;
 
 import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RabbitTest {
 
@@ -34,37 +36,42 @@ public class RabbitTest {
     }
 
     @Test
-    public void testReproduce() {
-        // Clear surrounding tiles
-        for (int x = 4; x <= 6; x++) {
-            for (int y = 4; y <= 6; y++) {
-                if (x == 5 && y == 5)
-                    continue; // Skip the tile of the main rabbit
-                Location emptyLocation = new Location(x, y);
-                world.setTile(emptyLocation, null); // Ensure these tiles are empty
-            }
-        }
+    public void testRabbitReproduction() {
+        // Set up the world and initial conditions for rabbit reproduction
+        world = new World(4);
+        rabbit = new Rabbit(world, 4);
+        Location initialLocation = new Location(0, 0);
+        world.setTile(initialLocation, rabbit);
 
-        // Setup the mating rabbit
-        Rabbit matingRabbit = new Rabbit(world, 10);
-        matingRabbit.setAge(4);
-        matingRabbit.setEnergy(100);
-        matingRabbit.setHasReproducedThisTurn(false);
-        Location matingRabbitLocation = new Location(5, 4);
-        world.setTile(matingRabbitLocation, matingRabbit);
+        Rabbit mateRabbit = new Rabbit(world, 4);
+        Location mateLocation = new Location(0, 1);
+        world.setCurrentLocation(initialLocation);
+        world.setTile(mateLocation, mateRabbit);
 
-        // Setup the main rabbit
+        // Set the rabbit's properties to make it eligible for reproduction
         rabbit.setAge(4);
         rabbit.setEnergy(100);
-        rabbit.setHasReproducedThisTurn(false);
-        Location rabbitLocation = new Location(5, 5);
-        world.setTile(rabbitLocation, rabbit);
+        rabbit.setHasReproducedThisTurn(false); // Ensure the rabbit has not reproduced yet
 
-        int initialRabbitCount = Rabbit.countRabbits(world);
-        rabbit.reproduce(world, world.getSize());
+        mateRabbit.setAge(4);
+        mateRabbit.setEnergy(100);
+        mateRabbit.setHasReproducedThisTurn(false); // Ensure the rabbit has not reproduced yet
+        // Count rabbits before reproduction
+        int initialRabbitCount = SimulationManager.countRabbits(world);
 
-        int newRabbitCount = Rabbit.countRabbits(world);
-        assertTrue("Rabbit count should increase after reproduction", newRabbitCount > initialRabbitCount);
+        // Perform the act method which should include an attempt to reproduce
+        rabbit.act(world);
+
+        // Update the rabbit count after the act
+        SimulationManager.updateRabbitCount(world);
+
+        // Assert that the number of rabbits has increased by at least one
+        assertTrue(SimulationManager.getRabbitCount() > initialRabbitCount,
+                "The rabbit count should increase after reproduction");
+
+        // Additionally, assert that the rabbit has reproduced this turn
+        assertTrue(rabbit.getHasReproducedThisTurn(),
+                "The rabbit should have the flag set to true after reproducing");
     }
 
     @Test

@@ -18,6 +18,7 @@ import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.NonBlocking;
 import itumulator.world.World;
+import utilities.SimulationManager;
 
 /**
  * Represents a rabbit in a simulated ecosystem.
@@ -28,7 +29,7 @@ public class Rabbit extends Animal implements Actor, Herbivore, Prey, DynamicDis
     private Burrow myBurrow;
     private boolean hidden;
     private boolean isInfected;
-    private static int amountOfRabbits = 0;
+    private static int amountOfRabbits = SimulationManager.getRabbitCount();
 
     /**
      * Constructs a Rabbit with a reference to the world it belongs to and its size.
@@ -131,7 +132,6 @@ public class Rabbit extends Animal implements Actor, Herbivore, Prey, DynamicDis
         }
         createOffspring(world, size, mate);
     }
-    
 
     private void createOffspring(World world, int size, Rabbit mate) {
         Location newLocation = generateRandomLocation(world.getSize());
@@ -142,11 +142,10 @@ public class Rabbit extends Animal implements Actor, Herbivore, Prey, DynamicDis
         System.out.println("Rabbit reproducing at: " + newLocation);
         world.setCurrentLocation(newLocation);
         world.setTile(newLocation, newRabbit);
-    
+
         consumeReproductionEnergy();
         mate.consumeReproductionEnergy(); // Now mate can be resolved
     }
-    
 
     /**
      * Enables the rabbit to eat herb (grass) in its current location to gain
@@ -178,46 +177,6 @@ public class Rabbit extends Animal implements Actor, Herbivore, Prey, DynamicDis
                 return;
             }
         }
-    }
-
-    /**
-     * Returns the number of rabbits in the world.
-     *
-     * @param world the world in which the rabbit count is returned.
-     * @return the number of rabbits in the world.
-     */
-    public static int countRabbits(World world) {
-        Map<Object, Location> entities = world.getEntities();
-        int rabbitCount = 0;
-        for (Object obj : entities.keySet()) {
-            if (obj instanceof Rabbit) {
-                rabbitCount++;
-            }
-        }
-        Rabbit.amountOfRabbits = rabbitCount;
-        return rabbitCount;
-    }
-
-    /**
-     * Resets the rabbit count to 0.
-     */
-    public static void resetRabbitCount() {
-        Rabbit.amountOfRabbits = 0;
-    }
-
-    /**
-     * Updates the rabbit count in the world.
-     *
-     * @param world the world in which the rabbit count is updated.
-     */
-    public static void updateRabbitCount(World world) {
-        int count = 0;
-        for (Object obj : world.getEntities().keySet()) {
-            if (obj instanceof Rabbit) {
-                count++;
-            }
-        }
-        amountOfRabbits = count;
     }
 
     /**
@@ -414,6 +373,10 @@ public class Rabbit extends Animal implements Actor, Herbivore, Prey, DynamicDis
      */
     public boolean isInfected() {
         return isInfected;
+    }
+
+    public boolean getHasReproducedThisTurn() {
+        return hasReproducedThisTurn;
     }
 
     private State determineState(World world, boolean hidden, Burrow myBurrow) {

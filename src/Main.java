@@ -39,29 +39,19 @@ public class Main {
         ColorSetup.setUpColor(p);
 
         p.show();
-        Rabbit.resetRabbitCount();
-
+        SimulationManager.reset();
         EntityLoader.loadEntities(world, elementsToAdd, size); // Tilføj alle elementer til verdenen
 
-        int initialRabbitCount = countRabbits(world);
-        System.out.println("Initial rabbit count: " + initialRabbitCount);
+        System.out.println("Initial rabbit count: " + SimulationManager.countRabbits(world));
+        System.out.println("Initial mole count: " + SimulationManager.countMoles(world));
 
         // Kører simulationen 100 gange og opdaterer kanin tælleren hver gang
         for (int i = 0; i < 150; i++) {
             p.simulate();
             SimulationManager.incrementStep();
-            Rabbit.updateRabbitCount(world);
+            SimulationManager.updateRabbitCount(world);
+            SimulationManager.updateMoleCount(world);
+            System.out.println("Amount of moles: " + SimulationManager.getMoleCount());
         }
-    }
-
-    public static int countRabbits(World world) {
-        int rabbitCount = 0;
-        Map<Object, Location> entities = world.getEntities();
-        for (Object obj : entities.keySet()) {
-            if (obj instanceof Rabbit) {
-                rabbitCount++;
-            }
-        }
-        return rabbitCount;
     }
 }

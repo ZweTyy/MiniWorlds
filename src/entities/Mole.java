@@ -7,10 +7,11 @@ import java.util.Set;
 import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
+import utilities.SimulationManager;
 
 public class Mole extends Animal implements Actor, Prey {
 
-    private static int amountOfMoles = 0;
+    private static int amountOfMoles = SimulationManager.getMoleCount();
     private boolean underground = false;
 
     public Mole(World world, int size) {
@@ -37,7 +38,7 @@ public class Mole extends Animal implements Actor, Prey {
     }
 
     private boolean isEligibleForReproduction() {
-        return this.age >= 4 && this.energy >= 25 && !hasReproducedThisTurn
+        return this.age >= 3 && this.energy >= 25 && !hasReproducedThisTurn
                 && Mole.amountOfMoles < world.getSize() * world.getSize() / 4;
     }
 
@@ -95,8 +96,25 @@ public class Mole extends Animal implements Actor, Prey {
         return null; // No predators found
     }
 
-    // Method for the mole to go underground
-    private void goUnderground(World world) {
+    /**
+     * Sends the mole underground in the provided world.
+     *
+     * This method is responsible for hiding the mole from the world view by
+     * removing it from
+     * the world's surface. If the mole is already underground or its current
+     * location is
+     * not known,
+     * the method does nothing. Otherwise, it removes the mole from its current
+     * location in the world,
+     * sets the mole's 'underground' status to true, and prints a message to the
+     * console indicating
+     * that the mole is going underground.
+     *
+     * @param world The world from which the mole will go underground. This world
+     *              object
+     *              is used to remove the mole from its current location.
+     */
+    public void goUnderground(World world) {
         System.out.println("Mole hunger: " + hunger);
         if (!underground && this.currentLocation != null) {
             System.out.println("Mole going underground at: " + this.currentLocation);
@@ -105,8 +123,25 @@ public class Mole extends Animal implements Actor, Prey {
         }
     }
 
-    // Method for the mole to come above ground
-    private void comeAboveGround(World world) {
+    /**
+     * Brings the mole above ground in the provided world.
+     * 
+     * If the mole is underground, this method locates the surrounding empty tiles
+     * of the mole's initial location. It then moves the mole to one of these empty
+     * tiles.
+     * If no empty tiles are available, the mole remains at its current location.
+     * Once above ground, the mole is made visible in the world view and a message
+     * is printed
+     * to the console indicating the mole's new location. The method also updates
+     * the mole's
+     * 'underground' status to false.
+     *
+     * @param world The world in which the mole resides and will come above ground.
+     *              This world object is used to find empty surrounding tiles and
+     *              update
+     *              the tile representation of the mole.
+     */
+    public void comeAboveGround(World world) {
         if (underground) {
             Set<Location> emptyTiles = world.getEmptySurroundingTiles(this.initialLocation);
             Location newLocation = emptyTiles.isEmpty() ? this.currentLocation : emptyTiles.iterator().next();
@@ -121,6 +156,7 @@ public class Mole extends Animal implements Actor, Prey {
     private void searchForCarcasses(World world) {
         Set<Location> surroundingTiles = world.getSurroundingTiles(this.currentLocation);
         for (Location loc : surroundingTiles) {
+            System.out.println("Searching for carcasses at: " + loc);
             Object object = world.getTile(loc);
             if (object instanceof Carcass) {
                 Carcass carcass = (Carcass) object;
@@ -130,11 +166,14 @@ public class Mole extends Animal implements Actor, Prey {
         }
     }
 
-    // Method for the mole to consume a carcass
     private void consumeCarcass(Carcass carcass, World world) {
         int meatToConsume = Math.min(carcass.getMeatQuantity(), (int) this.hunger);
         carcass.consumeMeat(meatToConsume);
         this.energy += meatToConsume + 15;
+        this.hunger += meatToConsume + 15;
+        if (carcass.getMeatQuantity() <= 0) {
+            world.delete(carcass);
+        }
     }
 
     @Override
@@ -163,5 +202,7 @@ public class Mole extends Animal implements Actor, Prey {
         }
     }
 
-    // Add getters and setters for mole count as needed.
+    public boolean setUnderground(boolean underground) {
+        return this.underground = underground;
+    }
 }

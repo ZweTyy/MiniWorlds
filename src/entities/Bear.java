@@ -60,6 +60,10 @@ public class Bear extends Animal implements Actor, Carnivore, Herbivore {
         if (!world.contains(this)) {
             return;
         }
+        if (world.isNight()) {
+            sleep();
+            return;
+        }
         move(world);
         eatHerb(world);
         checkAndAttackIntruders(world);
@@ -91,12 +95,10 @@ public class Bear extends Animal implements Actor, Carnivore, Herbivore {
             this.initialLocation = newLocation;
             world.move(this, initialLocation);
             world.setCurrentLocation(initialLocation);
-            System.out.println(getClass().getSimpleName() + this + " moving to: " + newLocation);
 
             this.energy -= 2.5;
             this.hunger -= 5.0;
             this.stepsTaken++;
-            System.out.println("age " + this.age);
         }
         super.updateStats();
         // System.out.println("health " + this.health + " energy " + this.energy + "
@@ -154,7 +156,7 @@ public class Bear extends Animal implements Actor, Carnivore, Herbivore {
         for (Location loc : territory) {
             Object object = world.getTile(loc);
             if (object != null && object instanceof Animal && object != this) {
-                System.out.println("Bear found intruder: " + object);
+                // System.out.println("Bear found intruder: " + object);
                 attack((Animal) object, world);
             }
         }
@@ -162,22 +164,22 @@ public class Bear extends Animal implements Actor, Carnivore, Herbivore {
 
     private void checkAndEatCarcass(World world) {
         if (hunger < 75 || health < 75) {
-            Set<Location> territory = getTerritory();  // Use getTerritory() to check within the bear's territory
+            Set<Location> territory = getTerritory(); // Use getTerritory() to check within the bear's territory
             for (Location loc : territory) {
                 Object object = world.getTile(loc);
                 if (object instanceof Carcass) {
                     eatCarcass((Carcass) object, world);
-                    break; // Assuming the bear eats only one carcass at a time
+                    break;
                 }
             }
         }
     }
-    
+
     private void eatCarcass(Carcass carcass, World world) {
         System.out.println("Bear eating carcass at " + carcass.getLocation());
         // Increase bear's health or reduce hunger
-        this.health = Math.min(this.health + carcass.getMeatQuantity(), 100); // assuming 'getNutritionalValue' method exists in Carcass
-        this.hunger = Math.max(this.hunger - carcass.getMeatQuantity(), 0);
+        this.health += carcass.getMeatQuantity();
+        this.hunger += carcass.getMeatQuantity();
         world.delete(carcass); // Remove carcass from the world after being consumed
     }
 
@@ -200,6 +202,6 @@ public class Bear extends Animal implements Actor, Carnivore, Herbivore {
 
     @Override
     public void hunt(World world) {
-        
+
     }
 }

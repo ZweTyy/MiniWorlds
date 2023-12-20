@@ -17,7 +17,8 @@ public class Carcass extends Entity implements Actor, DynamicDisplayInformationP
     private Fungus fungus;
 
     /**
-     * Constructs a Carcass at a specified location in the world (i.e. where the animal died).
+     * Constructs a Carcass at a specified location in the world (i.e. where the
+     * animal died).
      *
      * @param world      The world where the carcass exists.
      * @param size       The size of the world.
@@ -35,11 +36,13 @@ public class Carcass extends Entity implements Actor, DynamicDisplayInformationP
     }
 
     /**
-     * Constructs a Carcass within the specified world and assigns it a random initial
+     * Constructs a Carcass within the specified world and assigns it a random
+     * initial
      * location.
      *
      * @param world      The world where the carcass exists.
-     * @param size       The size parameter used to generate the carcass's initial location.
+     * @param size       The size parameter used to generate the carcass's initial
+     *                   location.
      * @param animalType The type of animal that the carcass came from.
      */
     public Carcass(World world, int size) {
@@ -57,7 +60,7 @@ public class Carcass extends Entity implements Actor, DynamicDisplayInformationP
             System.out.println("Carcass is not in the world.");
             return;
         }
-        
+
         if (meatQuantity > 0) {
             // If there is still meat, decrement the decay counter and grow the fungus
             decayCounter--;
