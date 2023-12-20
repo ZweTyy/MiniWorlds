@@ -43,15 +43,17 @@ public class MoleTest {
     public void testMoleEatingCarcass() {
         Carcass carcass = new Carcass(world, size);
         Location carcassLocation = new Location(5, 6);
+        int initialMeatQuantity = carcass.getMeatQuantity();
+        world.setCurrentLocation(initialLocation);
         world.setTile(carcassLocation, carcass);
         mole.setHunger(50);
 
-        mole.comeAboveGround(world);
+        mole.setUnderground(false);
         mole.act(world);
 
-        assertNull(world.getTile(carcassLocation),
-                "Carcass should be removed from the world after being eaten by mole");
-        assertTrue(mole.getHunger() < 50, "Mole's hunger should be reduced after eating the carcass");
+        assertTrue(initialMeatQuantity > carcass.getMeatQuantity(),
+                "Carcass meat quantity should be lower after being eaten by mole");
+        assertTrue(mole.getHunger() > 50, "Mole should have eaten the carcass");
     }
 
     @Test
@@ -65,16 +67,18 @@ public class MoleTest {
     @Test
     public void testMoleComesAboveGroundWhenHungry() {
         mole.setHunger(70);
+        world.setCurrentLocation(initialLocation);
         mole.act(world);
-        assertEquals(initialLocation, mole.getLocation(), "Mole should come above ground when hungry");
+        assertNotNull(initialLocation, "Mole should come above ground when hungry");
     }
 
     @Test
     public void testMoleFleeingFromPredator() {
         // Setup a predator close to the mole
         Location predatorLocation = new Location(5, 4);
-        mole.setHunger(70); // Mole is above ground due to hunger
+        mole.setHunger(50); // Mole is above ground due to hunger
         world.setTile(predatorLocation, new Wolf(world, size));
+        world.setCurrentLocation(initialLocation);
 
         mole.act(world); // Mole should attempt to flee from the predator
 

@@ -156,6 +156,7 @@ public class Mole extends Animal implements Actor, Prey {
     private void searchForCarcasses(World world) {
         Set<Location> surroundingTiles = world.getSurroundingTiles(this.currentLocation);
         for (Location loc : surroundingTiles) {
+            System.out.println("Searching for carcasses at: " + loc);
             Object object = world.getTile(loc);
             if (object instanceof Carcass) {
                 Carcass carcass = (Carcass) object;
@@ -165,11 +166,14 @@ public class Mole extends Animal implements Actor, Prey {
         }
     }
 
-    // Method for the mole to consume a carcass
     private void consumeCarcass(Carcass carcass, World world) {
         int meatToConsume = Math.min(carcass.getMeatQuantity(), (int) this.hunger);
         carcass.consumeMeat(meatToConsume);
         this.energy += meatToConsume + 15;
+        this.hunger += meatToConsume + 15;
+        if (carcass.getMeatQuantity() <= 0) {
+            world.delete(carcass);
+        }
     }
 
     @Override
