@@ -1,4 +1,4 @@
-25 
+20
 bear 1 (2,7)
 rabbit 4
 mole 3
