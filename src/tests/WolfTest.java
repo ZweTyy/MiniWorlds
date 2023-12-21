@@ -47,10 +47,15 @@ public class WolfTest {
 
     @Test
     public void testWolfHunting() {
-        Rabbit rabbit = new Rabbit(world, 10);
-        Location rabbitLocation = new Location(5, 6); // Place the rabbit close to the wolf
+        world = new World(2);
+        wolf = new Wolf(world, 2);
+        WolfPack pack = new WolfPack(world, 2);
+        wolf.joinPack(pack);
+        initialLocation = new Location(0, 0);
+        Rabbit rabbit = new Rabbit(world, 2);
         world.setCurrentLocation(initialLocation);
-        world.setTile(rabbitLocation, rabbit);
+        world.setTile(new Location(0, 0), wolf);
+        world.setTile(new Location(0, 1), rabbit);
 
         wolf.act(world);
 
